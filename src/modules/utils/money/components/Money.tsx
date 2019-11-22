@@ -6,7 +6,7 @@ export interface IMoneyProps {
 }
 
 const Money: FC<IMoneyProps> = ({ value }) => {
-  return <div>{toS(value)}</div>
+  return <div style={{textAlign: 'right'}}>{toS(value)}</div>
 }
 
 export default Money;

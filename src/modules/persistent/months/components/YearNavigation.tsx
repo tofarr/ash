@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Grid } from '@material-ui/core';
 
 import SerialNavigation from '../../../utils/SerialNavigation';
 
@@ -15,7 +16,11 @@ const YearNavigation: FC<YearNavigationProps> = ({ value, onChange}) => {
     <SerialNavigation
       onPrev={() => { onChange(value - 1) }}
       onNext={() => { onChange(value + 1) }}>
-      {value}
+      <Grid container justify="center">
+        <Grid item>
+          {value}
+        </Grid>
+      </Grid>
     </SerialNavigation>
   );
 }

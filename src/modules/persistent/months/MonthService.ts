@@ -75,6 +75,14 @@ export function readMonth(year:number, month:number){
   })
 }
 
+export function loadOrNewMonth(year:number, month:number){
+  return new Promise<Month>((resolve, reject) => {
+    readMonth(year, month).then(resolve, () => {
+      newMonth(year, month).then(resolve, reject);
+    });
+  });
+}
+
 export function updateMonth(month:Month){
   return new Promise<Month>((resolve, reject) => {
     table().update({ year: month.year, month: month.month }, month).then(() => {

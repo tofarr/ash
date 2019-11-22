@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Redirect, useParams, useHistory } from 'react-router-dom';
+import moment from 'moment';
+import { useParams, useHistory } from 'react-router-dom';
 
 import Settings from '../../../persistent/settings/Settings';
 import MonthTransactionsContainer from './MonthTransactionsContainer';
@@ -8,6 +9,10 @@ export const MONTH_TRANSACTIONS_PATH = '/month-transactions/:year/:month'
 
 export function monthTransactionsPath(year: number, month: number){
   return MONTH_TRANSACTIONS_PATH.replace(':year', year.toString()).replace(':month', month.toString());
+}
+
+export function currentMonthPath(){
+  return monthTransactionsPath(moment().year(), moment().month()+1);
 }
 
 export interface MonthTransactionsControllerProps{

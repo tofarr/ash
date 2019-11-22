@@ -4,7 +4,7 @@ import { meetingDates } from '../../persistent/settings/SettingsService';
 import MonthTransactions from './MonthTransactions';
 import TransactionCode from '../../persistent/transactions/models/TransactionCode';
 import transactionSchema from '../../persistent/transactions/TransactionSchema';
-import { getRecieptsBalance } from './MonthTransactionsService';
+import { getReceiptsBalance } from './MonthTransactionsService';
 import { toS } from '../../utils/dateStamps/DateStampService';
 
 
@@ -117,10 +117,10 @@ export default function monthTransactionsSchema(){
           ).join(', ')
       });
     }
-  ).test('deposits-should-match-reciepts',
-    'Deposits Should Match Reciepts',
+  ).test('deposits-should-match-receipts',
+    'Deposits Should Match Receipts',
     function(monthTransactions: MonthTransactions) {
-      return getRecieptsBalance(monthTransactions) === 0;
+      return getReceiptsBalance(monthTransactions) === 0;
     }
   ).test('should-have-interest-payment',
     'Month should have an interest payment',

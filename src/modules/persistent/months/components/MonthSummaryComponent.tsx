@@ -29,10 +29,8 @@ const MonthSummaryComponent: FC<MonthSummaryComponentProps> = ({ year, month, ha
           <Grid item>
             {moment().startOf('month').year(year).month(month-1).format(settings.formatting.month_format)}
           </Grid>
-          <Grid item>
-            <Chip
-              icon={hasData ? <EditIcon /> : <AddIcon /> }
-              label={hasData ? "Update" : "Create" } />
+          <Grid item style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+            {hasData ? <EditIcon /> : <AddIcon /> }
           </Grid>
         </Grid>
       </Button>

@@ -29,6 +29,14 @@ export function loadMonthTransactions(year: number, month_number: number) {
   });
 }
 
+export function loadOrNewMonthTransactions(year: number, month_number: number) {
+  return new Promise<MonthTransactions>((resolve, reject) => {
+    loadMonthTransactions(year, month_number).then(resolve, () => {
+      newMonthTransactions(year, month_number).then(resolve, reject);
+    });
+  });
+}
+
 export function saveMonthTransactions(monthTransactions: MonthTransactions){
   return new Promise((resolve, reject) => {
     saveMonth(monthTransactions.month).then(() => {
@@ -64,7 +72,7 @@ export function destroyMonthTransactions(year: number, month: number){
 }
 
 
-export function getRecieptsBalance(monthTransactions: MonthTransactions){
+export function getReceiptsBalance(monthTransactions: MonthTransactions){
   return monthTransactions.transactions.reduce((balance, transaction) => {
     return balance + transaction.receipts_amt;
   }, 0);
@@ -82,8 +90,8 @@ export function getOtherBalance(monthTransactions: MonthTransactions){
   }, 0);
 }
 
-export function getRecieptsClosingBalance(monthTransactions: MonthTransactions){
-  return monthTransactions.month.opening_receipts + getRecieptsBalance(monthTransactions);
+export function getReceiptsClosingBalance(monthTransactions: MonthTransactions){
+  return monthTransactions.month.opening_receipts + getReceiptsBalance(monthTransactions);
 }
 
 export function getPrimaryClosingBalance(monthTransactions: MonthTransactions){
