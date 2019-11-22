@@ -64,14 +64,14 @@ export function storeSettings(settings: Settings){
 export function meetingDates(year: number, month: number, meetingDays: MeetingDays) {
   let meetingDates: number[] = [];
   let m = moment().startOf('month').set('year', year).set('month', month);
-  while(m.get('month') == month){
-    if(((m.day() == 0) && meetingDays.sun) ||
-        ((m.day() == 1) && meetingDays.mon) ||
-        ((m.day() == 2) && meetingDays.tue) ||
-        ((m.day() == 3) && meetingDays.wed) ||
-        ((m.day() == 4) && meetingDays.thu) ||
-        ((m.day() == 5) && meetingDays.fri) ||
-        ((m.day() == 6) && meetingDays.sat)){
+  while(m.get('month') === month){
+    if(((m.day() === 0) && meetingDays.sun) ||
+        ((m.day() === 1) && meetingDays.mon) ||
+        ((m.day() === 2) && meetingDays.tue) ||
+        ((m.day() === 3) && meetingDays.wed) ||
+        ((m.day() === 4) && meetingDays.thu) ||
+        ((m.day() === 5) && meetingDays.fri) ||
+        ((m.day() === 6) && meetingDays.sat)){
         meetingDates.push(m.date());
     }
   }

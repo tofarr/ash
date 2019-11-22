@@ -86,3 +86,7 @@ export function updateMonth(month:Month){
 export function destroyMonth(year:number, month:number){
   return table().delete({ year, month });
 }
+
+export function listMonths(year:number){
+  return table().where({ year: year }).sortBy('date');
+}
