@@ -7,23 +7,27 @@ import NavMenuController, { NAV_MENU_PATH } from './modules/ui/nav/NavMenuContro
 
 import './App.css';
 import MonthListController, { MONTH_LIST_PATH } from './modules/persistent/months/components/MonthListController';
-//import YearController, { YEAR_PATH } from './modules/persistent/months/components/YearController';
 import MonthTransactionsController, { MONTH_TRANSACTIONS_PATH } from './modules/ui/monthTransactions/components/MonthTransactionsController';
+import CreateTransactionController, { CREATE_TRANSACTION_PATH } from './modules/persistent/transactions/components/CreateTransactionController';
 
 const App: React.FC = () => {
   return (
     <SettingsLoader>
       {(settings: Settings) => (
         <Router>
-          <NavBarController settings={settings} />
-          <Switch>
-            <Route path={NAV_MENU_PATH} exact={true} component={() => <NavMenuController settings={settings} />} />
-            {/*<Route path={YEAR_PATH} exact={false} component={() => <YearController settings={settings} />} />
-            <Redirect to={YEAR_PATH} />*/}
-            <Route path={MONTH_LIST_PATH} exact={false} component={() => <MonthListController settings={settings} />} />
-            <Route path={MONTH_TRANSACTIONS_PATH} exact={false} component={() => <MonthTransactionsController settings={settings} />} />
-            <Redirect from="/" to={NAV_MENU_PATH} />
-          </Switch>
+          <NavBarController settings={settings}>
+            {(setTitle) => {
+              return (
+                <Switch>
+                  <Route path={NAV_MENU_PATH} exact={true} component={() => <NavMenuController settings={settings} setTitle={setTitle} />} />
+                  <Route path={MONTH_LIST_PATH} exact={false} component={() => <MonthListController settings={settings} setTitle={setTitle} />} />
+                  <Route path={MONTH_TRANSACTIONS_PATH} exact={false} component={() => <MonthTransactionsController settings={settings} setTitle={setTitle} />} />
+                  <Route path={CREATE_TRANSACTION_PATH} exact={false} component={() => <CreateTransactionController settings={settings} setTitle={setTitle} />} />
+                  <Redirect from="/" to={NAV_MENU_PATH} />
+                </Switch>
+              )
+            }}
+          </NavBarController>
         </Router>
       )}
     </SettingsLoader>

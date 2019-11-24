@@ -16,7 +16,8 @@ export function currentMonthPath(){
 }
 
 export interface MonthTransactionsControllerProps{
-  settings: Settings
+  settings: Settings,
+  setTitle: (setTitle: string) => void;
 }
 
 export interface MonthListControllerParams{
@@ -25,10 +26,11 @@ export interface MonthListControllerParams{
 }
 
 
-const MonthTransactionsController: FC<MonthTransactionsControllerProps> = ({ settings }) => {
-
+const MonthTransactionsController: FC<MonthTransactionsControllerProps> = ({ settings, setTitle }) => {
   const { push } = useHistory();
   const { year, month } = useParams<MonthListControllerParams>();
+  const monthStr = moment().startOf('month').year(parseInt(year)).month(parseInt(month)-1).format(settings.formatting.month_format);
+  setTitle(`Transactions for ${monthStr}`);
 
   function handleChangeMonth(newYear: number, newMonth: number){
     push(monthTransactionsPath(newYear, newMonth));

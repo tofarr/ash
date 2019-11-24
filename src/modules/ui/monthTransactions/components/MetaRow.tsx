@@ -1,4 +1,4 @@
-import React, { FC, Component} from 'react';
+import React, { FC} from 'react';
 import { Box,  Grid } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';

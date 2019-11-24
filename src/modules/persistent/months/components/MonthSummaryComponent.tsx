@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import moment from 'moment';
-import { Box, Button, Chip, Grid } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -16,7 +16,7 @@ export interface MonthSummaryComponentProps {
 
 const MonthSummaryComponent: FC<MonthSummaryComponentProps> = ({ year, month, hasData, onSelect, settings }) => {
 
-  const isCurrent = moment().month() == month && moment().year() == year;
+  const isCurrent = (moment().month() + 1) === month && moment().year() === year;
 
   return (
     <Box pb={1}>

@@ -14,15 +14,16 @@ export function monthListPath(year?: number){
 
 
 export interface MonthListControllerProps{
-  settings: Settings
+  settings: Settings;
+  setTitle: (title: string) => void;
 }
 
 export interface MonthListControllerParams{
   year?: string
 }
 
-const MonthListController: FC<MonthListControllerProps> = ({ settings }) => {
-
+const MonthListController: FC<MonthListControllerProps> = ({ settings, setTitle }) => {
+  setTitle('Select Month');
   const { push } = useHistory();
   const year = parseInt(useParams<MonthListControllerParams>().year as any);
 

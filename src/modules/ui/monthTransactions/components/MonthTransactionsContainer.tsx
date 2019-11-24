@@ -1,17 +1,16 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Button, Grid } from '@material-ui/core';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
 
 import Loader from '../../../utils/Loader';
 import MonthNavigation from './MonthNavigation';
 import MetaRow from './MetaRow';
+import OpeningBalanceRow from './OpeningBalanceRow';
 import Money from '../../../utils/money/components/Money';
 import Settings from '../../../persistent/settings/Settings';
 import MonthTransactions from '../MonthTransactions';
 import MonthTransactionsRow from './MonthTransactionsRow';
 import Transaction from '../../../persistent/transactions/models/Transaction';
-import { getReceiptsClosingBalance, getPrimaryClosingBalance, getOtherClosingBalance, loadOrNewMonthTransactions, saveMonthTransactions} from '../MonthTransactionsService';
+import { getReceiptsClosingBalance, getPrimaryClosingBalance, getOtherClosingBalance, loadOrNewMonthTransactions} from '../MonthTransactionsService';
 
 export interface MonthTransactionsContainerProps{
   year: number;
@@ -25,22 +24,24 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
 
     const [working, setWorking] = useState(false);
     const [monthTransactions, setMonthTransactions] = useState<null|MonthTransactions>(null);
-    const theme = useTheme();
-    const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
     useEffect(() => {
+      let mounted = true;
       setWorking(true);
       loadOrNewMonthTransactions(year, month).then((monthTransactions) => {
-        setMonthTransactions(monthTransactions);
-        setWorking(false);
-      }, (err) => {
-        setWorking(false)
+        if(mounted){
+          setMonthTransactions(monthTransactions);
+          setWorking(false);
+        }
+      }, () => {
+        if(mounted){
+          setWorking(false)
+        }
       });
-    }, [year]);
-
-    function handleOpeningBalanceEdit(){
-      debugger;
-    }
+      return () => {
+        mounted = false;
+      }
+    }, [year, month]);
 
     function handleTransactionEdit(transaction: Transaction){
       debugger;
@@ -85,10 +86,12 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
 
     function renderHeaderRow(){
       return (
-        <MetaRow
-          receipts="Receipts"
-          primary="Primary"
-          other="Other" />
+        <Box fontWeight={500}>
+          <MetaRow
+            receipts="Receipts"
+            primary="Primary"
+            other="Other" />
+        </Box>
       );
     }
 
@@ -96,13 +99,7 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
       if(!monthTransactions){
         return null;
       }
-      return <MonthTransactionsRow
-        label="Opening Balance"
-        receipts={monthTransactions.month.opening_receipts}
-        primary={monthTransactions.month.opening_primary}
-        other={monthTransactions.month.opening_other}
-        onEdit={handleOpeningBalanceEdit}
-        settings={settings} />
+      return <OpeningBalanceRow month={monthTransactions.month} />
     }
 
     function renderTransaction(transaction: Transaction){
@@ -115,8 +112,7 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
         receipts={transaction.receipts_amt}
         primary={transaction.primary_amt}
         other={transaction.other_amt}
-        onEdit={() => handleTransactionEdit(transaction)}
-        settings={settings} />
+        onEdit={() => handleTransactionEdit(transaction)} />
     }
 
     function renderClosingBalance(){
@@ -124,10 +120,12 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
         return null;
       }
       return (
-        <MetaRow
-          receipts={<Money value={getReceiptsClosingBalance(monthTransactions)} />}
-          primary={<Money value={getPrimaryClosingBalance(monthTransactions)} />}
-          other={<Money value={getOtherClosingBalance(monthTransactions)} />} />
+        <Box fontWeight={500}>
+          <MetaRow
+            receipts={<Money value={getReceiptsClosingBalance(monthTransactions)} />}
+            primary={<Money value={getPrimaryClosingBalance(monthTransactions)} />}
+            other={<Money value={getOtherClosingBalance(monthTransactions)} />} />
+        </Box>
       )
     }
 

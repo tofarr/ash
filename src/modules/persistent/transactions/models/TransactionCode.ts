@@ -1,12 +1,12 @@
 
 enum TransactionCode {
-  W,
-  C,
-  D,
-  CE,
-  I,
-  E,
-  S
+  W = 'W',
+  C = 'C',
+  D = 'D',
+  CE = 'CE',
+  I = 'I',
+  E = 'E',
+  S = 'S'
 }
 
 export default TransactionCode;

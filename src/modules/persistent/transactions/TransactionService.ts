@@ -5,7 +5,7 @@ import Transaction from './models/Transaction';
 import TransactionCode from './models/TransactionCode';
 
 DbService.version(1).stores({
-  transactions: '++id,year,month,date'
+  transactions: '++id,[year+month]'
 })
 
 function table(){
@@ -17,7 +17,7 @@ export function newTransaction(
   month: number,
   day: number,
   description: string,
-  code: TransactionCode
+  code?: TransactionCode
 ): Transaction{
   return {
     year,
@@ -28,8 +28,6 @@ export function newTransaction(
     receipts_amt: 0,
     primary_amt: 0,
     other_amt: 0,
-    cash: 0,
-    cheques: 0
   }
 }
 

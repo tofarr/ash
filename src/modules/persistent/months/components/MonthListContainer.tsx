@@ -34,18 +34,23 @@ const MonthListContainer: FC<MonthListProps> = ({ year, onChangeYear, settings, 
     }
     const monthList = [];
     for(var m = 1; m <= 12; m++){
-      const month = months.find(mon => mon.year === year && mon.month === m)
-      monthList.push(
-        <MonthSummaryComponent
-          key={`${year}-${m}`}
-          year={year}
-          month={m}
-          hasData={!!month}
-          onSelect={onSelectMonth}
-          settings={settings} />
-      );
+      monthList.push(renderMonth(m));
     }
     return monthList;
+  }
+
+  function renderMonth(m: number){
+    if(!months){
+      return null;
+    }
+    const month = months.find(mon => mon.year === year && mon.month === m)
+    return <MonthSummaryComponent
+              key={`${year}-${m}`}
+              year={year}
+              month={m}
+              hasData={!!month}
+              onSelect={onSelectMonth}
+              settings={settings} />
   }
 
   return <div>
