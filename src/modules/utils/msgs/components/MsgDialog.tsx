@@ -1,5 +1,5 @@
 import React, { FC, Fragment, useState } from 'react';
-import { AppBar, Box, Button, Dialog, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, Typography } from '@material-ui/core';
 import MessageIcon from '@material-ui/icons/Message';
 
 import Settings from '../../../persistent/settings/Settings';

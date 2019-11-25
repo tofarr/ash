@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Button, Grid } from '@material-ui/core';
+import moment from 'moment';
 
 import Loader from '../../../utils/Loader';
 import MonthNavigation from './MonthNavigation';
@@ -17,10 +18,11 @@ export interface MonthTransactionsContainerProps{
   month: number;
   settings: Settings;
   onChangeMonth: (year: number, month: number) => void;
+  onTransactionEdit: (transactionId: number) => void;
 }
 
 const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
-  ({ year, month, settings, onChangeMonth}) => {
+  ({ year, month, settings, onChangeMonth, onTransactionEdit }) => {
 
     const [working, setWorking] = useState(false);
     const [monthTransactions, setMonthTransactions] = useState<null|MonthTransactions>(null);
@@ -42,10 +44,6 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
         mounted = false;
       }
     }, [year, month]);
-
-    function handleTransactionEdit(transaction: Transaction){
-      debugger;
-    }
 
     function renderMonthTransactions(){
       if(!monthTransactions){
@@ -106,13 +104,23 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
       if(!monthTransactions){
         return null;
       }
+      const label = [moment().
+        startOf('year').
+        year(transaction.year).
+        month(transaction.month).
+        date(transaction.day).
+        format(settings.formatting.date_format), ': '];
+      if(transaction.code){
+        label.push(transaction.code, ' : ');
+      }
+      label.push(transaction.description);
       return <MonthTransactionsRow
         key={transaction.id}
-        label={`${transaction.code} : ${transaction.description}`}
+        label={label.join('')}
         receipts={transaction.receipts_amt}
         primary={transaction.primary_amt}
         other={transaction.other_amt}
-        onEdit={() => handleTransactionEdit(transaction)} />
+        onEdit={() => onTransactionEdit(transaction.id as number)} />
     }
 
     function renderClosingBalance(){

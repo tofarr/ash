@@ -21,7 +21,7 @@ const MoneyInput: FC<IMoneyInputProps> = ({ name, label, value, onChange, error,
   const [internalValue, setInternalValue] = useState(toS(value));
   const [prevValue, setPrevValue] = useState(value);
 
-  if(value != prevValue){
+  if(value !== prevValue){
     setInternalValue(toS(value));
     setPrevValue(value);
   }

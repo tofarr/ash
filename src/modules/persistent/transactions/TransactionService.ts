@@ -62,6 +62,17 @@ export function createTransaction(transaction:Transaction){
   });
 }
 
+export function readTransaction(transactionId: number){
+  return new Promise<Transaction>((resolve, reject) => {
+    table().get(transactionId).then((transaction) => {
+      if(transaction){
+        resolve(transaction);
+      }
+      reject(`unknownTransaction:${transactionId}`);
+    }, reject);
+  })
+}
+
 export function updateTransaction(transaction:Transaction){
   return new Promise<Transaction>((resolve, reject) => {
     function handleReject(err: any){

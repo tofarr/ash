@@ -38,6 +38,7 @@ const CreateTransactionController: FC<CreateTransactionControllerProps> = ({ set
       }
       ensureMonthExists(transaction.year, transaction.month).then(() => {
         createTransaction(transaction).then(() => {
+          resolve();
           push(monthTransactionsPath(transaction.year, transaction.month));
         }, handleReject);
       }, handleReject);
@@ -51,6 +52,7 @@ const CreateTransactionController: FC<CreateTransactionControllerProps> = ({ set
       onSubmit={handleSave}>
       {working ? <Loader /> :
         <Button
+          fullWidth
           type="submit"
           variant="contained"
           color="primary">

@@ -1,16 +1,12 @@
-import React, { FC, Fragment, useState } from 'react';
+import React, { FC } from 'react';
 import moment from 'moment';
-import { AppBar, Box, Button, Dialog, Divider, Grid, Typography } from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
-import ErrorIcon from '@material-ui/icons/Error';
-import WarningIcon from '@material-ui/icons/Warning';
+import { Box, Button, Divider, Grid, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Settings from '../../../persistent/settings/Settings';
 
 import Msg from '../Msg';
-import MsgType from '../MsgType';
 import MsgIcon from './MsgIcon';
 
 export interface MsgListProps {

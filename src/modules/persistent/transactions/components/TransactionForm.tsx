@@ -29,9 +29,9 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, settings, onSu
                                   internalTransaction.statement_day));
   const hasCashChequesBreakdown = !!(internalTransaction.cash ||
                                   internalTransaction.cheques ||
-                                  internalTransaction.code == TransactionCode.W ||
-                                  internalTransaction.code == TransactionCode.C ||
-                                  internalTransaction.code == TransactionCode.D);
+                                  internalTransaction.code === TransactionCode.W ||
+                                  internalTransaction.code === TransactionCode.C ||
+                                  internalTransaction.code === TransactionCode.D);
   const [descriptionError, setDescriptionError] = useState(false);
 
   function handleHasStatementDate(){
@@ -50,9 +50,9 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, settings, onSu
   function getTransactionToSave(){
     const transactionToSave = { ...internalTransaction };
     if(!hasStatementDate){
-      delete transactionToSave.statement_year;
-      delete transactionToSave.statement_month;
-      delete transactionToSave.statement_day;
+      transactionToSave.statement_year =
+        transactionToSave.statement_month =
+        transactionToSave.statement_day = undefined;
     }
     return transactionToSave;
   }
@@ -97,7 +97,7 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, settings, onSu
   function decorateTransaction(newTransaction: Transaction){
     const { code, cash, cheques} = newTransaction;
     if((cash != null) && (cheques != null)){
-      if(code == TransactionCode.D){
+      if(code === TransactionCode.D){
         newTransaction.primary_amt = cash + cheques;
         newTransaction.receipts_amt = -newTransaction.primary_amt;
       }else{
@@ -221,7 +221,7 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, settings, onSu
             <Grid item>
               <Box pb={2} pt={1}>
                 <Grid container justify="flex-end">
-                  <Grid item>
+                  <Grid item xs sm="auto">
                     {children}
                   </Grid>
                 </Grid>

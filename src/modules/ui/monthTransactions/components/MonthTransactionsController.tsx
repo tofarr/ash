@@ -5,6 +5,8 @@ import { useParams, useHistory } from 'react-router-dom';
 import Settings from '../../../persistent/settings/Settings';
 import MonthTransactionsContainer from './MonthTransactionsContainer';
 
+import { updateTransactionPath } from '../../../persistent/transactions/components/UpdateTransactionController';
+
 export const MONTH_TRANSACTIONS_PATH = '/month-transactions/:year/:month'
 
 export function monthTransactionsPath(year: number, month: number){
@@ -36,10 +38,15 @@ const MonthTransactionsController: FC<MonthTransactionsControllerProps> = ({ set
     push(monthTransactionsPath(newYear, newMonth));
   }
 
+  function handleTransactionEdit(transactionId: number){
+    push(updateTransactionPath(transactionId));
+  }
+
   return <MonthTransactionsContainer
             year={parseInt(year)}
             month={parseInt(month)}
             onChangeMonth={handleChangeMonth}
+            onTransactionEdit={handleTransactionEdit}
             settings={settings} />
 
 }

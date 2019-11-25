@@ -1,7 +1,6 @@
-import React, { Component, ReactElement } from 'react';
+import { Component, ReactElement } from 'react';
 import { subscribeToMsgs, unsubscribeFromMsgs, clearMsgs } from '../MsgService';
 import Msg from '../Msg';
-import MsgType from '../MsgType';
 
 export interface MsgContainerProps {
   children: (msgs: Msg[], clearMsgs: () => void) => ReactElement | null;

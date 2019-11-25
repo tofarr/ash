@@ -1,7 +1,6 @@
 import React, { FC, Fragment } from 'react';
 import { AppBar, Box, Collapse, Toolbar, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Msg from '../Msg';
 import MsgType from '../MsgType';
@@ -14,7 +13,6 @@ export interface CurrentMsgBarProps {
 const CurrentMsgBar: FC<CurrentMsgBarProps> = ({ msg }) => {
 
   const theme = useTheme();
-
 
   function renderMsg(){
     if(!msg){

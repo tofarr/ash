@@ -1,7 +1,6 @@
-import React, { Component, ReactElement } from 'react';
-import { subscribeToMsgs, unsubscribeFromMsgs, clearMsgs } from '../MsgService';
+import { Component, ReactElement } from 'react';
+import { subscribeToMsgs, unsubscribeFromMsgs } from '../MsgService';
 import Msg from '../Msg';
-import MsgType from '../MsgType';
 
 export interface CurrentMsgContainerProps {
   msgTimeout?: number;

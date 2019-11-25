@@ -12,6 +12,7 @@ import './App.css';
 import MonthListController, { MONTH_LIST_PATH } from './modules/persistent/months/components/MonthListController';
 import MonthTransactionsController, { MONTH_TRANSACTIONS_PATH } from './modules/ui/monthTransactions/components/MonthTransactionsController';
 import CreateTransactionController, { CREATE_TRANSACTION_PATH } from './modules/persistent/transactions/components/CreateTransactionController';
+import UpdateTransactionController, { UPDATE_TRANSACTION_PATH } from './modules/persistent/transactions/components/UpdateTransactionController';
 
 const App: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const App: React.FC = () => {
                     <Route path={MONTH_LIST_PATH} exact={false} component={() => <MonthListController settings={settings} setTitle={setTitle} />} />
                     <Route path={MONTH_TRANSACTIONS_PATH} exact={false} component={() => <MonthTransactionsController settings={settings} setTitle={setTitle} />} />
                     <Route path={CREATE_TRANSACTION_PATH} exact={false} component={() => <CreateTransactionController settings={settings} setTitle={setTitle} />} />
+                    <Route path={UPDATE_TRANSACTION_PATH} exact={false} component={() => <UpdateTransactionController settings={settings} setTitle={setTitle} />} />
                     <Redirect from="/" to={NAV_MENU_PATH} />
                   </Switch>
                 )
