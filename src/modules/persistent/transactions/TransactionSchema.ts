@@ -11,9 +11,9 @@ export default function transactionSchema(){
           switch(code as unknown){
             case TransactionCode.C:
             case TransactionCode.W:
-              return schema.positive().oneOf([(cash as number)+(cheques as number)]);
+              return schema.positive().oneOf([(cash as number)+(cheques as number)], 'Receipts should match sum of cash and cheques');
             case TransactionCode.D:
-              return schema.negative();
+              return schema.negative('Deposits should be debited from receipts (Receipts should be negative)');
             case TransactionCode.CE:
             case TransactionCode.I:
               return schema.oneOf([0]);
@@ -28,12 +28,12 @@ export default function transactionSchema(){
           switch(code as unknown){
             case TransactionCode.C:
             case TransactionCode.W:
-              return schema.oneOf([0]);
+              return schema.oneOf([0], 'Contributions should be applied as receipts. A separate deposit item should be created for crediting the primary account.');
             case TransactionCode.D:
-              return schema.positive().oneOf([-receipts_amt]);
+              return schema.positive().oneOf([-receipts_amt], 'Receipts and Primary amounts should match for Deposits');
             case TransactionCode.CE:
             case TransactionCode.I:
-              return schema.positive();
+              return schema.positive('Primary amount should be positive for Electronic Contributions / Interest Payments');
             default:
               return schema;
           }
@@ -42,13 +42,13 @@ export default function transactionSchema(){
     other_amt: number().integer().required()
       .when('code',
         (code: string, schema: NumberSchema) => {
-          return code ? schema.oneOf([0]) : schema;
+          return code ? schema.oneOf([0], 'Amounts for other are not supported when a code is specified') : schema;
         }
       ),
-    code: string().required().oneOf(Object.keys(TransactionCode)),
+    code: string().oneOf(Object.keys(TransactionCode)),
     description: string().required(),
-    statement_year: number().integer().positive().required(),
-    statement_month: number().integer().positive().required(),
-    statement_day: number().integer().positive().required(),
+    statement_year: number().integer().positive(),
+    statement_month: number().integer().positive(),
+    statement_day: number().integer().positive(),
   });
 };

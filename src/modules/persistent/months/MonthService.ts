@@ -2,6 +2,7 @@
 import DbService from '../DbService';
 import moment from 'moment';
 import Month from './Month';
+import monthSchema from './MonthSchema';
 import { listTransactions } from '../transactions/TransactionService';
 
 DbService.version(1).stores({
@@ -70,9 +71,10 @@ export function ensureMonthExists(year: number, month: number){
 
 export function createMonth(month:Month){
   return new Promise<Month>((resolve, reject) => {
-    console.log('createMonth', month);
-    table().add(month).then(() => {
-      resolve(month);
+    monthSchema().validate(month).then(() => {
+      table().add(month).then(() => {
+        resolve(month);
+      }, reject);
     }, reject);
   });
 }
@@ -98,8 +100,10 @@ export function loadOrNewMonth(year:number, month:number){
 
 export function updateMonth(month:Month){
   return new Promise<Month>((resolve, reject) => {
-    table().update({ year: month.year, month: month.month }, month).then(() => {
-      resolve(month);
+    monthSchema().validate(month).then(() => {
+      table().update({ year: month.year, month: month.month }, month).then(() => {
+        resolve(month);
+      }, reject);
     }, reject);
   });
 }

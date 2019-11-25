@@ -1,9 +1,10 @@
 import React, { Component, ReactElement } from 'react';
-import { subscribeToMsgs, unsubscribeFromMsgs } from '../MsgService';
+import { subscribeToMsgs, unsubscribeFromMsgs, clearMsgs } from '../MsgService';
 import Msg from '../Msg';
+import MsgType from '../MsgType';
 
 export interface MsgContainerProps {
-  children: (msgs: Msg[]) => ReactElement | null;
+  children: (msgs: Msg[], clearMsgs: () => void) => ReactElement | null;
 }
 
 export interface MsgContainerState {
@@ -33,6 +34,6 @@ export default class MsgContainer extends Component<MsgContainerProps, MsgContai
   }
 
   render(){
-    return this.props.children(this.state.msgs);
+    return this.props.children(this.state.msgs, clearMsgs);
   }
 }

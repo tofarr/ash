@@ -6,6 +6,9 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 
+import MsgContainer from '../../utils/msgs/components/MsgContainer';
+import MsgDialog from '../../utils/msgs/components/MsgDialog';
+
 import NavMenuController, { NAV_MENU_PATH } from './NavMenuController';
 
 export interface NavBarProps {
@@ -31,13 +34,16 @@ const NavBarController: FC<NavBarProps> = ({ settings, children }) => {
   return (
     <Fragment>
       <AppBar position="static">
-        <Toolbar onClick={handleNavMenu}>
-          <IconButton edge="start" color="inherit" aria-label="menu">
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleNavMenu}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">
+          <Typography variant="h6" onClick={handleNavMenu} style={{flexGrow: 1}}>
             {title}
           </Typography>
+          <MsgContainer>
+            {(msgs, onClearMsgs) => <MsgDialog msgs={msgs} settings={settings} onClearMsgs={onClearMsgs} />}
+          </MsgContainer>
         </Toolbar>
         <Dialog open={open} onClose={() => setOpen(false)}>
           <NavMenuController settings={settings} onClick={() => setOpen(false)} setTitle={setTitle} />

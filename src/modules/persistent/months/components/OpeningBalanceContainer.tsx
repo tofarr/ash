@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, FormEvent, useState } from 'react';
 import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -32,7 +32,8 @@ const OpeningBalanceContainer: FC<OpeningBalanceContainerProps> = ({ month, onSa
     }, () => setWorking(false));
   }
 
-  function handleSave(){
+  function handleSave(event: FormEvent<HTMLFormElement>){
+    event.preventDefault();
     setWorking(true);
     return ensureMonthExists(month.month, month.year).then(() => {
       updateMonth(internalMonth).then((updatedMonth) => {
@@ -49,63 +50,68 @@ const OpeningBalanceContainer: FC<OpeningBalanceContainerProps> = ({ month, onSa
   }
 
   return (
-    <Box p={1}>
-      <Box pb={2}>
-        <Typography variant="h5">Opening Balance</Typography>
-      </Box>
-      <Grid container direction="column" spacing={2}>
-        <Grid item>
-          <Grid container direction={smUp ? "row" : "column"} spacing={1}>
-            <Grid item xs={12} sm={4}>
-              <MoneyInput
-                label="Receipts"
-                value={internalMonth.opening_receipts}
-                onChange={(opening_receipts) => setInternalMonth({ ...internalMonth, opening_receipts: opening_receipts as number })} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <MoneyInput
-                label="Primary"
-                value={internalMonth.opening_primary}
-                onChange={(opening_primary) => setInternalMonth({ ...internalMonth, opening_primary: opening_primary as number })} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <MoneyInput
-                label="Other"
-                value={internalMonth.opening_other}
-                onChange={(opening_other) => setInternalMonth({ ...internalMonth, opening_other: opening_other as number })} />
+    <form onSubmit={handleSave}>
+      <Box p={1}>
+        <Box pb={2}>
+          <Typography variant="h5">Opening Balance</Typography>
+        </Box>
+        <Grid container direction="column" spacing={2}>
+          <Grid item>
+            <Grid container direction={smUp ? "row" : "column"} spacing={1}>
+              <Grid item xs={12} sm={4}>
+                <MoneyInput
+                  label="Receipts"
+                  required
+                  value={internalMonth.opening_receipts}
+                  onChange={(opening_receipts) => setInternalMonth({ ...internalMonth, opening_receipts: opening_receipts as number })} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <MoneyInput
+                  label="Primary"
+                  required
+                  value={internalMonth.opening_primary}
+                  onChange={(opening_primary) => setInternalMonth({ ...internalMonth, opening_primary: opening_primary as number })} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <MoneyInput
+                  label="Other"
+                  required
+                  value={internalMonth.opening_other}
+                  onChange={(opening_other) => setInternalMonth({ ...internalMonth, opening_other: opening_other as number })} />
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item>
-          <Collapse in={true}>
-            {working ? <Loader /> :
-              <Grid container direction={smUp ? "row" : "column"} spacing={1} justify="flex-end">
-                <Grid item>
-                  <Button
-                    fullWidth={!smUp}
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleRefresh()}>
-                    <RefreshIcon />
-                    Regenerate
-                  </Button>
+          <Grid item>
+            <Collapse in={true}>
+              {working ? <Loader /> :
+                <Grid container direction={smUp ? "row" : "column"} spacing={1} justify="flex-end">
+                  <Grid item>
+                    <Button
+                      type="button"
+                      fullWidth={!smUp}
+                      variant="contained"
+                      onClick={() => handleRefresh()}>
+                      <RefreshIcon />
+                      Regenerate
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      type="submit"
+                      fullWidth={!smUp}
+                      variant="contained"
+                      color="primary">
+                      <EditIcon />
+                      Save
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Button
-                    fullWidth={!smUp}
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleSave()}>
-                    <EditIcon />
-                    Save
-                  </Button>
-                </Grid>
-              </Grid>
-            }
-          </Collapse>
+              }
+            </Collapse>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </form>
   );
 }
 

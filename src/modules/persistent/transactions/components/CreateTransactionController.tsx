@@ -31,33 +31,35 @@ const CreateTransactionController: FC<CreateTransactionControllerProps> = ({ set
 
   function handleSave(transaction: Transaction){
     setWorking(true);
-    ensureMonthExists(transaction.year, transaction.month).then(() => {
-      createTransaction(transaction).then(() => {
-        push(monthTransactionsPath(transaction.year, transaction.month));
+    return new Promise<Transaction>((resolve, reject) => {
+      function handleReject(err: any){
+        setWorking(false);
+        reject(err);
+      }
+      ensureMonthExists(transaction.year, transaction.month).then(() => {
+        createTransaction(transaction).then(() => {
+          push(monthTransactionsPath(transaction.year, transaction.month));
+        }, handleReject);
       }, handleReject);
-    }, handleReject);
+    });
   }
 
-  function handleReject(){
-    setWorking(false);
-  }
-
-  return <div>
+  return (
     <TransactionForm
       transaction={newDummyTransaction()}
-      settings={settings}>
-      {(transaction: Transaction) => (
-        working ? <Loader /> :
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleSave(transaction)}>
-            <AddIcon />
-            Create Transaction
-          </Button>
-      )}
+      settings={settings}
+      onSubmit={handleSave}>
+      {working ? <Loader /> :
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary">
+          <AddIcon />
+          Create Transaction
+        </Button>
+      }
     </TransactionForm>
-  </div>
+  )
 }
 
 export default CreateTransactionController;

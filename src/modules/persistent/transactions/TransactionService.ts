@@ -2,7 +2,10 @@
 import DbService from '../DbService';
 import { loadSettings, meetingDates } from '../settings/SettingsService';
 import Transaction from './models/Transaction';
+import transactionSchema from './TransactionSchema';
 import TransactionCode from './models/TransactionCode';
+import addErr from '../../utils/Err';
+import { addMsg } from '../../utils/msgs/MsgService';
 
 DbService.version(1).stores({
   transactions: '++id,[year+month]'
@@ -46,14 +49,33 @@ export function newMeetingTransactions(year: number, month: number){
 
 export function createTransaction(transaction:Transaction){
   return new Promise<Transaction>((resolve, reject) => {
-    table().add(transaction as Transaction).then((id) => {
-      resolve({ ...transaction, id });
-    }, reject);
+    function handleReject(err: any){
+      addErr(err);
+      reject(err);
+    }
+    transactionSchema().validate(transaction).then(() => {
+      table().add(transaction as Transaction).then((id) => {
+        addMsg('Transaction Created');
+        resolve({ ...transaction, id });
+      }, handleReject);
+    }, handleReject);
   });
 }
 
 export function updateTransaction(transaction:Transaction){
-  return table().update(transaction.id, transaction);
+  return new Promise<Transaction>((resolve, reject) => {
+    function handleReject(err: any){
+      addErr(err);
+      reject(err);
+    }
+    transactionSchema().validate(transaction).then(() => {
+      table().update(transaction.id, transaction)
+        .then(() => {
+          addMsg('Transaction Created');
+          resolve(transaction);
+        }, handleReject);
+    }, handleReject);
+  });
 }
 
 export function destroyTransaction(transaction_id:number){
