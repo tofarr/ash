@@ -1,6 +1,6 @@
-import React, { ChangeEvent, Fragment, FC, FormEvent, ReactNode, useState } from 'react';
+import React, { ChangeEvent, FC, FormEvent, useState } from 'react';
 import moment from 'moment';
-import { Box, Divider, Grid, TextField, Typography } from '@material-ui/core';
+import { Box, Grid, TextField, Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -9,8 +9,6 @@ import TransferToBranch from '../TransferToBranch'
 
 import TransactionBreakdownList from '../../../persistent/transactions/components/TransactionBreakdownList';
 
-import MoneyInput from '../../../utils/money/components/MoneyInput';
-import Money from '../../../utils/money/components/Money';
 import DateSelect from '../../../utils/DateSelect';
 import SerialNavigation from '../../../utils/SerialNavigation';
 import useSettings from '../../../persistent/settings/useSettings';

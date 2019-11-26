@@ -6,7 +6,6 @@ interface YupContext{
   createError: any;
 }
 
-const NUM = number().integer().min(0).required(); // 0 is inclusive!
 const POSITIVE = number().integer().positive().required(); // does not include 0!
 
 export default function transactionSchema(){

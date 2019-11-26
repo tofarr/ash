@@ -1,6 +1,6 @@
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC } from 'react';
 import TransactionBreakdown from '../models/TransactionBreakdown';
-import { Box,  Grid, TextField } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 
 import MoneyInput from '../../../utils/money/components/MoneyInput';
 

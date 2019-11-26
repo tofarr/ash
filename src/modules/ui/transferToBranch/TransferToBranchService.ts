@@ -3,7 +3,7 @@ import TransferToBranch from './TransferToBranch';
 
 import Transaction from '../../persistent/transactions/models/Transaction';
 import { ensureMonthExists } from '../../persistent/months/MonthService';
-import { createTransaction, newTransaction, listTransactions } from '../../persistent/transactions/TransactionService';
+import { createTransaction, listTransactions } from '../../persistent/transactions/TransactionService';
 import TransactionBreakdown from '../../persistent/transactions/models/TransactionBreakdown';
 import TransactionCode from '../../persistent/transactions/models/TransactionCode';
 import addErr from '../../utils/Err';
@@ -65,7 +65,7 @@ export function createTransferToBranch(transferToBranch: TransferToBranch){
         const amt = breakdown.reduce(((sum: number, item: TransactionBreakdown) => (item.amt as number) + sum), 0);
         Promise.all([
           ensureMonthExists(transferToBranch.for_year, transferToBranch.for_month),
-          createTransaction({ year, month, day, description: 'Deposit',
+          createTransaction({ year, month, day, description,
             code: TransactionCode.E, receipts_amt: 0, primary_amt: -amt,
             other_amt: 0 })
         ]).then(() => resolve(transferToBranch), handleReject);
