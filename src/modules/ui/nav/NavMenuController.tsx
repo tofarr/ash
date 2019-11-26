@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { CREATE_MEETING_PATH } from '../meetings/components/CreateMeetingController';
 import { CREATE_DEPOSIT_PATH } from '../deposits/components/CreateDepositController';
+import { CREATE_TRANSFER_PATH } from '../transferToBranch/components/CreateTransferToBranchController';
 import { CREATE_TRANSACTION_PATH } from '../../persistent/transactions/components/CreateTransactionController';
 import { MONTH_LIST_PATH } from '../../persistent/months/components/MonthListController';
 import { currentMonthPath } from '../monthTransactions/components/MonthTransactionsController';
@@ -45,11 +46,12 @@ const NavMenuController: FC<NavMenuProps> = ({ onClick, setTitle }) => {
       <Grid container direction="column">
         {renderMenuItem('Add Meeting', CREATE_MEETING_PATH)}
         {renderMenuItem('Add Deposit', CREATE_DEPOSIT_PATH)}
-        {renderMenuItem('Add WEFTS Transfer', '/add-wefts')}
+        {renderMenuItem('Add Transfer To Branch', CREATE_TRANSFER_PATH)}
         {renderMenuItem('Add Transaction', CREATE_TRANSACTION_PATH)}
         {renderMenuItem('Current Month', currentMonthPath())}
         {renderMenuItem('Select Month', MONTH_LIST_PATH)}
         {renderMenuItem('Settings', '/settings')}
+        {renderMenuItem('Backups', '/backups')}
       </Grid>
     </Box>
   );

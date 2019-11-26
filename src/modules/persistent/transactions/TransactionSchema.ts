@@ -1,5 +1,12 @@
-import { number, NumberSchema, object, string } from 'yup';
+import { array, number, NumberSchema, object, string } from 'yup';
+import Transaction from './models/Transaction';
 import TransactionCode from './models/TransactionCode';
+import TransactionBreakdown from './models/TransactionBreakdown';
+
+interface YupContext{
+  path: any;
+  createError: any;
+}
 
 export default function transactionSchema(){
   return object().shape({
@@ -51,5 +58,27 @@ export default function transactionSchema(){
     statement_year: number().integer().min(0),
     statement_month: number().integer().min(0),
     statement_day: number().integer().min(0),
-  });
+    transactionBreakdown: array().of(object().shape({
+      label: string().required(),
+      amt: number().integer()
+    }))
+  }).test('transaction-month-year-match',
+    'Breakdown total should match one of the transaction amounts',
+    function(this: YupContext, transaction: Transaction) {
+      const { breakdown } = transaction;
+      if(!breakdown){
+        return true;
+      }
+      const total = breakdown.reduce((sum: number|null, item: TransactionBreakdown) => {
+        if(sum == null || item.amt == null){
+          return null;
+        }
+        return sum + item.amt;
+      }, 0);
+      return total == null ||
+        total == transaction.receipts_amt ||
+        total == transaction.primary_amt ||
+        total == transaction.other_amt;
+    }
+  );
 };

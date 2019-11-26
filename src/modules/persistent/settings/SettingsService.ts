@@ -14,7 +14,6 @@ function newSettings(): Settings{
     formatting: {
       date_format: 'YYYY-MM-DD',
       month_format: 'YYYY-MM',
-      // money_format: '###,###,###.##'
     },
     congregation: 'Congregation',
     city: 'City',
@@ -29,11 +28,16 @@ function newSettings(): Settings{
       fri: false,
       sat: false,
     },
-    walkthrough: false,
     rules: {
       interest: true,
       wefts: true
-    }
+    },
+    transferToBranchDefaults: [
+      {description: 'WW (resolution)', amt: 0},
+      {description: 'KHAHC (resolution)', amt: 0},
+      {description: 'GAA (resolution)', amt: 0},
+      {description: 'COAA (resolution)', amt: 0},
+    ],
   }
 }
 

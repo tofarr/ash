@@ -1,28 +1,25 @@
 import React, { Component, ReactNode } from 'react';
 import { Collapse } from '@material-ui/core';
 
-export interface IIdentifiable{
-  id?: number;
-}
-
-export interface IWrapper<T extends IIdentifiable>{
+export interface IWrapper<T>{
   item: T;
   in: boolean;
   targetIn: boolean;
 }
 
-interface IProps<T extends IIdentifiable>{
+interface IProps<T>{
   items: T[];
   timeout?: number;
   component: (item:T) => ReactNode;
+  identifier: (item:T) => string|number;
 }
 
-interface IState<T extends IIdentifiable>{
+interface IState<T>{
   wrappers: IWrapper<T>[];
 }
 
 
-class ListCollapse<T extends IIdentifiable> extends Component<IProps<T>, IState<T>> {
+class ListCollapse<T> extends Component<IProps<T>, IState<T>> {
 
   static defaultProps = {
     animation: true
@@ -41,15 +38,17 @@ class ListCollapse<T extends IIdentifiable> extends Component<IProps<T>, IState<
   }
 
   doRemovals(items:T[], wrappers:IWrapper<T>[]){
+    const { identifier } = this.props;
     wrappers.forEach((wrapper) => {
-      wrapper.targetIn = !!items.find((item) => item.id === wrapper.item.id)
+      wrapper.targetIn = !!items.find((item) => identifier(item) === identifier(wrapper.item))
     });
   }
 
   doInsertionsAndUpdates(items:T[], wrappers:IWrapper<T>[]){
+    const { identifier } = this.props;
     for(let i = 0; i < items.length; i++){
       const item = items[i];
-      const index = wrappers.findIndex((wrapper) => item.id === wrapper.item.id);
+      const index = wrappers.findIndex((wrapper) => identifier(item) === identifier(wrapper.item));
       if(index >= 0){
         wrappers[index].item = item;
       }else{
@@ -82,18 +81,19 @@ class ListCollapse<T extends IIdentifiable> extends Component<IProps<T>, IState<
 
   handleRemove(id: number){
     this.setState({
-      wrappers: this.state.wrappers.filter((wrapper) => wrapper.item.id !== id)
+      wrappers: this.state.wrappers.filter((wrapper) => this.props.identifier(wrapper.item) !== id)
     });
   }
 
 
   renderWrapper(wrapper:IWrapper<T>) {
+    const { identifier } = this.props;
     return (
       <Collapse
-        key={wrapper.item.id}
+        key={identifier(wrapper.item)}
         in={wrapper.in}
         timeout={this.props.timeout}
-        onExited={() => this.handleRemove(wrapper.item.id as number)}>
+        onExited={() => this.handleRemove(identifier(wrapper.item) as number)}>
         {this.props.component(wrapper.item)}
       </Collapse>
     );

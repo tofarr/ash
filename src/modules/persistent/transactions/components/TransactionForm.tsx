@@ -9,6 +9,8 @@ TextField } from '@material-ui/core';
 
 import Transaction from '../models/Transaction';
 import TransactionCode from '../models/TransactionCode';
+import TransactionBreakdown from '../models/TransactionBreakdown';
+import TransactionBreakdownList from './TransactionBreakdownList';
 
 import DateSelect from '../../../utils/DateSelect';
 import ValueSelect from '../../../utils/ValueSelect';
@@ -30,6 +32,7 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
                                   internalTransaction.code === TransactionCode.W ||
                                   internalTransaction.code === TransactionCode.C ||
                                   internalTransaction.code === TransactionCode.D);
+  const hasBreakdown = !!internalTransaction.breakdown;
   const [descriptionError, setDescriptionError] = useState(false);
 
   function handleHasStatementDate(){
@@ -214,6 +217,30 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
                 </Box>
               </Collapse>
             </Grid>
+
+            <Grid>
+              <Box pl={1} pr={1} pt={1}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={hasBreakdown}
+                      color="primary"
+                      onChange={() => setInternalTransaction({...internalTransaction, breakdown: hasBreakdown ? undefined : []})} />
+                  }
+                  label="Include Breakdown" />
+              </Box>
+            </Grid>
+            <Grid item>
+              <Collapse in={hasBreakdown}>
+                {!!internalTransaction.breakdown &&
+                  <TransactionBreakdownList breakdowns={internalTransaction.breakdown}
+                    onChange={(breakdown: TransactionBreakdown[]) =>
+                      setInternalTransaction({...internalTransaction, breakdown})} />
+                }
+              </Collapse>
+            </Grid>
+
+
             <Grid item>
               <Box pb={2} pt={1}>
                 <Grid container justify="flex-end">

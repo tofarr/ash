@@ -1,5 +1,6 @@
 
 import TransactionCode from './TransactionCode';
+import TransactionBreakdown from './TransactionBreakdown';
 
 export default interface Transaction {
   id?: number;
@@ -19,5 +20,6 @@ export default interface Transaction {
   other_amt: number,
 
   cash?: number,
-  cheques?: number
+  cheques?: number,
+  breakdown?: TransactionBreakdown[],
 }

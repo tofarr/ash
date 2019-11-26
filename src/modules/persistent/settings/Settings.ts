@@ -1,5 +1,6 @@
 
 import AvailableLocale from '../../utils/locale/AvailableLocale';
+import TransactionBreakdown from '../transactions/models/TransactionBreakdown';
 
 export interface MeetingDays{
   sun: boolean,
@@ -19,7 +20,6 @@ export interface RulesSettings{
 export interface Formatting{
   date_format: string,
   month_format: string,
-  //money_format: string,
 }
 
 export default interface Settings{
@@ -30,6 +30,7 @@ export default interface Settings{
   province: string,
   cash_box: boolean,
   meeting_days: MeetingDays,
-  walkthrough: boolean,
+  // walkthrough: boolean,
   rules: RulesSettings,
+  transferToBranchDefaults: TransactionBreakdown[],
 }
