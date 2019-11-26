@@ -1,5 +1,4 @@
 import React, { FC, Component } from 'react';
-import Settings from '../../persistent/settings/Settings';
 import { Box, Button, Grid } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
@@ -8,14 +7,13 @@ import { currentMonthPath } from '../monthTransactions/components/MonthTransacti
 
 
 export interface NavMenuProps {
-  settings: Settings;
   onClick?: () => void;
   setTitle: (title: string) => void;
 }
 
 export const NAV_MENU_PATH = "/nav"
 
-const NavMenuController: FC<NavMenuProps> = ({ settings, onClick, setTitle }) => {
+const NavMenuController: FC<NavMenuProps> = ({ onClick, setTitle }) => {
   setTitle('Accounts Servant Helper');
   const { push } = useHistory();
 

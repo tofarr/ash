@@ -1,5 +1,4 @@
 import React, { FC, Fragment, ReactElement, useState } from 'react';
-import Settings from '../../persistent/settings/Settings';
 import { AppBar, Dialog, IconButton, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -12,11 +11,10 @@ import MsgDialog from '../../utils/msgs/components/MsgDialog';
 import NavMenuController, { NAV_MENU_PATH } from './NavMenuController';
 
 export interface NavBarProps {
-  settings: Settings;
   children: (setTitle: (title: string) => void) => ReactElement | null;
 }
 
-const NavBarController: FC<NavBarProps> = ({ settings, children }) => {
+const NavBarController: FC<NavBarProps> = ({ children }) => {
 
   const [title, setTitle] = useState('Accounts Servant Heler');
   const [open, setOpen] = useState(false);
@@ -42,11 +40,11 @@ const NavBarController: FC<NavBarProps> = ({ settings, children }) => {
             {title}
           </Typography>
           <MsgContainer>
-            {(msgs, onClearMsgs) => <MsgDialog msgs={msgs} settings={settings} onClearMsgs={onClearMsgs} />}
+            {(msgs, onClearMsgs) => <MsgDialog msgs={msgs} onClearMsgs={onClearMsgs} />}
           </MsgContainer>
         </Toolbar>
         <Dialog open={open} onClose={() => setOpen(false)}>
-          <NavMenuController settings={settings} onClick={() => setOpen(false)} setTitle={setTitle} />
+          <NavMenuController onClick={() => setOpen(false)} setTitle={setTitle} />
         </Dialog>
       </AppBar>
       {children(setTitle)}

@@ -21,15 +21,15 @@ const App: React.FC = () => {
       {(settings: Settings) => (
         <CustomTheme>
           <Router>
-            <NavBarController settings={settings}>
+            <NavBarController>
               {(setTitle) => {
                 return (
                   <Switch>
-                    <Route path={NAV_MENU_PATH} component={() => <NavMenuController settings={settings} setTitle={setTitle} />} />
-                    <Route path={MONTH_LIST_PATH} component={() => <MonthListController settings={settings} setTitle={setTitle} />} />
+                    <Route path={NAV_MENU_PATH} component={() => <NavMenuController setTitle={setTitle} />} />
+                    <Route path={MONTH_LIST_PATH} component={() => <MonthListController setTitle={setTitle} />} />
                     <Route path={MONTH_TRANSACTIONS_PATH} component={() => <MonthTransactionsController settings={settings} setTitle={setTitle} />} />
-                    <Route path={CREATE_TRANSACTION_PATH} component={() => <CreateTransactionController settings={settings} setTitle={setTitle} />} />
-                    <Route path={UPDATE_TRANSACTION_PATH} component={() => <UpdateTransactionController settings={settings} setTitle={setTitle} />} />
+                    <Route path={CREATE_TRANSACTION_PATH} component={() => <CreateTransactionController setTitle={setTitle} />} />
+                    <Route path={UPDATE_TRANSACTION_PATH} component={() => <UpdateTransactionController setTitle={setTitle} />} />
                     <Route path={CREATE_MEETING_PATH} component={() => <CreateMeetingController setTitle={setTitle} />} />
                     <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
                   </Switch>

@@ -8,6 +8,7 @@ import Meeting from '../Meeting'
 
 import MoneyInput from '../../../utils/money/components/MoneyInput';
 import Money from '../../../utils/money/components/Money';
+import DateSelect from '../../../utils/DateSelect';
 
 export interface MeetingFormProps{
   meeting: Meeting;
@@ -82,6 +83,18 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
   return (
     <form onSubmit={handleSubmit}>
       <Grid container direction="column" spacing={1}>
+        <Grid item>
+          <DateSelect
+            year={internalMeeting.year}
+            month={internalMeeting.month}
+            day={internalMeeting.day}
+            onDateChange={(year: number, month: number, day: number) => {
+              setInternalMeeting({
+                ...internalMeeting, year, month, day,
+              });
+            }}
+            label="Date" />
+        </Grid>
         <Grid item>
           {renderHeader()}
         </Grid>

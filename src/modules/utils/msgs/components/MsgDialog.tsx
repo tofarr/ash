@@ -2,7 +2,6 @@ import React, { FC, Fragment, useState } from 'react';
 import { Box, Button, Dialog, Typography } from '@material-ui/core';
 import MessageIcon from '@material-ui/icons/Message';
 
-import Settings from '../../../persistent/settings/Settings';
 
 import Msg from '../Msg';
 import MsgList from './MsgList';
@@ -10,10 +9,9 @@ import MsgList from './MsgList';
 export interface MsgDialogProps {
   msgs: Msg[];
   onClearMsgs?: () => void;
-  settings: Settings;
 }
 
-const MsgDialog: FC<MsgDialogProps> = ({ msgs, settings, onClearMsgs }) => {
+const MsgDialog: FC<MsgDialogProps> = ({ msgs, onClearMsgs }) => {
 
   const [open,setOpen] = useState(false);
 
@@ -35,7 +33,7 @@ const MsgDialog: FC<MsgDialogProps> = ({ msgs, settings, onClearMsgs }) => {
         </Button>
       }
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <MsgList msgs={msgs} settings={settings} onClearMsgs={handleClearMsgs} />
+        <MsgList msgs={msgs} onClearMsgs={handleClearMsgs} />
       </Dialog>
     </Fragment>
   );

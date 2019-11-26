@@ -7,7 +7,6 @@ import { useTheme } from '@material-ui/core/styles';
 
 import Loader from '../../../utils/Loader';
 import ConfirmButton from '../../../utils/ConfirmButton';
-import Settings from '../../settings/Settings';
 import TransactionForm from './TransactionForm'
 import Transaction from '../models/Transaction';
 import { readTransaction, updateTransaction, destroyTransaction } from '../TransactionService';
@@ -21,7 +20,6 @@ export function updateTransactionPath(transactionId: number){
 }
 
 export interface UpdateTransactionControllerProps{
-  settings: Settings,
   setTitle: (title: string) => void;
 }
 
@@ -29,7 +27,7 @@ export interface UpdateTransactionControllerParams{
   transactionId: string;
 }
 
-const UpdateTransactionController: FC<UpdateTransactionControllerProps> = ({ settings, setTitle }) => {
+const UpdateTransactionController: FC<UpdateTransactionControllerProps> = ({ setTitle }) => {
   setTitle('Update Transaction');
   const { push } = useHistory();
   const transactionId = parseInt(useParams<UpdateTransactionControllerParams>().transactionId as any);
@@ -107,7 +105,6 @@ const UpdateTransactionController: FC<UpdateTransactionControllerProps> = ({ set
   return (
     <TransactionForm
       transaction={transaction}
-      settings={settings}
       onSubmit={handleSave}>
       {working ? <Loader /> :
         <Grid container direction={smUp ? 'row' : 'column'} spacing={1} alignItems="stretch">

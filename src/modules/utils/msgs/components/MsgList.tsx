@@ -4,7 +4,7 @@ import { Box, Button, Divider, Grid, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import Settings from '../../../persistent/settings/Settings';
+import useSettings from '../../../persistent/settings/useSettings';
 
 import Msg from '../Msg';
 import MsgIcon from './MsgIcon';
@@ -12,13 +12,13 @@ import MsgIcon from './MsgIcon';
 export interface MsgListProps {
   msgs: Msg[];
   onClearMsgs?: () => void;
-  settings: Settings;
 }
 
-const MsgList: FC<MsgListProps> = ({ msgs, settings, onClearMsgs }) => {
+const MsgList: FC<MsgListProps> = ({ msgs, onClearMsgs }) => {
 
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const settings = useSettings();
 
   function renderMsg(msg: Msg){
     return (

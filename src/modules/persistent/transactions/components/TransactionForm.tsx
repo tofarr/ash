@@ -13,15 +13,13 @@ import TransactionCode from '../models/TransactionCode';
 import DateSelect from '../../../utils/DateSelect';
 import ValueSelect from '../../../utils/ValueSelect';
 import MoneyInput from '../../../utils/money/components/MoneyInput';
-import Settings from '../../settings/Settings';
 
 export interface TransactionFormProps{
   transaction: Transaction;
-  settings: Settings;
   onSubmit: (transaction: Transaction) => void;
 }
 
-const TransactionForm: FC<TransactionFormProps> = ({ transaction, settings, onSubmit, children }) => {
+const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, children }) => {
 
   const [internalTransaction, setInternalTransaction] = useState(transaction);
   const [hasStatementDate, setHasStatementDate] = useState(!!(internalTransaction.statement_year &&
@@ -122,8 +120,7 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, settings, onSu
                     ...internalTransaction, year, month, day,
                   });
                 }}
-                label="Date"
-                settings={settings} />
+                label="Date" />
             </Grid>
             <Grid item>
               <ValueSelect
@@ -213,8 +210,7 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, settings, onSu
                         ...internalTransaction, statement_year, statement_month, statement_day,
                       });
                     }}
-                    label="Applicable Date"
-                    settings={settings} />
+                    label="Applicable Date" />
                 </Box>
               </Collapse>
             </Grid>

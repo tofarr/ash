@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import moment from 'moment';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 
-import Settings from '../../settings/Settings';
 import MonthListContainer from './MonthListContainer';
 import { monthTransactionsPath } from '../../../ui/monthTransactions/components/MonthTransactionsController';
 
@@ -14,7 +13,6 @@ export function monthListPath(year?: number){
 
 
 export interface MonthListControllerProps{
-  settings: Settings;
   setTitle: (title: string) => void;
 }
 
@@ -22,12 +20,12 @@ export interface MonthListControllerParams{
   year?: string
 }
 
-const MonthListController: FC<MonthListControllerProps> = ({ settings, setTitle }) => {
+const MonthListController: FC<MonthListControllerProps> = ({ setTitle }) => {
   setTitle('Select Month');
   const { push } = useHistory();
   const year = parseInt(useParams<MonthListControllerParams>().year as any);
 
-  function handleSelectMonth(year: number, month: number, hasData: boolean){
+  function handleSelectMonth(year: number, month: number){
     push(monthTransactionsPath(year, month));
   }
 
@@ -42,8 +40,7 @@ const MonthListController: FC<MonthListControllerProps> = ({ settings, setTitle 
   return <MonthListContainer
             year={year}
             onChangeYear={handleChangeYear}
-            onSelectMonth={handleSelectMonth}
-            settings={settings} />
+            onSelectMonth={handleSelectMonth} />
 
 }
 

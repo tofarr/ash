@@ -5,7 +5,6 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import Loader from '../../../utils/Loader';
-import Settings from '../../settings/Settings';
 import TransactionForm from './TransactionForm'
 import Transaction from '../models/Transaction';
 import { newTransaction, createTransaction } from '../TransactionService';
@@ -15,7 +14,6 @@ import { monthTransactionsPath } from '../../../ui/monthTransactions/components/
 export const CREATE_TRANSACTION_PATH = '/create-transaction';
 
 export interface CreateTransactionControllerProps{
-  settings: Settings,
   setTitle: (title: string) => void;
 }
 
@@ -24,7 +22,7 @@ function newDummyTransaction(){
   return newTransaction(m.year(), m.month() + 1, m.date(), '');
 }
 
-const CreateTransactionController: FC<CreateTransactionControllerProps> = ({ settings, setTitle }) => {
+const CreateTransactionController: FC<CreateTransactionControllerProps> = ({ setTitle }) => {
   setTitle('Add Transaction');
   const { push } = useHistory();
   const [working,setWorking] = useState(false);
@@ -48,7 +46,6 @@ const CreateTransactionController: FC<CreateTransactionControllerProps> = ({ set
   return (
     <TransactionForm
       transaction={newDummyTransaction()}
-      settings={settings}
       onSubmit={handleSave}>
       {working ? <Loader /> :
         <Button

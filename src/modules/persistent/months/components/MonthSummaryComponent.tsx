@@ -4,19 +4,19 @@ import { Box, Button, Grid } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
-import Settings from '../../../persistent/settings/Settings';
+import useSettings from '../../settings/useSettings';
 
 export interface MonthSummaryComponentProps {
   year: number;
   month: number;
   hasData: boolean;
-  settings: Settings;
   onSelect: (year: number, month: number, hasData: boolean) => void;
 }
 
-const MonthSummaryComponent: FC<MonthSummaryComponentProps> = ({ year, month, hasData, onSelect, settings }) => {
+const MonthSummaryComponent: FC<MonthSummaryComponentProps> = ({ year, month, hasData, onSelect }) => {
 
   const isCurrent = (moment().month() + 1) === month && moment().year() === year;
+  const settings = useSettings();
 
   return (
     <Box pb={1}>

@@ -6,16 +6,14 @@ import { listMonths } from '../MonthService';
 import MonthSummaryComponent from './MonthSummaryComponent';
 import Loader from '../../../utils/Loader';
 import YearNavigation from './YearNavigation';
-import Settings from '../../../persistent/settings/Settings';
 
 export interface MonthListProps{
   year: number;
   onChangeYear: (year: number) => void;
   onSelectMonth: (year: number, month: number, hasData: boolean) => void;
-  settings: Settings;
 }
 
-const MonthListContainer: FC<MonthListProps> = ({ year, onChangeYear, settings, onSelectMonth }) => {
+const MonthListContainer: FC<MonthListProps> = ({ year, onChangeYear, onSelectMonth }) => {
 
   const [working, setWorking] = useState(false);
   const [months, setMonths] = useState<null|Month[]>(null);
@@ -49,8 +47,7 @@ const MonthListContainer: FC<MonthListProps> = ({ year, onChangeYear, settings, 
               year={year}
               month={m}
               hasData={!!month}
-              onSelect={onSelectMonth}
-              settings={settings} />
+              onSelect={onSelectMonth} />
   }
 
   return <div>

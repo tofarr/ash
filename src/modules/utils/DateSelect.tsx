@@ -7,20 +7,20 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 
-import Settings from '../persistent/settings/Settings';
+import useSettings from '../persistent/settings/useSettings';
 
 export interface DatePickerProps{
   year: number;
   month: number;
   day: number;
   onDateChange: (year: number, month: number, day: number) => void;
-  settings: Settings;
   label: string;
 }
 
-const DateSelect: FC<DatePickerProps> = ({ year, month, day, onDateChange, settings, label }) => {
+const DateSelect: FC<DatePickerProps> = ({ year, month, day, onDateChange, label }) => {
   const [open, setOpen] = useState(false);
   const [focus, setFocus] = useState(false);
+  const settings = useSettings();
 
   const date = moment().startOf('year').year(year).month(month-1).date(day);
 
