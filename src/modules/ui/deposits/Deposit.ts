@@ -1,5 +1,5 @@
 
-export interface Deposit{
+export default interface Deposit{
   year: number;
   month: number;
   day: number;

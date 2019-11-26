@@ -4,24 +4,93 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import Loader from '../../../utils/Loader';
-import Meeting from '../Meeting'
+import Deposit from '../Deposit'
 
 import MoneyInput from '../../../utils/money/components/MoneyInput';
 import Money from '../../../utils/money/components/Money';
 import DateSelect from '../../../utils/DateSelect';
 
-export interface MeetingFormProps{
-  meeting: Meeting;
-  onSubmit: (meeting: Meeting) => void;
+export interface DepositFormProps{
+  deposit: Deposit;
+  onSubmit: (deposit: Deposit) => void;
   working: boolean;
 }
 
-const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
+const DepositForm: FC<DepositFormProps> = ({ deposit, onSubmit, working }) => {
 
-  const [internalMeeting, setInternalMeeting] = useState(meeting);
-  const {congregation_cash, congregation_cheques, worldwide_cash,
-    worldwide_cheques, construction_cash, construction_cheques } = internalMeeting;
+  const [internalDeposit, setInternalDeposit] = useState(deposit);
+  const {cash, cheques } = internalDeposit;
+  const total = cash + cheques;
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>){
+    event.preventDefault();
+    onSubmit(internalDeposit);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Box p={2}>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <DateSelect
+              year={internalDeposit.year}
+              month={internalDeposit.month}
+              day={internalDeposit.day}
+              onDateChange={(year: number, month: number, day: number) => {
+                setInternalDeposit({
+                  ...internalDeposit, year, month, day,
+                });
+              }}
+              label="Date" />
+          </Grid>
+          <Grid item xs={6}>
+            <MoneyInput
+              label="Cash"
+              required
+              value={cash}
+              onChange={(newCash) => setInternalDeposit({ ...internalDeposit, cash: newCash as number })} />
+          </Grid>
+          <Grid item xs={6}>
+            <MoneyInput
+              label="Cheques"
+              required
+              value={cheques}
+              onChange={(newCheques) => setInternalDeposit({ ...internalDeposit, cheques: newCheques as number })} />
+          </Grid>
+          <Grid item xs={12}>
+            <Box p={2}>
+              <Grid container justify="flex-end" spacing={1}>
+                <Grid item>
+                  Total:
+                </Grid>
+                <Grid item>
+                  <Money value={total} />
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box p={2} pl={0} pr={0}>
+              <Grid container justify="flex-end" spacing={1}>
+                <Grid item xs sm="auto">
+                <Button
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  color="primary">
+                  <AddIcon />
+                  Add Deposit
+                </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </form>
+  );
+
+/*
   const totalCash = congregation_cash as number
     + (worldwide_cash as number) + (construction_cash as number);
   const totalCheques = congregation_cheques as number
@@ -52,10 +121,14 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
   }
 
   function renderHeader(){
-    return renderRowLayout('',
+    return (
+      <Box pt={1}>
+        {renderRowLayout('',
           <Typography style={{fontWeight: 500, textAlign: 'right'}}>Cash</Typography>,
           <Typography style={{fontWeight: 500, textAlign: 'right'}}>Cheques</Typography>,
-          <Typography style={{fontWeight: 500, textAlign: 'right'}}>Total</Typography>);
+          <Typography style={{fontWeight: 500, textAlign: 'right'}}>Total</Typography>)}
+      </Box>
+    );
   }
 
   function renderRow(label: string,
@@ -80,18 +153,16 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
     <form onSubmit={handleSubmit}>
       <Grid container direction="column" spacing={1}>
         <Grid item>
-          <Box p={2}>
-            <DateSelect
-              year={internalMeeting.year}
-              month={internalMeeting.month}
-              day={internalMeeting.day}
-              onDateChange={(year: number, month: number, day: number) => {
-                setInternalMeeting({
-                  ...internalMeeting, year, month, day,
-                });
-              }}
-              label="Date" />
-            </Box>
+          <DateSelect
+            year={internalMeeting.year}
+            month={internalMeeting.month}
+            day={internalMeeting.day}
+            onDateChange={(year: number, month: number, day: number) => {
+              setInternalMeeting({
+                ...internalMeeting, year, month, day,
+              });
+            }}
+            label="Date" />
         </Grid>
         <Grid item>
           {renderHeader()}
@@ -146,7 +217,8 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
       </Grid>
     </form>
   );
+  */
 }
 
 
-export default MeetingForm;
+export default DepositForm;

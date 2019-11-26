@@ -15,7 +15,7 @@ export interface CreateMeetingControllerProps{
 
 const CreateMeetingController: FC<CreateMeetingControllerProps> = ({ setTitle }) => {
 
-  setTitle('Add Meeting Contributions');
+  setTitle('Add Meeting');
   const { push } = useHistory();
   const [working,setWorking] = useState(false);
 

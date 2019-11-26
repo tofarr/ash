@@ -26,7 +26,6 @@ export function createMeeting(meeting: Meeting){
   return new Promise<Meeting>((resolve, reject) => {
 
     function handleReject(err: any){
-      debugger;
       addErr(err);
       reject(err);
     }

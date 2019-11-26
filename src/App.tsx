@@ -14,6 +14,7 @@ import MonthTransactionsController, { MONTH_TRANSACTIONS_PATH } from './modules/
 import CreateTransactionController, { CREATE_TRANSACTION_PATH } from './modules/persistent/transactions/components/CreateTransactionController';
 import UpdateTransactionController, { UPDATE_TRANSACTION_PATH } from './modules/persistent/transactions/components/UpdateTransactionController';
 import CreateMeetingController, { CREATE_MEETING_PATH } from './modules/ui/meetings/components/CreateMeetingController';
+import CreateDepositController, { CREATE_DEPOSIT_PATH } from './modules/ui/deposits/components/CreateDepositController';
 
 const App: React.FC = () => {
   return (
@@ -31,6 +32,7 @@ const App: React.FC = () => {
                     <Route path={CREATE_TRANSACTION_PATH} component={() => <CreateTransactionController setTitle={setTitle} />} />
                     <Route path={UPDATE_TRANSACTION_PATH} component={() => <UpdateTransactionController setTitle={setTitle} />} />
                     <Route path={CREATE_MEETING_PATH} component={() => <CreateMeetingController setTitle={setTitle} />} />
+                    <Route path={CREATE_DEPOSIT_PATH} component={() => <CreateDepositController setTitle={setTitle} />} />
                     <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
                   </Switch>
                 )

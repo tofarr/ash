@@ -2,6 +2,9 @@ import React, { FC, Component } from 'react';
 import { Box, Button, Grid } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
+import { CREATE_MEETING_PATH } from '../meetings/components/CreateMeetingController';
+import { CREATE_DEPOSIT_PATH } from '../deposits/components/CreateDepositController';
+import { CREATE_TRANSACTION_PATH } from '../../persistent/transactions/components/CreateTransactionController';
 import { MONTH_LIST_PATH } from '../../persistent/months/components/MonthListController';
 import { currentMonthPath } from '../monthTransactions/components/MonthTransactionsController';
 
@@ -40,10 +43,10 @@ const NavMenuController: FC<NavMenuProps> = ({ onClick, setTitle }) => {
   return (
     <Box p={1}>
       <Grid container direction="column">
-        {renderMenuItem('Add Meeting', '/create-meeting')}
-        {renderMenuItem('Add Deposit', '/add-deposit')}
+        {renderMenuItem('Add Meeting', CREATE_MEETING_PATH)}
+        {renderMenuItem('Add Deposit', CREATE_DEPOSIT_PATH)}
         {renderMenuItem('Add WEFTS Transfer', '/add-wefts')}
-        {renderMenuItem('Add Transaction', '/create-transaction')}
+        {renderMenuItem('Add Transaction', CREATE_TRANSACTION_PATH)}
         {renderMenuItem('Current Month', currentMonthPath())}
         {renderMenuItem('Select Month', MONTH_LIST_PATH)}
         {renderMenuItem('Settings', '/settings')}
