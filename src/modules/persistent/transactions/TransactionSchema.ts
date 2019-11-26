@@ -3,17 +3,18 @@ import TransactionCode from './models/TransactionCode';
 
 export default function transactionSchema(){
   return object().shape({
-    year: number().integer().positive().required(),
-    month: number().integer().positive().required(),
+    year: number().integer().min(0).required(),
+    month: number().integer().min(0).required(),
+    day: number().integer().min(0).required(),
     receipts_amt: number().integer().required()
       .when(['code', 'cash', 'cheques'],
         (code: string, cash: number|undefined, cheques: number|undefined, schema: NumberSchema) => {
           switch(code as unknown){
             case TransactionCode.C:
             case TransactionCode.W:
-              return schema.positive().oneOf([(cash as number)+(cheques as number)], 'Receipts should match sum of cash and cheques');
+              return schema.min(0).oneOf([(cash as number)+(cheques as number)], 'Receipts should match sum of cash and cheques');
             case TransactionCode.D:
-              return schema.negative('Deposits should be debited from receipts (Receipts should be negative)');
+              return schema.max(0, 'Deposits should be debited from receipts (Receipts should be negative)');
             case TransactionCode.CE:
             case TransactionCode.I:
               return schema.oneOf([0]);
@@ -30,10 +31,10 @@ export default function transactionSchema(){
             case TransactionCode.W:
               return schema.oneOf([0], 'Contributions should be applied as receipts. A separate deposit item should be created for crediting the primary account.');
             case TransactionCode.D:
-              return schema.positive().oneOf([-receipts_amt], 'Receipts and Primary amounts should match for Deposits');
+              return schema.min(0).oneOf([-receipts_amt], 'Receipts and Primary amounts should match for Deposits');
             case TransactionCode.CE:
             case TransactionCode.I:
-              return schema.positive('Primary amount should be positive for Electronic Contributions / Interest Payments');
+              return schema.min(0, 'Primary amount should be positive for Electronic Contributions / Interest Payments');
             default:
               return schema;
           }
@@ -47,8 +48,8 @@ export default function transactionSchema(){
       ),
     code: string().oneOf(Object.keys(TransactionCode)),
     description: string().required(),
-    statement_year: number().integer().positive(),
-    statement_month: number().integer().positive(),
-    statement_day: number().integer().positive(),
+    statement_year: number().integer().min(0),
+    statement_month: number().integer().min(0),
+    statement_day: number().integer().min(0),
   });
 };

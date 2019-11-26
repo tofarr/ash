@@ -1,5 +1,5 @@
 import React, { FC, Fragment, MouseEvent, ReactNode, useState } from 'react';
-import { Box, Button, Dialog, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, Grid } from '@material-ui/core';
 import { ButtonProps } from '@material-ui/core/Button';
 
 export interface ConfirmButtonProps extends ButtonProps{

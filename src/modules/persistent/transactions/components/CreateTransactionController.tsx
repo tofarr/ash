@@ -57,7 +57,7 @@ const CreateTransactionController: FC<CreateTransactionControllerProps> = ({ set
           variant="contained"
           color="primary">
           <AddIcon />
-          Create Transaction
+          Add Transaction
         </Button>
       }
     </TransactionForm>

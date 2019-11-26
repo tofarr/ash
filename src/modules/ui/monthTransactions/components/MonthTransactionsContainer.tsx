@@ -104,12 +104,12 @@ const MonthTransactionContainer: FC<MonthTransactionsContainerProps> =
       if(!monthTransactions){
         return null;
       }
-      const label = [moment().
-        startOf('year').
-        year(transaction.year).
-        month(transaction.month).
-        date(transaction.day).
-        format(settings.formatting.date_format), ': '];
+      const label = [moment()
+        .startOf('year')
+        .year(transaction.year)
+        .month(transaction.month)
+        .date(transaction.day)
+        .format(settings.formatting.date_format), ': '];
       if(transaction.code){
         label.push(transaction.code, ' : ');
       }

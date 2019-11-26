@@ -42,7 +42,7 @@ const NavMenuController: FC<NavMenuProps> = ({ settings, onClick, setTitle }) =>
   return (
     <Box p={1}>
       <Grid container direction="column">
-        {renderMenuItem('Add Meeting', '/add-meeting')}
+        {renderMenuItem('Add Meeting', '/create-meeting')}
         {renderMenuItem('Add Deposit', '/add-deposit')}
         {renderMenuItem('Add WEFTS Transfer', '/add-wefts')}
         {renderMenuItem('Add Transaction', '/create-transaction')}

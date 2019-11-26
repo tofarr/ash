@@ -13,6 +13,7 @@ import MonthListController, { MONTH_LIST_PATH } from './modules/persistent/month
 import MonthTransactionsController, { MONTH_TRANSACTIONS_PATH } from './modules/ui/monthTransactions/components/MonthTransactionsController';
 import CreateTransactionController, { CREATE_TRANSACTION_PATH } from './modules/persistent/transactions/components/CreateTransactionController';
 import UpdateTransactionController, { UPDATE_TRANSACTION_PATH } from './modules/persistent/transactions/components/UpdateTransactionController';
+import CreateMeetingController, { CREATE_MEETING_PATH } from './modules/ui/meetings/components/CreateMeetingController';
 
 const App: React.FC = () => {
   return (
@@ -24,12 +25,13 @@ const App: React.FC = () => {
               {(setTitle) => {
                 return (
                   <Switch>
-                    <Route path={NAV_MENU_PATH} exact={true} component={() => <NavMenuController settings={settings} setTitle={setTitle} />} />
-                    <Route path={MONTH_LIST_PATH} exact={false} component={() => <MonthListController settings={settings} setTitle={setTitle} />} />
-                    <Route path={MONTH_TRANSACTIONS_PATH} exact={false} component={() => <MonthTransactionsController settings={settings} setTitle={setTitle} />} />
-                    <Route path={CREATE_TRANSACTION_PATH} exact={false} component={() => <CreateTransactionController settings={settings} setTitle={setTitle} />} />
-                    <Route path={UPDATE_TRANSACTION_PATH} exact={false} component={() => <UpdateTransactionController settings={settings} setTitle={setTitle} />} />
-                    <Redirect from="/" to={NAV_MENU_PATH} />
+                    <Route path={NAV_MENU_PATH} component={() => <NavMenuController settings={settings} setTitle={setTitle} />} />
+                    <Route path={MONTH_LIST_PATH} component={() => <MonthListController settings={settings} setTitle={setTitle} />} />
+                    <Route path={MONTH_TRANSACTIONS_PATH} component={() => <MonthTransactionsController settings={settings} setTitle={setTitle} />} />
+                    <Route path={CREATE_TRANSACTION_PATH} component={() => <CreateTransactionController settings={settings} setTitle={setTitle} />} />
+                    <Route path={UPDATE_TRANSACTION_PATH} component={() => <UpdateTransactionController settings={settings} setTitle={setTitle} />} />
+                    <Route path={CREATE_MEETING_PATH} component={() => <CreateMeetingController setTitle={setTitle} />} />
+                    <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
                   </Switch>
                 )
               }}
