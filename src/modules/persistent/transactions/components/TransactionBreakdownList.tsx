@@ -1,5 +1,6 @@
 import React, { FC, ReactNode, useState } from 'react';
 import TransactionBreakdown from '../models/TransactionBreakdown';
+import TransactionBreakdownCode from '../models/TransactionBreakdownCode';
 import { Box, Button, Grid } from '@material-ui/core';
 
 import ListCollapse from '../../../utils/ListCollapse';
@@ -15,7 +16,10 @@ export interface TransactionBreakdownListProps{
 
 const TransactionBreakdownList: FC<TransactionBreakdownListProps> = ({ breakdowns, onChange, amtRequired}) => {
 
-  const [newBreakdown,setNewBreakdown] = useState<TransactionBreakdown>({ description: '', amt: undefined })
+  const [newBreakdown,setNewBreakdown] = useState<TransactionBreakdown>({
+    description: '',
+    code: TransactionBreakdownCode.OTHER,
+    amt: undefined });
 
   function renderItems(){
     return (

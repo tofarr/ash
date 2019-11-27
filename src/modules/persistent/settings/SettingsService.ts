@@ -3,6 +3,7 @@ import AvailableLocale from '../../utils/locale/AvailableLocale';
 import DbService from '../DbService';
 import moment from 'moment';
 import Settings, { MeetingDays } from './Settings';
+import TransactionBreakdownCode from '../transactions/models/TransactionBreakdownCode';
 
 DbService.version(1).stores({
   settings: 'id++'
@@ -15,9 +16,13 @@ function newSettings(): Settings{
       date_format: 'YYYY-MM-DD',
       month_format: 'YYYY-MM',
     },
-    congregation: 'Congregation',
+
+    congregation_name: 'Congregation Name',
     city: 'City',
-    province: 'Province',
+    province_or_state: 'Province or State',
+    accounts_servant_or_overseer: 'Accounts Servant or Overseer',
+    authorized_signer: 'Authorized Signer',
+
     cash_box: false,
     meeting_days: {
       sun: true,
@@ -28,15 +33,15 @@ function newSettings(): Settings{
       fri: false,
       sat: false,
     },
-    rules: {
-      interest: true,
-      wefts: true
-    },
+    //rules: {
+    //  interest: true,
+    //  wefts: true
+    //},
     transferToBranchDefaults: [
-      {description: 'WW (resolution)', amt: 0},
-      {description: 'KHAHC (resolution)', amt: 0},
-      {description: 'GAA (resolution)', amt: 0},
-      {description: 'COAA (resolution)', amt: 0},
+      {description: 'WW (resolution)', code: TransactionBreakdownCode.WW_RESOLUTION, amt: 0},
+      {description: 'KHAHC (resolution)', code: TransactionBreakdownCode.KHAHC, amt: 0},
+      {description: 'GAA (resolution)', code: TransactionBreakdownCode.GAA, amt: 0},
+      {description: 'COAA (resolution)', code: TransactionBreakdownCode.COAA, amt: 0},
     ],
   }
 }
@@ -80,4 +85,17 @@ export function meetingDates(year: number, month: number, meetingDays: MeetingDa
     }
   }
   return meetingDates;
+}
+
+export function currentDateStr(settings: Settings){
+  return moment().format(settings.formatting.date_format);
+}
+
+export function dateStr(settings: Settings, year: number, month: number, day: number){
+  return moment()
+    .startOf('year')
+    .year(year)
+    .month(month)
+    .day(day)
+    .format(settings.formatting.date_format);
 }

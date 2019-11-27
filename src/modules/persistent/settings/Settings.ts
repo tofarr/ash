@@ -12,10 +12,12 @@ export interface MeetingDays{
   sat: boolean,
 }
 
+/*
 export interface RulesSettings{
   interest: true,
   wefts: true
 }
+*/
 
 export interface Formatting{
   date_format: string,
@@ -25,12 +27,17 @@ export interface Formatting{
 export default interface Settings{
   locale: AvailableLocale,
   formatting: Formatting,
-  congregation: string,
+
+  congregation_name: string,
   city: string,
-  province: string,
+  province_or_state: string,
+  accounts_servant_or_overseer: string,
+  authorized_signer: string,
+
+
   cash_box: boolean,
   meeting_days: MeetingDays,
   // walkthrough: boolean,
-  rules: RulesSettings,
+  // rules: RulesSettings,
   transferToBranchDefaults: TransactionBreakdown[],
 }

@@ -5,15 +5,16 @@ Collapse,
 Container,
 FormControlLabel,
 Grid,
-TextField } from '@material-ui/core';
+TextField,
+Typography } from '@material-ui/core';
 
 import Transaction from '../models/Transaction';
-import TransactionCode from '../models/TransactionCode';
+import TransactionCode, { describeTransactionCode } from '../models/TransactionCode';
 import TransactionBreakdown from '../models/TransactionBreakdown';
 import TransactionBreakdownList from './TransactionBreakdownList';
 
 import DateSelect from '../../../utils/DateSelect';
-import ValueSelect from '../../../utils/ValueSelect';
+import CodeSelect from '../../../utils/CodeSelect';
 import MoneyInput from '../../../utils/money/components/MoneyInput';
 
 export interface TransactionFormProps{
@@ -27,11 +28,6 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
   const [hasStatementDate, setHasStatementDate] = useState(!!(internalTransaction.statement_year &&
                                   internalTransaction.statement_month &&
                                   internalTransaction.statement_day));
-  const hasCashChequesBreakdown = !!(internalTransaction.cash ||
-                                  internalTransaction.cheques ||
-                                  internalTransaction.code === TransactionCode.W ||
-                                  internalTransaction.code === TransactionCode.C ||
-                                  internalTransaction.code === TransactionCode.D);
   const hasBreakdown = !!internalTransaction.breakdown;
   const [descriptionError, setDescriptionError] = useState(false);
 
@@ -114,43 +110,38 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
         <Box pt={2} pb={2}>
           <Grid container direction="column" spacing={1}>
             <Grid item>
-              <DateSelect
-                year={internalTransaction.year}
-                month={internalTransaction.month}
-                day={internalTransaction.day}
-                onDateChange={(year: number, month: number, day: number) => {
-                  setInternalTransaction({
-                    ...internalTransaction, year, month, day,
-                  });
-                }}
-                label="Date" />
-            </Grid>
-            <Grid item>
-              <ValueSelect
-                label="Code"
-                value={internalTransaction.code}
-                keyFn={(code?: TransactionCode) => code}
-                titleFn={(code?: TransactionCode) => code || 'None'}
-                options={Object.keys(TransactionCode) as TransactionCode[]}
-                onChange={handleCodeChange} />
-            </Grid>
-            <Grid item>
-              <Collapse in={hasCashChequesBreakdown}>
-                <Grid container spacing={1}>
-                  <Grid item xs={6}>
-                    <MoneyInput
-                      label="Cash"
-                      value={internalTransaction.cash}
-                      onChange={handleCash} />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <MoneyInput
-                      label="Cheques"
-                      value={internalTransaction.cheques}
-                      onChange={handleCheques} />
-                  </Grid>
+              <Grid container spacing={1}>
+                <Grid item xs={3}>
+                  <CodeSelect
+                    label="Code"
+                    value={internalTransaction.code}
+                    required={false}
+                    keyFn={(code?: TransactionCode) => code}
+                    titleFn={(code?: TransactionCode) => code || 'None'}
+                    descriptionFn={(code?) => <Grid container spacing={2}>
+                      <Grid item xs={2}>
+                        <Typography variant="h6">{code}</Typography>
+                      </Grid>
+                      <Grid item xs>
+                        {describeTransactionCode(code)}
+                      </Grid>
+                    </Grid>}
+                    options={Object.keys(TransactionCode) as TransactionCode[]}
+                    onChange={handleCodeChange} />
                 </Grid>
-              </Collapse>
+                <Grid item xs={9}>
+                  <DateSelect
+                    year={internalTransaction.year}
+                    month={internalTransaction.month}
+                    day={internalTransaction.day}
+                    onDateChange={(year: number, month: number, day: number) => {
+                      setInternalTransaction({
+                        ...internalTransaction, year, month, day,
+                      });
+                    }}
+                    label="Date" />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item>
               <TextField
@@ -188,6 +179,31 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
                     onChange={(other_amt) => setInternalTransaction({ ...internalTransaction, other_amt: other_amt as number })} />
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <MoneyInput
+                    label="Cash"
+                    value={internalTransaction.cash}
+                    onChange={handleCash} />
+                </Grid>
+                <Grid item xs={6}>
+                  <MoneyInput
+                    label="Cheques"
+                    value={internalTransaction.cheques}
+                    onChange={handleCheques} />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <TextField
+                fullWidth
+                label="Confirmation Code"
+                variant="outlined"
+                value={internalTransaction.confirmation_code}
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  setInternalTransaction({ ...internalTransaction, confirmation_code: event.target.value })} />
             </Grid>
             <Grid>
               <Box pl={1} pr={1} pt={1}>

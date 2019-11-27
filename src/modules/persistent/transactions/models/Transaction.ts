@@ -22,4 +22,5 @@ export default interface Transaction {
   cash?: number,
   cheques?: number,
   breakdown?: TransactionBreakdown[],
+  confirmation_code?: string,
 }

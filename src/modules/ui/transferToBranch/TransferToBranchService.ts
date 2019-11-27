@@ -5,6 +5,7 @@ import Transaction from '../../persistent/transactions/models/Transaction';
 import { ensureMonthExists } from '../../persistent/months/MonthService';
 import { createTransaction, listTransactions, fillAndDownloadTO62ForTransaction } from '../../persistent/transactions/TransactionService';
 import TransactionBreakdown from '../../persistent/transactions/models/TransactionBreakdown';
+import TransactionBreakdownCode from '../../persistent/transactions/models/TransactionBreakdownCode';
 import TransactionCode from '../../persistent/transactions/models/TransactionCode';
 import addErr from '../../utils/Err';
 import transferToBranchSchema from './TransferToBranchSchema';
@@ -28,6 +29,7 @@ export function newTransferToBranch(for_year = moment().year(), for_month = mome
 
         breakdown.splice(0, 0, { id: idOffset - 1,
           description: 'WW (from box)',
+          code: TransactionBreakdownCode.WW_BOX,
           amt: wwBox });
 
         resolve({
@@ -81,7 +83,8 @@ export function createTransferToBranch(transferToBranch: TransferToBranch){
 
 
 export async function fillAndDownloadTO62ForTransfer(transferToBranch: TransferToBranch){
-  const transaction = await toTransaction(transferToBranch)
+  transferToBranch = { ...transferToBranch, confirmation_code: transferToBranch.confirmation_code || ' ' } // Confirmation code required for save, but not for TO-62
+  const transaction = await toTransaction(transferToBranch);
   const pdf = fillAndDownloadTO62ForTransaction(transaction);
   return pdf;
 }
