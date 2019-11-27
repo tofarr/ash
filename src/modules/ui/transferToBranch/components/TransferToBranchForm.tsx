@@ -6,6 +6,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import Loader from '../../../utils/Loader';
 import TransferToBranch from '../TransferToBranch'
+import { fillAndDownloadTO62ForTransfer } from '../TransferToBranchService';
 
 import TransactionBreakdownList from '../../../persistent/transactions/components/TransactionBreakdownList';
 
@@ -81,7 +82,15 @@ const TransferToBranchForm: FC<TransferToBranchFormProps> = ({ transfer, onSubmi
           <Grid item xs={12}>
             <Box p={2} pl={0} pr={0}>
               <Grid container justify="flex-end" spacing={1}>
-                <Grid item xs sm="auto">
+                <Grid item xs={12} sm="auto">
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={() => fillAndDownloadTO62ForTransfer(internalTransfer)}>
+                    Generate TO-62
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm="auto">
                   {working ?
                     <Loader />
                     :

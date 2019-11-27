@@ -3,7 +3,7 @@ import TransferToBranch from './TransferToBranch';
 
 import Transaction from '../../persistent/transactions/models/Transaction';
 import { ensureMonthExists } from '../../persistent/months/MonthService';
-import { createTransaction, listTransactions } from '../../persistent/transactions/TransactionService';
+import { createTransaction, listTransactions, fillAndDownloadTO62ForTransaction } from '../../persistent/transactions/TransactionService';
 import TransactionBreakdown from '../../persistent/transactions/models/TransactionBreakdown';
 import TransactionCode from '../../persistent/transactions/models/TransactionCode';
 import addErr from '../../utils/Err';
@@ -45,14 +45,8 @@ export function newTransferToBranch(for_year = moment().year(), for_month = mome
   });
 }
 
-export function createTransferToBranch(transferToBranch: TransferToBranch){
-  return new Promise<TransferToBranch>((resolve, reject) => {
-
-    function handleReject(err: any){
-      addErr(err);
-      reject(err);
-    }
-
+export function toTransaction(transferToBranch: TransferToBranch){
+  return new Promise<Transaction>((resolve, reject) => {
     loadSettings().then((settings) => {
       transferToBranchSchema().validate(transferToBranch).then(() => {
         const { year, month, day, breakdown, confirmation_code } = transferToBranch;
@@ -63,13 +57,31 @@ export function createTransferToBranch(transferToBranch: TransferToBranch){
           .format(settings.formatting.date_format);
         const description = `To Branch - ${confirmation_code} (${date_str})`;
         const amt = breakdown.reduce(((sum: number, item: TransactionBreakdown) => (item.amt as number) + sum), 0);
-        Promise.all([
-          ensureMonthExists(transferToBranch.for_year, transferToBranch.for_month),
-          createTransaction({ year, month, day, description,
+        resolve({ year, month, day, description,
             code: TransactionCode.E, receipts_amt: 0, primary_amt: -amt,
-            other_amt: 0 })
-        ]).then(() => resolve(transferToBranch), handleReject);
-      }, handleReject);
-    }, handleReject);
+            other_amt: 0 });
+      }, (err: any) => {
+        addErr(err);
+        reject(err);
+      });
+    }, reject);
   });
+}
+
+export function createTransferToBranch(transferToBranch: TransferToBranch){
+  return new Promise<TransferToBranch>((resolve, reject) => {
+    toTransaction(transferToBranch).then((transaction) => {
+      Promise.all([
+        ensureMonthExists(transferToBranch.for_year, transferToBranch.for_month),
+        createTransaction(transaction)
+      ]).then(() => resolve(transferToBranch), reject)
+    });
+  });
+}
+
+
+export async function fillAndDownloadTO62ForTransfer(transferToBranch: TransferToBranch){
+  const transaction = await toTransaction(transferToBranch)
+  const pdf = fillAndDownloadTO62ForTransaction(transaction);
+  return pdf;
 }

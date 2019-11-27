@@ -1,4 +1,3 @@
-
 import DbService from '../DbService';
 import { loadSettings, meetingDates } from '../settings/SettingsService';
 import Transaction from './models/Transaction';
@@ -6,6 +5,7 @@ import transactionSchema from './TransactionSchema';
 import TransactionCode from './models/TransactionCode';
 import addErr from '../../utils/Err';
 import { addMsg } from '../../utils/msgs/MsgService';
+import { fillAndDownloadPdf } from '../../utils/pdf/PDFFormService';
 
 DbService.version(1).stores({
   transactions: '++id,[year+month]'
@@ -95,4 +95,11 @@ export function destroyTransaction(transaction_id:number){
 
 export function listTransactions(year: number, month: number){
   return table().where({year: year, month: month}).sortBy('date');
+}
+
+export async function fillAndDownloadTO62ForTransaction(transaction: Transaction){
+  await fillAndDownloadPdf('/pdf/TO-62-E.pdf', {
+    // Field names / values here...
+    '900_4_Text': ['Value Set from Javascript']
+  });
 }

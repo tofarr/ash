@@ -14,7 +14,6 @@
     "@types/react-router-dom": "^5.1.2",
     "@types/yup": "^0.26.24",
     "dexie": "^2.0.4",
-    "formik": "^2.0.3",
     "moment": "^2.24.0",
     "pdf-lib": "^1.2.1",
     "react": "^16.11.0",

@@ -9,6 +9,8 @@ export interface ConfirmButtonProps extends ButtonProps{
 const ConfirmButton: FC<ConfirmButtonProps> = (props) => {
 
   const [open, setOpen] = useState(false);
+  const buttonProps = { ...props };
+  delete buttonProps.confirmText;
 
   function handleClick(event: MouseEvent<HTMLButtonElement>){
     setOpen(false);
@@ -19,7 +21,7 @@ const ConfirmButton: FC<ConfirmButtonProps> = (props) => {
 
   return (
     <Fragment>
-      <Button {...props} onClick={() => setOpen(true)} />
+      <Button {...buttonProps} onClick={() => setOpen(true)} />
       <Dialog open={open}>
         <Box p={2}>
           <Grid container spacing={2} >
