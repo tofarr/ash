@@ -9,9 +9,10 @@ import MsgList from './MsgList';
 export interface MsgDialogProps {
   msgs: Msg[];
   onClearMsgs?: () => void;
+  dateFormat: string;
 }
 
-const MsgDialog: FC<MsgDialogProps> = ({ msgs, onClearMsgs }) => {
+const MsgDialog: FC<MsgDialogProps> = ({ msgs, onClearMsgs, dateFormat }) => {
 
   const [open,setOpen] = useState(false);
 
@@ -33,7 +34,7 @@ const MsgDialog: FC<MsgDialogProps> = ({ msgs, onClearMsgs }) => {
         </Button>
       }
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <MsgList msgs={msgs} onClearMsgs={handleClearMsgs} />
+        <MsgList msgs={msgs} onClearMsgs={handleClearMsgs} dateFormat={dateFormat} />
       </Dialog>
     </Fragment>
   );

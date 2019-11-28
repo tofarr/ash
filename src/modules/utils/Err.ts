@@ -1,5 +1,5 @@
 import MsgType from './msgs/MsgType';
-import { addMsg } from './msgs/MsgService';
+import { addMsg } from './msgs/service';
 
 function getMsg(err: any): string {
   if(err.msg){

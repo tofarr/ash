@@ -1,5 +1,5 @@
 import { Component, ReactElement } from 'react';
-import { subscribeToMsgs, unsubscribeFromMsgs, clearMsgs } from '../MsgService';
+import { subscribeToMsgs, unsubscribeFromMsgs, clearMsgs } from '../service';
 import Msg from '../Msg';
 
 export interface MsgContainerProps {

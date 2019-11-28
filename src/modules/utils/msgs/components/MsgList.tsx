@@ -4,21 +4,19 @@ import { Box, Button, Divider, Grid, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import useSettings from '../../../persistent/settings/useSettings';
-
 import Msg from '../Msg';
 import MsgIcon from './MsgIcon';
 
 export interface MsgListProps {
   msgs: Msg[];
   onClearMsgs?: () => void;
+  dateFormat: string;
 }
 
-const MsgList: FC<MsgListProps> = ({ msgs, onClearMsgs }) => {
+const MsgList: FC<MsgListProps> = ({ msgs, onClearMsgs, dateFormat }) => {
 
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const settings = useSettings();
 
   function renderMsg(msg: Msg){
     return (
@@ -46,7 +44,7 @@ const MsgList: FC<MsgListProps> = ({ msgs, onClearMsgs }) => {
     return (
       <Grid container direction={smUp ? "row" : "column"} alignItems="center">
         <Grid item>
-          <Typography variant="caption">{m.format(settings.formatting.date_format)}</Typography>
+          <Typography variant="caption">{m.format(dateFormat)}</Typography>
         </Grid>
         <Grid item>
           <Typography variant="caption">{m.format('HH:mm:ss')}</Typography>
