@@ -12,9 +12,11 @@ import useSettings from '../../settings/useSettings';
 import Loader from '../../utils/components/Loader';
 import Money from '../../utils/money/Money';
 import TransactionSet from '../types/TransactionSet';
-import { loadTransactionSet, buildEndBalance } from '../transactionService';
+import { buildEndBalance, loadTransactionSet } from '../transactionService';
+import { fillAndDownloadS26 } from '../S26Service'
 import MonthTransactionsRow from './MonthTransactionsRow';
 import { updateTransactionPath } from './UpdateTransactionController';
+import { dateBalancePath } from './DateBalanceController';
 
 export const MONTH_TRANSACTIONS_PATH = '/month-transactions/:month';
 
@@ -38,15 +40,15 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
   const { push } = useHistory();
 
   const month = useParams<MonthTransactionsParams>().month as string;
+  const m = moment(month, MONTH_FORMAT).startOf('month');
+  const min = m.format(DATE_FORMAT);
+  const max = m.add(1, 'month').format(DATE_FORMAT);
 
   setTitle(moment(month, MONTH_FORMAT).format(settings.formatting.month_format));
 
   useEffect(() => {
     let mounted = true;
     setWorking(true);
-    const m = moment(month, MONTH_FORMAT).startOf('month');
-    const min = m.format(DATE_FORMAT);
-    const max = m.add(1, 'month').format(DATE_FORMAT);
     loadTransactionSet(min, max).then((loadedTransactionSet: TransactionSet) => {
       if(mounted){
         setTransactionSet(loadedTransactionSet);
@@ -60,7 +62,7 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     return () => {
       mounted = false;
     }
-  }, [month]);
+  }, [month, min, max]);
 
   function handleMonthChange(delta: number){
     const newMonth = moment(month, MONTH_FORMAT).add(delta, 'months').format(MONTH_FORMAT);
@@ -69,22 +71,25 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
 
   function renderControls(){
     return (
-      <Grid container spacing={1}>
+      <Grid container spacing={1} justify="space-between">
         <Grid item>
           <Button variant="contained" title="Previous Month" onClick={() => handleMonthChange(-1)}>
             <ArrowLeftIcon />
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" title="Generate S26">
-            S26
-          </Button>
-          <Button variant="contained" title="Generate S30">
-            S30
-          </Button>
-          <Button variant="contained" title="View Warnings">
-            <ErrorIcon />
-          </Button>
+          <Box textAlign="center">
+            <Button variant="contained" title="Generate S26"
+              onClick={() => fillAndDownloadS26(transactionSet as TransactionSet, settings)}>
+              S26
+            </Button>
+            <Button variant="contained" title="Generate S30">
+              S30
+            </Button>
+            <Button variant="contained" title="View Warnings">
+              <ErrorIcon />
+            </Button>
+          </Box>
         </Grid>
         <Grid item>
           <Button variant="contained" title="Next Month" onClick={() => handleMonthChange(1)}>
@@ -119,12 +124,17 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
       return null;
     }
     return (
-      <Box p={1}>
-        <MonthTransactionsRow
-          description="Opening Balance"
-          receipts={<Money value={transactionSet.start.receipts} />}
-          primary={<Money value={transactionSet.start.primary} />}
-          other={<Money value={transactionSet.start.other} />} />
+      <Box pb={1}>
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => push(dateBalancePath(min))}>
+          <MonthTransactionsRow
+            description="Opening Balance"
+            receipts={<Money value={transactionSet.start.receipts} />}
+            primary={<Money value={transactionSet.start.primary} />}
+            other={<Money value={transactionSet.start.other} />} />
+        </Button>
       </Box>
     );
   }
@@ -158,12 +168,17 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     }
     const endBalance = buildEndBalance(transactionSet);
     return (
-      <Box p={1}>
-        <MonthTransactionsRow
-          description="Closing Balance"
-          receipts={<Money value={endBalance.receipts} fontWeight={500} />}
-          primary={<Money value={endBalance.primary} fontWeight={500} />}
-          other={<Money value={endBalance.other} fontWeight={500} />} />
+      <Box pb={1}>
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => push(dateBalancePath(max))}>
+          <MonthTransactionsRow
+            description="Closing Balance"
+            receipts={<Money value={endBalance.receipts} fontWeight={500} />}
+            primary={<Money value={endBalance.primary} fontWeight={500} />}
+            other={<Money value={endBalance.other} fontWeight={500} />} />
+        </Button>
       </Box>
     );
   }

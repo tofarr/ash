@@ -14,25 +14,25 @@ const SerialNavigation: FC<YearSelectProps> = ({ onPrev, onNext, children}) => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   return (
-    <Box p={1}>
-      <Grid container justify="space-between" alignItems="center" spacing={1}>
-        <Grid item>
-          <Button variant="contained" onClick={onPrev}>
-            <NavigateBeforeIcon />
-            {smUp && "Previous"}
-          </Button>
-        </Grid>
-        <Grid item xs>
-          {children}
-        </Grid>
-        <Grid item>
-          <Button variant="contained" onClick={onNext}>
-            {smUp && "Next"}
-            <NavigateNextIcon />
-          </Button>
-        </Grid>
+    <Grid container justify="space-between" alignItems="center" spacing={1}>
+      <Grid item>
+        <Button variant="contained" onClick={onPrev}>
+          <NavigateBeforeIcon />
+          {smUp && "Previous"}
+        </Button>
       </Grid>
-    </Box>
+      <Grid item xs>
+        <Box textAlign="center">
+          {children}
+        </Box>
+      </Grid>
+      <Grid item>
+        <Button variant="contained" onClick={onNext}>
+          {smUp && "Next"}
+          <NavigateNextIcon />
+        </Button>
+      </Grid>
+    </Grid>
   )
 }
 

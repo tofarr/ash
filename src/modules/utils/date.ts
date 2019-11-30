@@ -11,6 +11,10 @@ export function thisMonthStr(){
   return moment().format(MONTH_FORMAT);
 }
 
+export function thisYear(){
+  return moment().year();
+}
+
 export function dateToMonth(date: string){
   return date.substring(0, 7);
 }

@@ -7,7 +7,7 @@ import TransactionListProps from './types/TransactionListProps';
 import TransactionSet from './types/TransactionSet';
 
 import * as dao from './transactionDAO';
-import { loadSettings, meetingDates, currentDateStr } from '../settings/SettingsService';
+import { loadSettings, currentDateStr } from '../settings/SettingsService';
 
 import { todayStr } from '../utils/date';
 import { addMsg } from '../utils/msgs/service';
@@ -127,30 +127,18 @@ function buildBalance(transactions: Transaction[], date: string): DateBalance{
   });
 }
 
-/*
-export function newMeetingTransactions(year: number, month: number){
-  return new Promise<Transaction[]>((resolve, reject) => {
-    loadSettings().then((settings) => {
-      const transactions: Transaction[] = [];
-      meetingDates(year, month, settings.meeting_days).forEach((date: number) => {
-        transactions.push(newTransaction(year, month, date, 'Contributions - Congregation', TransactionCode.C));
-        transactions.push(newTransaction(year, month, date, 'Contributions - WW', TransactionCode.W));
-      });
-      resolve(transactions);
-    }, reject);
-  });
+export function isPending(transaction: Transaction, date: string){
+  return (!transaction.apply_on_date) || transaction.apply_on_date >= date
 }
-*/
 
 function getWithCode(breakdown: TransactionBreakdown[]|undefined, code?: TransactionBreakdownCode){
   if(!breakdown){
     return [''];
   }
   return [toMoneyS(breakdown.reduce((sum, b) => {
-    return sum + ((b.code == code && b.amt) ? b.amt : 0);
+    return sum + ((b.code === code && b.amt) ? b.amt : 0);
   }, 0))];
 }
-
 
 function truncate(str: string, len: number){
   return str.length <= len ? str : str.substring(len) + '...';

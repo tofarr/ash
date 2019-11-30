@@ -4,6 +4,7 @@ import DbService from '../utils/db';
 import moment from 'moment';
 import Settings, { MeetingDays } from './Settings';
 import TransactionBreakdownCode from '../transactions/types/TransactionBreakdownCode';
+import { DATE_FORMAT } from '../utils/date';
 
 DbService.version(1).stores({
   settings: 'id++'
@@ -91,11 +92,7 @@ export function currentDateStr(settings: Settings){
   return moment().format(settings.formatting.date_format);
 }
 
-export function dateStr(settings: Settings, year: number, month: number, day: number){
-  return moment()
-    .startOf('year')
-    .year(year)
-    .month(month)
-    .day(day)
+export function dateStr(settings: Settings, date: string){
+  return moment(date, DATE_FORMAT)
     .format(settings.formatting.date_format);
 }

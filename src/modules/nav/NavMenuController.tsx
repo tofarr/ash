@@ -1,14 +1,13 @@
 import React, { FC, Component } from 'react';
 import { Box, Button, Grid } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-/*
-import { MONTH_LIST_PATH } from '../../persistent/months/components/MonthListController';
-*/
+
 import { CREATE_MEETING_PATH } from '../meetings/components/CreateMeetingController';
 import { CREATE_DEPOSIT_PATH } from '../deposits/components/CreateDepositController';
 import { CREATE_TRANSFER_PATH } from '../transferToBranch/components/CreateTransferToBranchController';
 import { CREATE_TRANSACTION_PATH } from '../transactions/components/CreateTransactionController';
 import { monthTransactionsPath } from '../transactions/components/MonthTransactionsController';
+import { monthListPath } from '../months/MonthListController';
 
 export interface NavMenuProps {
   onClick?: () => void;
@@ -42,14 +41,12 @@ const NavMenuController: FC<NavMenuProps> = ({ onClick, setTitle }) => {
   return (
     <Box p={1}>
       <Grid container direction="column" spacing={1}>
-        {/*
-        {renderMenuItem('Select Month', MONTH_LIST_PATH)}
-        */}
         {renderMenuItem('Add Meeting', CREATE_MEETING_PATH)}
         {renderMenuItem('Add Deposit', CREATE_DEPOSIT_PATH)}
         {renderMenuItem('Add Transfer To Branch', CREATE_TRANSFER_PATH)}
         {renderMenuItem('Add Transaction', CREATE_TRANSACTION_PATH)}
         {renderMenuItem('Current Month', monthTransactionsPath())}
+        {renderMenuItem('Select Month', monthListPath())}
         {renderMenuItem('Settings', '/settings')}
         {renderMenuItem('Backups', '/backups')}
 

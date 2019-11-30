@@ -1,11 +1,5 @@
 import { array, number, object, string, StringSchema } from 'yup';
 import { dateStr } from '../utils/schemas';
-import TransferToBranch from './TransferToBranch';
-
-interface YupContext{
-  path: any;
-  createError: any;
-}
 
 export default function transactionSchema(){
   return object().shape({

@@ -1,4 +1,4 @@
-import React, { FC, Fragment, ReactElement, ReactNode, useState } from 'react';
+import React, { FC, Fragment, ReactElement, useState } from 'react';
 import { AppBar, Dialog, IconButton, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -18,7 +18,7 @@ export interface NavBarProps {
 
 const NavBarController: FC<NavBarProps> = ({ children }) => {
 
-  const [title, setTitle] = useState<ReactNode>('Accounts Servant Heler');
+  const [title, setTitle] = useState('Accounts Servant Heler');
   const [open, setOpen] = useState(false);
   const { push } = useHistory();
   const theme = useTheme();
