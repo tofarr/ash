@@ -2,13 +2,14 @@ import moment from 'moment';
 import TransferToBranch from './TransferToBranch';
 import { DATE_FORMAT, todayStr } from '../utils/date';
 import Transaction from '../transactions/types/Transaction';
-import { create, list, fillAndDownloadTO62 } from '../transactions/transactionService';
+import { create, list } from '../transactions/transactionService';
 import TransactionBreakdown from '../transactions/types/TransactionBreakdown';
 import TransactionBreakdownCode from '../transactions/types/TransactionBreakdownCode';
 import TransactionCode from '../transactions/types/TransactionCode';
 import addErr from '../utils/err';
 import transferToBranchSchema from './TransferToBranchSchema';
 import { loadSettings } from '../settings/SettingsService';
+import { fillAndDownloadTO62 } from '../transactions/TO62Service';
 
 export function newTransferToBranch(apply_on_date = todayStr()) {
   return new Promise<TransferToBranch>((resolve, reject) => {
