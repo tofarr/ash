@@ -1,7 +1,7 @@
-import { array, number, NumberSchema, object, string, StringSchema } from 'yup';
+import { array, boolean, BooleanSchema, number, NumberSchema, object, string, StringSchema } from 'yup';
 import Transaction from '../types/Transaction';
 import TransactionBreakdown from '../types/TransactionBreakdown';
-import TransactionCode from '../types/TransactionCode';
+import TransactionCode, { isLocalCongregation } from '../types/TransactionCode';
 import transactionBreakdownSchema from './transactionBreakdownSchema';
 import { YupContext, dateStr } from '../../utils/schemas';
 
@@ -10,7 +10,7 @@ const transactionSchema = object().shape({
   date: dateStr.required(),
   receipts_amt: number().integer().required()
     .when(['code', 'cash', 'cheques'],
-      (code: string, cash: number|undefined, cheques: number|undefined, schema: NumberSchema) => {
+      (code: TransactionCode|undefined, cash: number|undefined, cheques: number|undefined, schema: NumberSchema) => {
         switch(code as unknown){
           case TransactionCode.C:
           case TransactionCode.W:
@@ -27,7 +27,7 @@ const transactionSchema = object().shape({
     ),
   primary_amt: number().integer().required()
     .when(['code', 'receipts_amt'],
-      (code: string, receipts_amt: number, schema: NumberSchema) => {
+      (code: TransactionCode|undefined, receipts_amt: number, schema: NumberSchema) => {
         switch(code as unknown){
           case TransactionCode.C:
           case TransactionCode.W:
@@ -44,7 +44,7 @@ const transactionSchema = object().shape({
     ),
   other_amt: number().integer().required()
     .when('code',
-      (code: string, schema: NumberSchema) => {
+      (code: TransactionCode|undefined, schema: NumberSchema) => {
         return code ? schema.oneOf([0], 'Amounts for other are not supported when a code is specified') : schema;
       }
     ),

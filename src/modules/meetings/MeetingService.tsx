@@ -4,17 +4,30 @@ import { create, newInstance } from '../transactions/transactionService';
 import TransactionCode from '../transactions/types/TransactionCode';
 import addErr from '../utils/err';
 import meetingSchema from './MeetingSchema';
+import { loadSettings } from '../settings/SettingsService';
 
 export function newMeeting(date = todayStr()) {
-  return {
-    date,
-    congregation_cash: 0,
-    congregation_cheques: 0,
-    worldwide_cash: 0,
-    worldwide_cheques: 0,
-    construction_cash: 0,
-    construction_cheques: 0
-  };
+  return new Promise<Meeting>((resolve, reject) => {
+    loadSettings().then((settings) => {
+      const special_contribution_boxes = settings.special_contribution_boxes.map((title) => {
+        return {
+          title,
+          cash: 0,
+          cheques: 0
+        }
+      });
+      resolve({
+        date,
+        settings,
+        congregation_cash: 0,
+        congregation_cheques: 0,
+        worldwide_cash: 0,
+        worldwide_cheques: 0,
+        special_contribution_boxes
+      });
+    }, reject)
+  });
+
 }
 
 export function createMeeting(meeting: Meeting){
@@ -36,11 +49,15 @@ export function createMeeting(meeting: Meeting){
         return create(transaction);
       }
 
-      Promise.all([
+      const promises = [
         initTransaction(TransactionCode.C, 'Contributions - Congregation', meeting.congregation_cash, meeting.congregation_cheques),
         initTransaction(TransactionCode.W, 'Contributions - WW', meeting.worldwide_cash, meeting.worldwide_cheques),
-        initTransaction(TransactionCode.S, 'Contributions - Construction', meeting.construction_cash, meeting.construction_cheques)
-      ]).then(() => resolve(meeting), handleReject);
+      ];
+      meeting.special_contribution_boxes.forEach((special_contribution_box) =>
+        promises.push(initTransaction(TransactionCode.S, special_contribution_box.title, special_contribution_box.cash, special_contribution_box.cheques))
+      );
+
+      Promise.all(promises).then(() => resolve(meeting), handleReject);
     }, handleReject);
   });
 }

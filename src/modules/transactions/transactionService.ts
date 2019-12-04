@@ -1,6 +1,6 @@
 import DateBalance from './types/DateBalance';
 import Transaction from './types/Transaction';
-import TransactionCode from './types/TransactionCode';
+import TransactionCode, { isLocalCongregation } from './types/TransactionCode';
 import TransactionListProps from './types/TransactionListProps';
 import TransactionSet from './types/TransactionSet';
 
@@ -57,7 +57,7 @@ export function list(props?: TransactionListProps){
 export function newInstance(
   description: string,
   date?: string,
-  code?: TransactionCode
+  code = TransactionCode.C
 ): Transaction{
   return {
     date: date || todayStr(),

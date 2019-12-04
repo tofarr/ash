@@ -4,6 +4,7 @@ import { Box, Button, Grid } from '@material-ui/core';
 import ListCollapse from '../../utils/components/ListCollapse';
 import ConfirmButton from '../../utils/components/ConfirmButton';
 import TransactionBreakdown from '../types/TransactionBreakdown';
+import TransactionBreakdownCode from '../types/TransactionBreakdownCode';
 import BreakdownRow from './BreakdownRow';
 
 export interface TransactionBreakdownListProps{
@@ -15,6 +16,7 @@ export interface TransactionBreakdownListProps{
 const TransactionBreakdownList: FC<TransactionBreakdownListProps> = ({ breakdowns, onChange, amtRequired}) => {
 
   const [newBreakdown,setNewBreakdown] = useState<TransactionBreakdown>({
+    code: TransactionBreakdownCode.OTHER,
     description: '',
     amt: undefined });
 

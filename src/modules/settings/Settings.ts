@@ -38,6 +38,7 @@ export default interface Settings{
 
   cash_box: boolean,
   meeting_days: MeetingDays,
+  special_contribution_boxes: string[],
   // walkthrough: boolean,
   // rules: RulesSettings,
   transferToBranchDefaults: TransactionBreakdown[],

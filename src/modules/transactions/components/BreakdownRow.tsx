@@ -23,14 +23,14 @@ const TransactionBreakdownRow: FC<TransactionBreakdownRowProps> = ({ breakdown, 
         <CodeSelect
           label="Type"
           value={breakdown.code}
-          keyFn={(code?: TransactionBreakdownCode) => code}
+          keyFn={(code: TransactionBreakdownCode) => code}
           titleFn={describeTransactionBreakdownCode}
           descriptionFn={describeTransactionBreakdownCode}
           options={Object.keys(TransactionBreakdownCode) as TransactionBreakdownCode[]}
-          onChange={(code?: TransactionBreakdownCode) =>
+          onChange={(code: TransactionBreakdownCode) =>
             onChange({ ...breakdown,
-               code: code as TransactionBreakdownCode,
-               description: code ? describeTransactionBreakdownCode(code) : undefined })} />
+               code,
+               description: code === TransactionBreakdownCode.OTHER ? undefined : describeTransactionBreakdownCode(code) })} />
       </Grid>
       <Grid item xs sm={4}>
         <MoneyInput

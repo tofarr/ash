@@ -8,7 +8,8 @@ import Loader from '../../utils/components/Loader';
 import MoneyInput from '../../utils/money/MoneyInput';
 import Money from '../../utils/money/Money';
 
-import Meeting from '../Meeting'
+import Meeting from '../Meeting';
+import SpecialContributionBox from '../SpecialContributionBox';
 
 export interface MeetingFormProps{
   meeting: Meeting;
@@ -20,12 +21,14 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
 
   const [internalMeeting, setInternalMeeting] = useState(meeting);
   const {congregation_cash, congregation_cheques, worldwide_cash,
-    worldwide_cheques, construction_cash, construction_cheques } = internalMeeting;
+    worldwide_cheques, special_contribution_boxes } = internalMeeting;
 
-  const totalCash = congregation_cash as number
-    + (worldwide_cash as number) + (construction_cash as number);
-  const totalCheques = congregation_cheques as number
-    + (worldwide_cheques as number) + (construction_cheques as number);
+  const totalCash = congregation_cash + worldwide_cash + special_contribution_boxes.reduce((sum, special_contribution_box) => {
+    return sum + special_contribution_box.cash
+  }, 0);
+  const totalCheques = congregation_cheques + worldwide_cheques + special_contribution_boxes.reduce((sum, special_contribution_box) => {
+    return sum + special_contribution_box.cheques
+  }, 0);
 
   function renderRowLayout(label: string, cash: ReactNode, cheques: ReactNode, total: ReactNode, divider = false){
     return (
@@ -71,6 +74,24 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
         true);
   }
 
+  function renderSpecialBoxes(){
+    return special_contribution_boxes.map((special_contribution_box, index) => (
+        <Grid item key={index}>
+          {renderRow(special_contribution_box.title, special_contribution_box.cash,
+            (value?: number) => handleSpecialBox({...special_contribution_box, cash: value as number}, index),
+            special_contribution_box.cheques,
+            (value?: number) => handleSpecialBox({...special_contribution_box, cheques: value as number}, index),
+          )}
+        </Grid>
+    ));
+  }
+
+  function handleSpecialBox(special_box: SpecialContributionBox, index: number){
+    const special_contribution_boxes = internalMeeting.special_contribution_boxes.slice();
+    special_contribution_boxes[index] = special_box;
+    setInternalMeeting({...internalMeeting, special_contribution_boxes});
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>){
     event.preventDefault();
     onSubmit(internalMeeting);
@@ -105,13 +126,7 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
             (value?: number) => setInternalMeeting({...internalMeeting, worldwide_cheques: value as number}),
           )}
         </Grid>
-        <Grid item>
-          {renderRow('Construction', internalMeeting.construction_cash,
-            (value?: number) => setInternalMeeting({...internalMeeting, construction_cash: value as number}),
-            internalMeeting.construction_cheques,
-            (value?: number) => setInternalMeeting({...internalMeeting, construction_cheques: value as number}),
-          )}
-        </Grid>
+        {renderSpecialBoxes()}
         <Grid item>
           {renderRowLayout('Total',
             <Money value={totalCash} />,

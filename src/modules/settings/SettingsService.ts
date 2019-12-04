@@ -4,7 +4,7 @@ import DbService from '../utils/db';
 import moment from 'moment';
 import Settings, { MeetingDays } from './Settings';
 import TransactionBreakdownCode from '../transactions/types/TransactionBreakdownCode';
-import { DATE_FORMAT } from '../utils/date';
+import { DATE_FORMAT, MONTH_FORMAT } from '../utils/date';
 
 DbService.version(1).stores({
   settings: 'id++'
@@ -14,8 +14,8 @@ function newSettings(): Settings{
   return {
     locale: AvailableLocale.en,
     formatting: {
-      date_format: 'MMMM D YYYY',
-      month_format: 'MMMM YYYY',
+      date_format: 'MMM D YYYY',
+      month_format: 'MMM YYYY',
     },
 
     congregation_name: 'Congregation Name',
@@ -38,6 +38,7 @@ function newSettings(): Settings{
     //  interest: true,
     //  wefts: true
     //},
+    special_contribution_boxes: ['Contributions - Construction'],
     transferToBranchDefaults: [
       {description: 'WW (resolution)', code: TransactionBreakdownCode.WW_RESOLUTION, amt: 0},
       {description: 'KHAHC (resolution)', code: TransactionBreakdownCode.KHAHC, amt: 0},
@@ -71,10 +72,11 @@ export function storeSettings(settings: Settings){
   });
 }
 
-export function meetingDates(year: number, month: number, meetingDays: MeetingDays) {
-  let meetingDates: number[] = [];
-  let m = moment().startOf('month').set('year', year).set('month', month);
-  while(m.get('month') === month){
+export function meetingDates(month: string, meetingDays: MeetingDays) {
+  let m = moment(month, MONTH_FORMAT).startOf('month');
+  let monthNum = m.month();
+  let meetingDates: string[] = [];
+  while(m.get('month') === monthNum){
     if(((m.day() === 0) && meetingDays.sun) ||
         ((m.day() === 1) && meetingDays.mon) ||
         ((m.day() === 2) && meetingDays.tue) ||
@@ -82,8 +84,9 @@ export function meetingDates(year: number, month: number, meetingDays: MeetingDa
         ((m.day() === 4) && meetingDays.thu) ||
         ((m.day() === 5) && meetingDays.fri) ||
         ((m.day() === 6) && meetingDays.sat)){
-        meetingDates.push(m.date());
+        meetingDates.push(m.format(DATE_FORMAT));
     }
+    m.add(1, 'day');
   }
   return meetingDates;
 }

@@ -14,6 +14,7 @@ import CreateMeetingController, { CREATE_MEETING_PATH } from './modules/meetings
 import CreateDepositController, { CREATE_DEPOSIT_PATH } from './modules/deposits/components/CreateDepositController';
 import CreateTransactionController, { CREATE_TRANSACTION_PATH } from './modules/transactions/components/CreateTransactionController';
 import MonthTransactionsController, { MONTH_TRANSACTIONS_PATH } from './modules/transactions/components/MonthTransactionsController';
+import MonthWarningsController, { MONTH_WARNINGS_PATH } from './modules/transactions/components/MonthWarningsController';
 import UpdateTransactionController, { UPDATE_TRANSACTION_PATH } from './modules/transactions/components/UpdateTransactionController';
 import DateBalanceController, { DATE_BALANCE_PATH } from './modules/transactions/components/DateBalanceController';
 import CreateTransferToBranchController, { CREATE_TRANSFER_PATH } from './modules/transferToBranch/components/CreateTransferToBranchController';
@@ -37,6 +38,7 @@ const App: React.FC = () => {
                     <Route path={CREATE_TRANSACTION_PATH} component={() => <CreateTransactionController setTitle={setTitle} />} />
                     <Route path={UPDATE_TRANSACTION_PATH} component={() => <UpdateTransactionController setTitle={setTitle} />} />
                     <Route path={MONTH_TRANSACTIONS_PATH} component={() => <MonthTransactionsController setTitle={setTitle} />} />
+                    <Route path={MONTH_WARNINGS_PATH} component={() => <MonthWarningsController setTitle={setTitle} />} />
                     <Route path={DATE_BALANCE_PATH} component={() => <DateBalanceController setTitle={setTitle} />} />
                     <Route path={MONTH_LIST_PATH} component={() => <MonthListController setTitle={setTitle} />} />
                     <Redirect from="/" exact={true} to={NAV_MENU_PATH} />

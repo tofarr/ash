@@ -11,7 +11,7 @@ Typography } from '@material-ui/core';
 
 import Transaction from '../types/Transaction';
 import TransactionBreakdown from '../types/TransactionBreakdown';
-import TransactionCode, { describeTransactionCode } from '../types/TransactionCode';
+import TransactionCode, { describeTransactionCode, describeTransactionCodeShort } from '../types/TransactionCode';
 import TransactionBreakdownList from './BreakdownList';
 
 import CodeSelect from '../../utils/components/CodeSelect';
@@ -41,21 +41,13 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
     setDescriptionError(!event.target.value);
   }
 
-  function handleCodeChange(code: TransactionCode|undefined){
-    const newTransaction = { ...internalTransaction, code };
-    if(!transaction.description){
-      switch(code){
-        case TransactionCode.W:
-          newTransaction.description = 'Contributions - WW';
-          break;
-        case TransactionCode.C:
-          newTransaction.description = 'Contributions - Congregation';
-          break;
-        case TransactionCode.D:
-          newTransaction.description = 'Deposit';
-          break;
-      }
-    }
+  function handleCodeChange(_code: TransactionCode){
+    const code = _code as TransactionCode;
+    const newTransaction = {
+      ...internalTransaction,
+      code,
+      description: describeTransactionCodeShort(code)
+    };
     setInternalTransaction(newTransaction);
     setDescriptionError(descriptionError && !newTransaction.description);
   }
@@ -92,10 +84,9 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
                   <CodeSelect
                     label="Code"
                     value={internalTransaction.code}
-                    required={false}
-                    keyFn={(code?: TransactionCode) => code}
-                    titleFn={(code?: TransactionCode) => code || 'None'}
-                    descriptionFn={(code?) => <Grid container spacing={2}>
+                    keyFn={(code: TransactionCode) => code}
+                    titleFn={(code: TransactionCode) => code}
+                    descriptionFn={(code) => <Grid container spacing={2}>
                       <Grid item xs={2}>
                         <Typography variant="h6">{code}</Typography>
                       </Grid>
@@ -107,6 +98,22 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
                     onChange={handleCodeChange} />
                 </Grid>
                 <Grid item xs={9}>
+                  <TextField
+                    required
+                    fullWidth
+                    multiline
+                    error={descriptionError}
+                    label="Description"
+                    variant="outlined"
+                    value={internalTransaction.description}
+                    onChange={handleDescriptionChange}
+                    onBlur={() => setDescriptionError(!internalTransaction.description)} />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
                   <DateSelect
                     value={internalTransaction.date}
                     onChange={(date?: string) => {
@@ -118,30 +125,17 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
                     required={true}
                     displayFormat={settings.formatting.date_format} />
                 </Grid>
+                <Grid item xs={6}>
+                  <DateSelect
+                    value={internalTransaction.apply_on_date as string}
+                    onChange={(apply_on_date?: string) => {
+                      setInternalTransaction({ ...internalTransaction, apply_on_date });
+                    }}
+                    label="Applicable Date"
+                    required={false}
+                    displayFormat={settings.formatting.date_format} />
+                </Grid>
               </Grid>
-            </Grid>
-
-            <Grid item>
-              <DateSelect
-                value={internalTransaction.apply_on_date as string}
-                onChange={(apply_on_date?: string) => {
-                  setInternalTransaction({ ...internalTransaction, apply_on_date });
-                }}
-                label="Applicable Date"
-                required={false}
-                displayFormat={settings.formatting.date_format} />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                fullWidth
-                multiline
-                error={descriptionError}
-                label="Description"
-                variant="outlined"
-                value={internalTransaction.description}
-                onChange={handleDescriptionChange}
-                onBlur={() => setDescriptionError(!internalTransaction.description)} />
             </Grid>
             <Grid item>
               <Grid container spacing={1}>
@@ -193,7 +187,7 @@ const TransactionForm: FC<TransactionFormProps> = ({ transaction, onSubmit, chil
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   setInternalTransaction({ ...internalTransaction, confirmation_code: event.target.value })} />
             </Grid>
-            <Grid>
+            <Grid item>
               <Box pl={1} pr={1} pt={1}>
                 <FormControlLabel
                   control={

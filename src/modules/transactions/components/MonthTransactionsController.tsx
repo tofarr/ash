@@ -5,6 +5,8 @@ import { Box, Button, Grid } from '@material-ui/core';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ErrorIcon from '@material-ui/icons/Error';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 
 import { DATE_FORMAT, MONTH_FORMAT, thisMonthStr } from '../../utils/date';
 import useSettings from '../../settings/useSettings';
@@ -14,9 +16,13 @@ import Money from '../../utils/money/Money';
 import TransactionSet from '../types/TransactionSet';
 import { buildEndBalance, loadTransactionSet } from '../transactionService';
 import { fillAndDownloadS26 } from '../S26Service'
+import { fillAndDownloadS30 } from '../S30Service'
 import MonthTransactionsRow from './MonthTransactionsRow';
 import { updateTransactionPath } from './UpdateTransactionController';
+import { monthWarningsPath } from './MonthWarningsController';
 import { dateBalancePath } from './DateBalanceController';
+import monthTransactionsSchema from '../schemas/monthTransactionsSchema';
+import MonthWarningsDialog from './MonthWarningsDialog';
 
 export const MONTH_TRANSACTIONS_PATH = '/month-transactions/:month';
 
@@ -36,23 +42,34 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
 
   const [working, setWorking] = useState(false);
   const [transactionSet, setTransactionSet] = useState<TransactionSet|undefined>(undefined);
+  const [warnings, setWarnings] = useState<string[]|undefined>(undefined);
+  const [warningsOpen, setWarningsOpen] = useState(false);
   const settings = useSettings();
   const { push } = useHistory();
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const month = useParams<MonthTransactionsParams>().month as string;
   const m = moment(month, MONTH_FORMAT).startOf('month');
   const min = m.format(DATE_FORMAT);
   const max = m.add(1, 'month').format(DATE_FORMAT);
 
-  setTitle(moment(month, MONTH_FORMAT).format(settings.formatting.month_format));
+  setTitle(`${moment(month, MONTH_FORMAT).format(settings.formatting.month_format)} Transactions`);
 
   useEffect(() => {
     let mounted = true;
     setWorking(true);
+    setWarnings(undefined);
     loadTransactionSet(min, max).then((loadedTransactionSet: TransactionSet) => {
       if(mounted){
         setTransactionSet(loadedTransactionSet);
-        setWorking(false);
+        monthTransactionsSchema.validate({ transactionSet: loadedTransactionSet, settings }).then(() => {
+          setWorking(false);
+          setWarnings([]);
+        }, (err) => {
+          setWorking(false);
+          setWarnings(err.errors)
+        });
       }
     }, () => {
       if(mounted){
@@ -69,6 +86,14 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     push(monthTransactionsPath(newMonth));
   }
 
+  function handleWarnings(){
+    if(smUp){
+      setWarningsOpen(true);
+    }else{
+      push(monthWarningsPath(month));
+    }
+  }
+
   function renderControls(){
     return (
       <Grid container spacing={1} justify="space-between">
@@ -83,11 +108,15 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
               onClick={() => fillAndDownloadS26(transactionSet as TransactionSet, settings)}>
               S26
             </Button>
-            <Button variant="contained" title="Generate S30">
+            <Button variant="contained" title="Generate S30"
+              onClick={() => fillAndDownloadS30(transactionSet as TransactionSet, settings)}>
               S30
             </Button>
-            <Button variant="contained" title="View Warnings">
+            <Button variant="contained" title="View Warnings"
+              disabled={!(warnings && warnings.length)}
+              onClick={handleWarnings}>
               <ErrorIcon />
+              {warnings && !!warnings.length && warnings.length}
             </Button>
           </Box>
         </Grid>
@@ -183,6 +212,17 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     );
   }
 
+  function renderWarningDialog(){
+    if(!smUp || !transactionSet){
+      return null;
+    }
+    return <MonthWarningsDialog
+              working={working}
+              warnings={warnings}
+              open={warningsOpen && smUp}
+              onClose={() => setWarningsOpen(false)} />
+  }
+
   if(working){
     return <Loader />
   }
@@ -194,6 +234,7 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
       {renderOpeningBalanceRow()}
       {renderTransactionRows()}
       {renderClosingBalanceRow()}
+      {renderWarningDialog()}
     </Box>
   );
 }

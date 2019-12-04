@@ -55,7 +55,7 @@ export function toTransaction(transferToBranch: TransferToBranch){
       const description = `To Branch - ${confirmation_code} (${apply_on_date})`;
       const amt = breakdown.reduce(((sum: number, item: TransactionBreakdown) => (item.amt as number) + sum), 0);
       resolve({ date, apply_on_date, description,
-          code: TransactionCode.E, receipts_amt: 0, primary_amt: -amt,
+          code: TransactionCode.TTB, receipts_amt: 0, primary_amt: -amt,
           other_amt: 0 });
     }, (err: any) => {
       addErr(err);

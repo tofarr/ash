@@ -6,9 +6,8 @@ export default interface Transaction {
 
   date: string,
   description: string,
-  code?: TransactionCode,
-
-  apply_on_date?: string, // usually == transaction
+  code: TransactionCode,
+  apply_on_date?: string,
 
   receipts_amt: number,
   primary_amt: number,

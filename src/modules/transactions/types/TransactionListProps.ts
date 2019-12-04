@@ -4,4 +4,5 @@ export default interface TransactionListProps {
   date_max?: string,
   apply_on_date_min?: string,
   apply_on_date_max?: string,
+  local_congregation?: boolean|null,
 }

@@ -5,11 +5,12 @@ enum TransactionBreakdownCode{
   KHAHC = 'KHAHC',
   GAA = 'GAA',
   COAA = 'COAA',
+  OTHER = 'OTHER',
 }
 
 export default TransactionBreakdownCode;
 
-export function describeTransactionBreakdownCode(code?: TransactionBreakdownCode){
+export function describeTransactionBreakdownCode(code: TransactionBreakdownCode){
   switch(code){
     case TransactionBreakdownCode.WW_BOX:
       return 'Worldwide Work (From Contribution Box)';
@@ -21,8 +22,7 @@ export function describeTransactionBreakdownCode(code?: TransactionBreakdownCode
       return 'Global Assistance Arrangement (Resolution)';
     case TransactionBreakdownCode.COAA:
       return 'Circuit Overseer Assistance Arrangement (Resolution)';
-    case null:
-    case undefined:
+    case TransactionBreakdownCode.OTHER:
       return 'Other';
     default:
       throw new Error('UnknownCode:'+code);
