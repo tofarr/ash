@@ -18,7 +18,7 @@ export interface NavBarProps {
 
 const NavBarController: FC<NavBarProps> = ({ children }) => {
 
-  const [title, setTitle] = useState('Accounts Servant Heler');
+  const [title, setTitle] = useState('Accounts Servant Helper');
   const [open, setOpen] = useState(false);
   const { push } = useHistory();
   const theme = useTheme();

@@ -1,14 +1,11 @@
 
 import AvailableLocale from './AvailableLocale';
-import DbService from '../utils/db';
 import moment from 'moment';
 import Settings, { MeetingDays } from './Settings';
 import TransactionBreakdownCode from '../transactions/types/TransactionBreakdownCode';
 import { DATE_FORMAT, MONTH_FORMAT } from '../utils/date';
-
-DbService.version(1).stores({
-  settings: 'id++'
-})
+import { load, store } from './SettingsDAO';
+import { addMsg } from '../utils/msgs/service';
 
 function newSettings(): Settings{
   return {
@@ -48,25 +45,18 @@ function newSettings(): Settings{
   }
 }
 
-function table(){
-  return DbService.table<Settings>('settings');
-}
-
 export function loadSettings(){
   return new Promise<Settings>((resolve, reject) => {
-    table().get(1).then((settings) => {
-      if(settings){
-        resolve(settings);
-        return;
-      }
-      resolve(newSettings());
+    load().then((settings) => {
+      resolve(settings || newSettings());
     }, reject);
   });
 }
 
 export function storeSettings(settings: Settings){
   return new Promise<Settings>((resolve, reject) => {
-    table().put(settings, 1).then(() => {
+    store(settings).then(() => {
+      addMsg('Transaction Created');
       resolve(settings);
     }, reject);
   });

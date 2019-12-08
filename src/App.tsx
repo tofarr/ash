@@ -19,6 +19,7 @@ import UpdateTransactionController, { UPDATE_TRANSACTION_PATH } from './modules/
 import DateBalanceController, { DATE_BALANCE_PATH } from './modules/transactions/components/DateBalanceController';
 import CreateTransferToBranchController, { CREATE_TRANSFER_PATH } from './modules/transferToBranch/components/CreateTransferToBranchController';
 import MonthListController, { MONTH_LIST_PATH } from './modules/months/MonthListController';
+import SettingsController, { SETTINGS_PATH } from './modules/settings/components/SettingsController';
 
 
 const App: React.FC = () => {
@@ -41,6 +42,7 @@ const App: React.FC = () => {
                     <Route path={MONTH_WARNINGS_PATH} component={() => <MonthWarningsController setTitle={setTitle} />} />
                     <Route path={DATE_BALANCE_PATH} component={() => <DateBalanceController setTitle={setTitle} />} />
                     <Route path={MONTH_LIST_PATH} component={() => <MonthListController setTitle={setTitle} />} />
+                    <Route path={SETTINGS_PATH} component={() => <SettingsController setTitle={setTitle} />} />
                     <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
                   </Switch>
                 )
