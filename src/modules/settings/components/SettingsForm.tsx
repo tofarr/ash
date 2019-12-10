@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FC } from 'react';
-import { Box, Checkbox, Divider, FormControlLabel, Grid, Paper, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Checkbox, Divider, FormControlLabel, Grid, TextField, Typography } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment';
-
 import Settings from '../Settings';
 
 export interface SettingsFormProps{
@@ -115,7 +115,7 @@ const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) =
           </Grid>
         </Box>
       </Box>
-    )
+    );
   }
 
   function renderMeetingDay(attr: 'sun'|'mon'|'tue'|'wed'|'thu'|'fri'|'sat', label: string){
@@ -137,13 +137,27 @@ const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) =
     )
   }
 
+  function renderButton(){
+    return (
+      <Box p={1}>
+        <Grid container justify="flex-end">
+          <Grid item xs sm="auto">
+            <Button fullWidth variant="contained" type="submit" color="primary">
+              <EditIcon />
+              Save Changes
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+    )
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       {renderGeneralInfo()}
       {renderFormatting()}
       {renderMeetingDays()}
-      TRANSFER TO BRANCH DEFAULTS
-      SPECIAL CONTRIBUTION BOXES
+      {renderButton()}
     </form>
   );
 }

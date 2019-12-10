@@ -1,6 +1,5 @@
 
 import AvailableLocale from './AvailableLocale';
-import TransactionBreakdown from '../transactions/types/TransactionBreakdown';
 
 export interface MeetingDays{
   sun: boolean,
@@ -11,13 +10,6 @@ export interface MeetingDays{
   fri: boolean,
   sat: boolean,
 }
-
-/*
-export interface RulesSettings{
-  interest: true,
-  wefts: true
-}
-*/
 
 export interface Formatting{
   date_format: string,
@@ -35,11 +27,6 @@ export default interface Settings{
   authorized_signer: string,
   other_account_description?: string,
 
-
   cash_box: boolean,
   meeting_days: MeetingDays,
-  special_contribution_boxes: string[],
-  // walkthrough: boolean,
-  // rules: RulesSettings,
-  transferToBranchDefaults: TransactionBreakdown[],
 }

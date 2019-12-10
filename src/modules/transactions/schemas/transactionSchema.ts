@@ -1,7 +1,7 @@
-import { array, boolean, BooleanSchema, number, NumberSchema, object, string, StringSchema } from 'yup';
+import { array, number, NumberSchema, object, string, StringSchema } from 'yup';
 import Transaction from '../types/Transaction';
 import TransactionBreakdown from '../types/TransactionBreakdown';
-import TransactionCode, { isLocalCongregation } from '../types/TransactionCode';
+import TransactionCode from '../types/TransactionCode';
 import transactionBreakdownSchema from './transactionBreakdownSchema';
 import { YupContext, dateStr } from '../../utils/schemas';
 
@@ -60,7 +60,7 @@ const transactionSchema = object().shape({
         })
     }
   ),
-  breakdown: array().of(transactionBreakdownSchema)
+  breakdown: array().of(transactionBreakdownSchema())
 }).test('breakdown_total_match',
   'Breakdown total should match one of the transaction amounts',
   function(this: YupContext, transaction: Transaction) {

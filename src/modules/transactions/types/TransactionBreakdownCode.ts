@@ -28,3 +28,22 @@ export function describeTransactionBreakdownCode(code: TransactionBreakdownCode)
       throw new Error('UnknownCode:'+code);
   }
 }
+
+export function describeTransactionBreakdownCodeShort(code: TransactionBreakdownCode){
+  switch(code){
+    case TransactionBreakdownCode.WW_BOX:
+      return 'WW (Box)';
+    case TransactionBreakdownCode.WW_RESOLUTION:
+      return 'WW (Resolution)';
+    case TransactionBreakdownCode.KHAHC:
+      return 'KHAHC (Resolution)';
+    case TransactionBreakdownCode.GAA:
+      return 'GAA (Resolution)';
+    case TransactionBreakdownCode.COAA:
+      return 'COAA (Resolution)';
+    case TransactionBreakdownCode.OTHER:
+      return 'Other';
+    default:
+      throw new Error('UnknownCode:'+code);
+  }
+}

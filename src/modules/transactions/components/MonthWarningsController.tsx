@@ -12,6 +12,7 @@ import useSettings from '../../settings/useSettings';
 import { loadTransactionSet } from '../transactionService';
 import { monthTransactionsPath } from './MonthTransactionsController';
 import monthTransactionsSchema from '../schemas/monthTransactionsSchema';
+import { list as listContributionBoxes } from '../../contributionBoxes/contributionBoxService';
 import WarningList from './WarningList';
 
 export const MONTH_WARNINGS_PATH = "/month-warnings/:month";
@@ -46,11 +47,16 @@ const MonthWarningsController: FC<MonthWarningsProps> = ({ setTitle }) => {
   useEffect(() => {
     let mounted = true;
     setWorking(true);
-    loadTransactionSet(min, max).then((transactionSet) => {
+    Promise.all([
+      loadTransactionSet(min, max),
+      listContributionBoxes()
+    ]).then(([ loadedTransactionSet, boxes]) => {
       if(mounted){
-        monthTransactionsSchema.validate({transactionSet, settings}).then(() => {
-          setWarnings([]);
-          setWorking(false);
+        monthTransactionsSchema.validate({transactionSet: loadedTransactionSet, settings, boxes}).then(() => {
+          if(mounted){
+            setWarnings([]);
+            setWorking(false);
+          }
         }, (err) => {
           if(mounted){
             setWarnings(err.errors);

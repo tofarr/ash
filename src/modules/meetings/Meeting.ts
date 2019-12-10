@@ -1,13 +1,9 @@
 
-import SpecialContributionBox from './SpecialContributionBox';
+import ContributionBoxContributions from './ContributionBoxContributions';
 import Settings from '../settings/Settings';
 
 export default interface Meeting {
   date: string;
-  congregation_cash: number;
-  congregation_cheques: number;
-  worldwide_cash: number;
-  worldwide_cheques: number;
-  special_contribution_boxes: SpecialContributionBox[];
+  boxes: ContributionBoxContributions[];
   settings: Settings;
 }

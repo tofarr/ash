@@ -20,6 +20,8 @@ import DateBalanceController, { DATE_BALANCE_PATH } from './modules/transactions
 import CreateTransferToBranchController, { CREATE_TRANSFER_PATH } from './modules/transferToBranch/components/CreateTransferToBranchController';
 import MonthListController, { MONTH_LIST_PATH } from './modules/months/MonthListController';
 import SettingsController, { SETTINGS_PATH } from './modules/settings/components/SettingsController';
+import ContributionBoxesController, { CONTRIBUTION_BOXES_PATH } from './modules/contributionBoxes/components/ContributionBoxesController';
+import DefaultBreakdownController, { DEFAULT_BREAKDOWN_PATH } from './modules/transferToBranch/components/DefaultBreakdownController';
 
 
 const App: React.FC = () => {
@@ -43,6 +45,8 @@ const App: React.FC = () => {
                     <Route path={DATE_BALANCE_PATH} component={() => <DateBalanceController setTitle={setTitle} />} />
                     <Route path={MONTH_LIST_PATH} component={() => <MonthListController setTitle={setTitle} />} />
                     <Route path={SETTINGS_PATH} component={() => <SettingsController setTitle={setTitle} />} />
+                    <Route path={CONTRIBUTION_BOXES_PATH} component={() => <ContributionBoxesController setTitle={setTitle} />} />
+                    <Route path={DEFAULT_BREAKDOWN_PATH} component={() => <DefaultBreakdownController setTitle={setTitle} />} />
                     <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
                   </Switch>
                 )

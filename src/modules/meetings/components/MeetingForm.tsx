@@ -9,7 +9,7 @@ import MoneyInput from '../../utils/money/MoneyInput';
 import Money from '../../utils/money/Money';
 
 import Meeting from '../Meeting';
-import SpecialContributionBox from '../SpecialContributionBox';
+import ContributionBoxContributions from '../ContributionBoxContributions';
 
 export interface MeetingFormProps{
   meeting: Meeting;
@@ -20,14 +20,13 @@ export interface MeetingFormProps{
 const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
 
   const [internalMeeting, setInternalMeeting] = useState(meeting);
-  const {congregation_cash, congregation_cheques, worldwide_cash,
-    worldwide_cheques, special_contribution_boxes } = internalMeeting;
+  const { boxes } = internalMeeting;
 
-  const totalCash = congregation_cash + worldwide_cash + special_contribution_boxes.reduce((sum, special_contribution_box) => {
-    return sum + special_contribution_box.cash
+  const totalCash = boxes.reduce((sum, box) => {
+    return sum + box.cash
   }, 0);
-  const totalCheques = congregation_cheques + worldwide_cheques + special_contribution_boxes.reduce((sum, special_contribution_box) => {
-    return sum + special_contribution_box.cheques
+  const totalCheques = boxes.reduce((sum, box) => {
+    return sum + box.cheques
   }, 0);
 
   function renderRowLayout(label: string, cash: ReactNode, cheques: ReactNode, total: ReactNode, divider = false){
@@ -74,22 +73,22 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
         true);
   }
 
-  function renderSpecialBoxes(){
-    return special_contribution_boxes.map((special_contribution_box, index) => (
+  function renderBoxes(){
+    return boxes.map((box, index) => (
         <Grid item key={index}>
-          {renderRow(special_contribution_box.title, special_contribution_box.cash,
-            (value?: number) => handleSpecialBox({...special_contribution_box, cash: value as number}, index),
-            special_contribution_box.cheques,
-            (value?: number) => handleSpecialBox({...special_contribution_box, cheques: value as number}, index),
+          {renderRow(box.box.title, box.cash,
+            (value?: number) => handleSpecialBox({...box, cash: value as number}, index),
+            box.cheques,
+            (value?: number) => handleSpecialBox({...box, cheques: value as number}, index),
           )}
         </Grid>
     ));
   }
 
-  function handleSpecialBox(special_box: SpecialContributionBox, index: number){
-    const special_contribution_boxes = internalMeeting.special_contribution_boxes.slice();
+  function handleSpecialBox(special_box: ContributionBoxContributions, index: number){
+    const special_contribution_boxes = internalMeeting.boxes.slice();
     special_contribution_boxes[index] = special_box;
-    setInternalMeeting({...internalMeeting, special_contribution_boxes});
+    setInternalMeeting({...internalMeeting, boxes});
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>){
@@ -112,21 +111,7 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
         <Grid item>
           {renderHeader()}
         </Grid>
-        <Grid item>
-          {renderRow('Congregation', internalMeeting.congregation_cash,
-            (value?: number) => setInternalMeeting({...internalMeeting, congregation_cash: value as number}),
-            internalMeeting.congregation_cheques,
-            (value?: number) => setInternalMeeting({...internalMeeting, congregation_cheques: value as number}),
-          )}
-        </Grid>
-        <Grid item>
-          {renderRow('Worldwide Work', internalMeeting.worldwide_cash,
-            (value?: number) => setInternalMeeting({...internalMeeting, worldwide_cash: value as number}),
-            internalMeeting.worldwide_cheques,
-            (value?: number) => setInternalMeeting({...internalMeeting, worldwide_cheques: value as number}),
-          )}
-        </Grid>
-        {renderSpecialBoxes()}
+        {renderBoxes()}
         <Grid item>
           {renderRowLayout('Total',
             <Money value={totalCash} />,

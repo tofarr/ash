@@ -7,6 +7,7 @@ enum TransactionCode {
   I = 'I',
   E = 'E',
   S = 'S',
+  B = 'B',
   // Custom codes
   TTB = 'TTB',
   UC = 'UC',
@@ -32,6 +33,8 @@ export function describeTransactionCode(code: TransactionCode){
       return 'Congregation expenditure'
     case TransactionCode.S:
       return 'Funds received (For the Branch) for a special purpose';
+    case TransactionCode.B:
+      return 'Contributions for worldwide construction work from boxes';
     case TransactionCode.TTB:
       return 'Transfer to Branch';
     case TransactionCode.UC:
@@ -60,6 +63,8 @@ export function describeTransactionCodeShort(code: TransactionCode){
       return 'Interest on bank account';
     case TransactionCode.TTB:
       return 'Transfer to Branch';
+    case TransactionCode.B:
+      return 'Contributions - Construction'
     case TransactionCode.E:
     case TransactionCode.S:
     case TransactionCode.UC:
@@ -82,6 +87,7 @@ export function isLocalCongregation(code: TransactionCode){
     case TransactionCode.I:
     case TransactionCode.E:
     case TransactionCode.UC:
+    case TransactionCode.B:
       return true;
     case TransactionCode.D:
     case TransactionCode.UO:

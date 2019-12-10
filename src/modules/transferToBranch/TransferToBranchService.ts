@@ -2,12 +2,14 @@ import moment from 'moment';
 import TransferToBranch from './TransferToBranch';
 import { DATE_FORMAT, todayStr } from '../utils/date';
 import Transaction from '../transactions/types/Transaction';
-import { create, list } from '../transactions/transactionService';
+import { create, list as listTransactions } from '../transactions/transactionService';
 import TransactionBreakdown from '../transactions/types/TransactionBreakdown';
 import TransactionBreakdownCode from '../transactions/types/TransactionBreakdownCode';
+import * as transferToBranchDAO from './transferToBranchDAO';
 import TransactionCode from '../transactions/types/TransactionCode';
+import { addMsg } from '../utils/msgs/service';
 import addErr from '../utils/err';
-import transferToBranchSchema from './TransferToBranchSchema';
+import transferToBranchSchema from './transferToBranchSchema';
 import { loadSettings } from '../settings/SettingsService';
 import { fillAndDownloadTO62 } from '../transactions/TO62Service';
 
@@ -18,7 +20,8 @@ export function newTransferToBranch(apply_on_date = todayStr()) {
       const date = m.format(DATE_FORMAT);
       const date_max = date;
       const date_min = m.add(-1, 'month').format(DATE_FORMAT);
-      list({ date_min, date_max }).then((transactions: Transaction[]) => {
+      Promise.all([listTransactions({ date_min, date_max }), transferToBranchDAO.list()])
+        .then(([transactions, defaultBreakdown]) => {
         const wwBox = transactions.reduce(
           (sum: number, transaction: Transaction) => {
             const delta = (transaction.code === TransactionCode.W) ? transaction.receipts_amt : 0;
@@ -26,7 +29,7 @@ export function newTransferToBranch(apply_on_date = todayStr()) {
           }, 0);
 
         const idOffset = new Date().getTime();
-        const breakdown = settings.transferToBranchDefaults.map((item, index) => {
+        const breakdown = defaultBreakdown.map((item, index) => {
           return { ...item, id: idOffset + index }
         });
 
@@ -47,11 +50,34 @@ export function newTransferToBranch(apply_on_date = todayStr()) {
   });
 }
 
+
+export function loadDefaultBreakdown(){
+  return transferToBranchDAO.list();
+}
+
+export function storeDefaultBreakdown(breakdown: TransactionBreakdown[]){
+  return new Promise<TransactionBreakdown[]>((resolve, reject) => {
+    transferToBranchDAO.list().then((existing) => {
+      const toDestroy = existing
+        .map(breakdown => breakdown.id as number)
+        .filter(id => !!breakdown.find(b => b.id === id));
+      const toCreate = breakdown.filter(b => b.id == null);
+      const toUpdate = breakdown.filter(b => b.id != null);
+      transferToBranchDAO.editAll(toCreate, toUpdate, toDestroy).then((b) => {
+        addMsg('Transfer to Branch Defaults Updated');
+        resolve(b);
+      }, (err: any) => {
+        addErr(err);
+        reject(err);
+      })
+    });
+  });
+}
+
 export function toTransaction(transferToBranch: TransferToBranch){
   return new Promise<Transaction>((resolve, reject) => {
     transferToBranchSchema().validate(transferToBranch).then(() => {
       const { date, apply_on_date, breakdown, confirmation_code } = transferToBranch;
-
       const description = `To Branch - ${confirmation_code} (${apply_on_date})`;
       const amt = breakdown.reduce(((sum: number, item: TransactionBreakdown) => (item.amt as number) + sum), 0);
       resolve({ date, apply_on_date, description,

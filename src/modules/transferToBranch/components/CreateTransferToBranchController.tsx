@@ -4,7 +4,7 @@ import { monthTransactionsPath } from '../../transactions/components/MonthTransa
 
 import Loader from '../../utils/components/Loader';
 import TransferToBranch from '../TransferToBranch';
-import { newTransferToBranch, createTransferToBranch } from '../TransferToBranchService';
+import { newTransferToBranch, createTransferToBranch } from '../transferToBranchService';
 import TransferToBranchForm from './TransferToBranchForm'
 
 

@@ -8,6 +8,9 @@ import { CREATE_TRANSFER_PATH } from '../transferToBranch/components/CreateTrans
 import { CREATE_TRANSACTION_PATH } from '../transactions/components/CreateTransactionController';
 import { monthTransactionsPath } from '../transactions/components/MonthTransactionsController';
 import { monthListPath } from '../months/MonthListController';
+import { SETTINGS_PATH } from '../settings/components/SettingsController';
+import { CONTRIBUTION_BOXES_PATH } from '../contributionBoxes/components/ContributionBoxesController';
+import { DEFAULT_BREAKDOWN_PATH } from '../transferToBranch/components/DefaultBreakdownController';
 
 export interface NavMenuProps {
   onClick?: () => void;
@@ -47,7 +50,9 @@ const NavMenuController: FC<NavMenuProps> = ({ onClick, setTitle }) => {
         {renderMenuItem('Add Transaction', CREATE_TRANSACTION_PATH)}
         {renderMenuItem('Current Month', monthTransactionsPath())}
         {renderMenuItem('Select Month', monthListPath())}
-        {renderMenuItem('Settings', '/settings')}
+        {renderMenuItem('Settings', SETTINGS_PATH)}
+        {renderMenuItem('Contribution Boxes', CONTRIBUTION_BOXES_PATH)}
+        {renderMenuItem('Default Transfer Breakdown', DEFAULT_BREAKDOWN_PATH)}
         {renderMenuItem('Backups', '/backups')}
 
       </Grid>

@@ -1,6 +1,6 @@
 import { array, number, object } from 'yup';
 import { dateStr } from '../utils/schemas';
-import specialContributionBoxSchema from './specialContributionBoxSchema';
+import contributionBoxSchema from '../contributionBoxes/contributionBoxSchema';
 
 const NUM = number().integer().min(0).required();
 
@@ -11,6 +11,6 @@ export default function transactionSchema(){
     congregation_cheques: NUM,
     worldwide_cash: NUM,
     worldwide_cheques: NUM,
-    special_contribution_boxes: array().of(specialContributionBoxSchema().required()),
+    special_contribution_boxes: array().of(contributionBoxSchema().required()),
   });
 };

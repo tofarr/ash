@@ -31,17 +31,6 @@ function newSettings(): Settings{
       fri: false,
       sat: false,
     },
-    //rules: {
-    //  interest: true,
-    //  wefts: true
-    //},
-    special_contribution_boxes: ['Contributions - Construction'],
-    transferToBranchDefaults: [
-      {description: 'WW (resolution)', code: TransactionBreakdownCode.WW_RESOLUTION, amt: 0},
-      {description: 'KHAHC (resolution)', code: TransactionBreakdownCode.KHAHC, amt: 0},
-      {description: 'GAA (resolution)', code: TransactionBreakdownCode.GAA, amt: 0},
-      {description: 'COAA (resolution)', code: TransactionBreakdownCode.COAA, amt: 0},
-    ],
   }
 }
 

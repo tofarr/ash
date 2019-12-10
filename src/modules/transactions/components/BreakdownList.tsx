@@ -18,7 +18,7 @@ const TransactionBreakdownList: FC<TransactionBreakdownListProps> = ({ breakdown
   const [newBreakdown,setNewBreakdown] = useState<TransactionBreakdown>({
     code: TransactionBreakdownCode.OTHER,
     description: '',
-    amt: undefined });
+    amt: 0 });
 
   function renderItems(){
     return (

@@ -5,26 +5,24 @@ import TransactionCode from '../transactions/types/TransactionCode';
 import addErr from '../utils/err';
 import meetingSchema from './MeetingSchema';
 import { loadSettings } from '../settings/SettingsService';
+import { list as listContributionBoxes } from '../contributionBoxes/contributionBoxService';
 
 export function newMeeting(date = todayStr()) {
   return new Promise<Meeting>((resolve, reject) => {
     loadSettings().then((settings) => {
-      const special_contribution_boxes = settings.special_contribution_boxes.map((title) => {
-        return {
-          title,
-          cash: 0,
-          cheques: 0
-        }
-      });
-      resolve({
-        date,
-        settings,
-        congregation_cash: 0,
-        congregation_cheques: 0,
-        worldwide_cash: 0,
-        worldwide_cheques: 0,
-        special_contribution_boxes
-      });
+      listContributionBoxes().then((boxes) => {
+        resolve({
+          date,
+          settings,
+          boxes: boxes.map(box => {
+            return {
+              cash: 0,
+              cheques: 0,
+              box
+            }
+          }),
+        });
+      }, reject);
     }, reject)
   });
 
@@ -49,15 +47,9 @@ export function createMeeting(meeting: Meeting){
         return create(transaction);
       }
 
-      const promises = [
-        initTransaction(TransactionCode.C, 'Contributions - Congregation', meeting.congregation_cash, meeting.congregation_cheques),
-        initTransaction(TransactionCode.W, 'Contributions - WW', meeting.worldwide_cash, meeting.worldwide_cheques),
-      ];
-      meeting.special_contribution_boxes.forEach((special_contribution_box) =>
-        promises.push(initTransaction(TransactionCode.S, special_contribution_box.title, special_contribution_box.cash, special_contribution_box.cheques))
-      );
-
-      Promise.all(promises).then(() => resolve(meeting), handleReject);
+      Promise.all(meeting.boxes.map((box) =>
+        initTransaction(box.box.code, box.box.title, box.cash, box.cheques)
+      )).then(() => resolve(meeting), handleReject);
     }, handleReject);
   });
 }

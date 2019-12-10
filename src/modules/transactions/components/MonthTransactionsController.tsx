@@ -15,6 +15,7 @@ import Loader from '../../utils/components/Loader';
 import Money from '../../utils/money/Money';
 import TransactionSet from '../types/TransactionSet';
 import { buildEndBalance, loadTransactionSet } from '../transactionService';
+import { list as listContributionBoxes } from '../../contributionBoxes/contributionBoxService';
 import { fillAndDownloadS26 } from '../S26Service'
 import { fillAndDownloadS30 } from '../S30Service'
 import MonthTransactionsRow from './MonthTransactionsRow';
@@ -60,22 +61,28 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     let mounted = true;
     setWorking(true);
     setWarnings(undefined);
-    loadTransactionSet(min, max).then((loadedTransactionSet: TransactionSet) => {
-      if(mounted){
-        setTransactionSet(loadedTransactionSet);
-        monthTransactionsSchema.validate({ transactionSet: loadedTransactionSet, settings }).then(() => {
+    Promise.all([
+      loadTransactionSet(min, max),
+      listContributionBoxes()
+    ]).then(([ loadedTransactionSet, boxes]) => {
+      setTransactionSet(loadedTransactionSet);
+      monthTransactionsSchema.validate({ transactionSet: loadedTransactionSet, settings, boxes }).then(() => {
+        if(mounted){
           setWorking(false);
           setWarnings([]);
-        }, (err) => {
+        }
+      }, (err) => {
+        if(mounted){
           setWorking(false);
-          setWarnings(err.errors)
-        });
-      }
-    }, () => {
+          setWarnings(err.errors);
+        }
+      });
+    }, (err) => {
       if(mounted){
         setWorking(false);
+        setWarnings(err.errors);
       }
-    });
+    })
     return () => {
       mounted = false;
     }

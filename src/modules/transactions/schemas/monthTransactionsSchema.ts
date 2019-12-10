@@ -12,40 +12,26 @@ import { buildEndBalance } from '../transactionService'
 const MonthTransactionsSchema = object().shape({
   settings: object().required(),
   transactionSet: transactionSetSchema.required()
-}).test('expected_meetings',
-  'Missing Expected Meetings',
+}).test('expected_contributions',
+  'Missing Expected Contributions',
   function(this: YupContext, monthTransactions: MonthTransactions) {
-    const { settings } = monthTransactions;
+    const { settings, boxes } = monthTransactions;
     const { transactions, start } = monthTransactions.transactionSet;
-    const missingMeetingDates = meetingDates(dateToMonth(start.date), settings.meeting_days)
-      .filter((meetingDate) => {
-        return !(transactions.find((transaction) => {
-          return transaction.date == meetingDate && transaction.code === TransactionCode.W
-        }) && transactions.find((transaction) => {
-          return transaction.date === meetingDate && transaction.code === TransactionCode.C
-        }) && (transactions.filter((transaction) => {
-          return transaction.date === meetingDate && transaction.code === TransactionCode.S
-        }).length === settings.special_contribution_boxes.length))
-      }).map((date) => dateStr(settings, date));
-    if(!missingMeetingDates.length){
+    const missingContributions: string[] = [];
+    meetingDates(dateToMonth(start.date), settings.meeting_days).forEach(date => {
+      boxes.forEach(box => {
+        const transaction = transactions.find(transaction =>
+          date === transaction.date && box.code === transaction.code
+        );
+        if(!transaction){
+          missingContributions.push(`${dateStr(settings, date)} (${box.code})`);
+        }
+      });
+    })
+    if(!missingContributions.length){
       return true;
     }
-    return this.createError({ message: `Missing meeting(s) on: ${missingMeetingDates.join(', ')}`})
-  }
-).test('no_unexpected_meetings',
-  'No Unexpected Meetings',
-  function(this: YupContext, monthTransactions: MonthTransactions) {
-    const { settings } = monthTransactions;
-    const { transactions, start } = monthTransactions.transactionSet;
-    const _meetingDates = meetingDates(dateToMonth(start.date), settings.meeting_days);
-    const unexpectedMeetings = transactions.filter((transaction) => {
-      return (transaction.code === TransactionCode.W || transaction.code === TransactionCode.C) &&
-        _meetingDates.indexOf(transaction.date) >= 0;
-    }).map(transaction => dateStr(settings, transaction.date));
-    if(!unexpectedMeetings.length){
-      return true;
-    }
-    return this.createError({ message: `Unexpected meeting(s) on: ${unexpectedMeetings.join(', ')}`})
+    return this.createError({ message: 'Missing contributions : ' + missingContributions.join(', ')})
   }
 ).test('no_duplicate_contributions',
   'No Duplicate Contributions',
