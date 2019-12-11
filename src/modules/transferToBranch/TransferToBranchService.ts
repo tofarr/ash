@@ -10,7 +10,7 @@ import TransactionCode from '../transactions/types/TransactionCode';
 import { addMsg } from '../utils/msgs/service';
 import addErr from '../utils/err';
 import transferToBranchSchema from './transferToBranchSchema';
-import { loadSettings } from '../settings/SettingsService';
+import { loadSettings } from '../settings/settingsService';
 import { fillAndDownloadTO62 } from '../transactions/TO62Service';
 
 export function newTransferToBranch(apply_on_date = todayStr()) {

@@ -4,7 +4,7 @@ import contributionBoxSchema from '../contributionBoxes/contributionBoxSchema';
 
 const NUM = number().integer().min(0).required();
 
-export default function transactionSchema(){
+export default function meetingSchema(){
   return object().shape({
     date: dateStr.required(),
     congregation_cash: NUM,

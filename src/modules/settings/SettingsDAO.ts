@@ -1,9 +1,10 @@
 
 import DbService from '../utils/db';
 import Settings from './Settings';
+import settingsSchema from './settingsSchema';
 
 DbService.version(1).stores({
-  settings: 'id++'
+  settings: ''
 })
 
 function table(){
@@ -15,5 +16,9 @@ export function load(){
 }
 
 export function store(settings: Settings){
-  return table().put(settings, 1);
+  return new Promise((resolve, reject) => {
+    settingsSchema().validate(settings).then(() => {
+      table().put(settings, 1).then(resolve, reject);
+    }, reject);
+  });
 }

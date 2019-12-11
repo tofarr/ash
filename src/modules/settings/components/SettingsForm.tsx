@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC } from 'react';
+import React, { ChangeEvent, FC, FormEvent } from 'react';
 import { Box, Button, Checkbox, Divider, FormControlLabel, Grid, TextField, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment';
@@ -12,8 +12,9 @@ export interface SettingsFormProps{
 
 const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) => {
 
-  function handleSubmit(){
+  function handleSubmit(event: FormEvent){
     if(onSubmit){
+      event.preventDefault();
       onSubmit(settings);
     }
   }

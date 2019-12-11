@@ -41,7 +41,7 @@ export async function downloadUrlForTransformedPdf(url: string, fieldValues: any
 
 export async function fillAndDownloadPdf(url: string, fieldValues: any){
   const downloadUrl = await downloadUrlForTransformedPdf(url, fieldValues);
-  var a = document.createElement('a');
+  const a = document.createElement('a');
   a.target = '_blank'
   a.href = downloadUrl;
   a.style.display = 'none';

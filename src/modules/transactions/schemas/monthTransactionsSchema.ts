@@ -4,14 +4,14 @@ import { YupContext } from '../../utils/schemas';
 
 import MonthTransactions from '../types/MonthTransactions';
 import transactionSetSchema from './transactionSetSchema';
-import { dateStr, meetingDates } from '../../settings/SettingsService';
+import { dateStr, meetingDates } from '../../settings/settingsService';
 import TransactionCode from '../types/TransactionCode';
 import { DATE_FORMAT, dateToMonth } from '../../utils/date';
 import { buildEndBalance } from '../transactionService'
 
 const MonthTransactionsSchema = object().shape({
   settings: object().required(),
-  transactionSet: transactionSetSchema.required()
+  transactionSet: transactionSetSchema().required()
 }).test('expected_contributions',
   'Missing Expected Contributions',
   function(this: YupContext, monthTransactions: MonthTransactions) {

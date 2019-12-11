@@ -14,7 +14,7 @@ function table(){
 
 export function create(transaction: Transaction){
   return new Promise<Transaction>((resolve, reject) => {
-    transactionSchema.validate(transaction).then(() => {
+    transactionSchema().validate(transaction).then(() => {
       table().add(transaction as Transaction).then((id) => {
         resolve({ ...transaction, id });
       }, reject);
@@ -28,7 +28,7 @@ export function read(id: number){
 
 export function update(transaction: Transaction){
   return new Promise<Transaction>((resolve, reject) => {
-    transactionSchema.validate(transaction).then(() => {
+    transactionSchema().validate(transaction).then(() => {
       table().update(transaction.id, transaction).then(() => {
         resolve(transaction);
       }, reject);

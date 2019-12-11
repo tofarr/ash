@@ -12,6 +12,7 @@
     "@types/react": "16.9.11",
     "@types/react-dom": "16.9.4",
     "@types/react-router-dom": "^5.1.2",
+    "@types/text-encoding": "0.0.35",
     "@types/yup": "^0.26.24",
     "dexie": "^2.0.4",
     "moment": "^2.24.0",
@@ -21,6 +22,7 @@
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
+    "text-encoding": "^0.7.0",
     "typescript": "3.7.2",
     "yup": "^0.27.0"
   },

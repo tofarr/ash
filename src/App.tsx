@@ -22,6 +22,7 @@ import MonthListController, { MONTH_LIST_PATH } from './modules/months/MonthList
 import SettingsController, { SETTINGS_PATH } from './modules/settings/components/SettingsController';
 import ContributionBoxesController, { CONTRIBUTION_BOXES_PATH } from './modules/contributionBoxes/components/ContributionBoxesController';
 import DefaultBreakdownController, { DEFAULT_BREAKDOWN_PATH } from './modules/transferToBranch/components/DefaultBreakdownController';
+import BackupsController, { BACKUPS_PATH } from './modules/backups/components/BackupsController';
 
 
 const App: React.FC = () => {
@@ -47,6 +48,7 @@ const App: React.FC = () => {
                     <Route path={SETTINGS_PATH} component={() => <SettingsController setTitle={setTitle} />} />
                     <Route path={CONTRIBUTION_BOXES_PATH} component={() => <ContributionBoxesController setTitle={setTitle} />} />
                     <Route path={DEFAULT_BREAKDOWN_PATH} component={() => <DefaultBreakdownController setTitle={setTitle} />} />
+                    <Route path={BACKUPS_PATH} component={() => <BackupsController setTitle={setTitle} />} />
                     <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
                   </Switch>
                 )

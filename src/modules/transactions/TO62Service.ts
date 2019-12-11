@@ -2,7 +2,7 @@ import Transaction from './types/Transaction';
 import TransactionBreakdown from './types/TransactionBreakdown';
 import TransactionBreakdownCode from './types/TransactionBreakdownCode';
 
-import { loadSettings, currentDateStr } from '../settings/SettingsService';
+import { loadSettings, currentDateStr } from '../settings/settingsService';
 
 import { toMoneyS } from '../utils/money/service';
 import { fillAndDownloadPdf } from '../utils/pdf';

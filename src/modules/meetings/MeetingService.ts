@@ -4,7 +4,7 @@ import { create, newInstance } from '../transactions/transactionService';
 import TransactionCode from '../transactions/types/TransactionCode';
 import addErr from '../utils/err';
 import meetingSchema from './MeetingSchema';
-import { loadSettings } from '../settings/SettingsService';
+import { loadSettings } from '../settings/settingsService';
 import { list as listContributionBoxes } from '../contributionBoxes/contributionBoxService';
 
 export function newMeeting(date = todayStr()) {

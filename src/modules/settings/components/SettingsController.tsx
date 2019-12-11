@@ -1,7 +1,7 @@
 import React, { FC, useState} from 'react';
 
 import SettingsForm from './SettingsForm';
-import { storeSettings } from '../SettingsService';
+import { storeSettings } from '../settingsService';
 import useSettings, { setSettings } from '../useSettings';
 
 export const SETTINGS_PATH = '/settings';
@@ -11,7 +11,7 @@ export interface SettingsControllerProps{
 }
 
 const SettingsController: FC<SettingsControllerProps> = ({ setTitle }) => {
-  setTitle('Settings');
+  setTitle('General Settings');
   const [internalSettings, setInternalSettings] = useState(useSettings());
 
   function handleSubmit(){
