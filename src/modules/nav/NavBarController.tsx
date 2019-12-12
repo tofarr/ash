@@ -1,5 +1,5 @@
 import React, { FC, Fragment, ReactElement, useState } from 'react';
-import { AppBar, Dialog, IconButton, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, Dialog, IconButton, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -47,7 +47,9 @@ const NavBarController: FC<NavBarProps> = ({ children }) => {
           </MsgContainer>
         </Toolbar>
         <Dialog open={open} onClose={() => setOpen(false)}>
-          <NavMenuController onClick={() => setOpen(false)} setTitle={setTitle} />
+          <Box p={1}>
+            <NavMenuController onClick={() => setOpen(false)} setTitle={setTitle} />
+          </Box>
         </Dialog>
       </AppBar>
       {children(setTitle)}
