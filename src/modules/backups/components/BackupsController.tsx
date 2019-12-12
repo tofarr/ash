@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useState} from 'react';
 import { Box, Button, Grid, TextField } from '@material-ui/core';
 import moment from 'moment';
-
 import Loader from '../../utils/components/Loader';
 import BackupSettings from '../BackupSettings';
-import { loadBackupSettings, saveBackup, storeBackupSettings } from '../backupService';
-import useSettings from '../../settings/useSettings';
+import { loadBackupSettings, saveBackup, restoreFromBackup } from '../backupService';
+import useSettings, { setSettings as setGlobalSettings } from '../../settings/useSettings';
+import * as settingsService from '../../settings/settingsService';
 import addErr from '../../utils/err';
 import { addMsg } from '../../utils/msgs/service';
 
@@ -52,7 +52,22 @@ const BackupsController: FC<BackupsControllerProps> = ({ setTitle }) => {
   }
 
   function handleRestore(){
-    debugger;
+    const fileSelect = document.querySelector('#backup_file') as any;
+    fileSelect.click();
+  }
+
+  function handleSelectFileForRestore(event: any){
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = () => {
+      const jsonStr = reader.result as string;
+      const backup = JSON.parse(jsonStr);
+      restoreFromBackup(backup).then((backupSettings) => {
+        setBackupSettings(backupSettings);
+        settingsService.loadSettings().then(setGlobalSettings)
+      });
+    }
+    reader.readAsText(file);
   }
 
   function renderMostRecentBackup(){
@@ -73,8 +88,8 @@ const BackupsController: FC<BackupsControllerProps> = ({ setTitle }) => {
   }
 
   return <Box p={1} pt={2} pb={2}>
-    <Grid container spacing={1}>
-      <Grid item xs={12} sm={4}>
+    <Grid container spacing={1} justify="flex-end">
+      <Grid item xs={12}>
         <TextField
           fullWidth
           disabled
@@ -82,7 +97,7 @@ const BackupsController: FC<BackupsControllerProps> = ({ setTitle }) => {
           label="Most Recent Back Up"
           value={renderMostRecentBackup()} />
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid item xs={12} md={4}>
         <Button
           fullWidth
           variant="contained"
@@ -91,7 +106,13 @@ const BackupsController: FC<BackupsControllerProps> = ({ setTitle }) => {
           Save Backup
         </Button>
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid item xs={12} md={4}>
+        <input
+          id="backup_file"
+          type="file"
+          style={{display: 'none'}}
+          onChange={handleSelectFileForRestore}
+          accept=".json,application/json" />
         <Button
           fullWidth
           variant="contained"

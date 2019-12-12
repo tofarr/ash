@@ -1,4 +1,4 @@
-import { array, number, object } from 'yup';
+import { object } from 'yup';
 
 
 export default function settingsSchema(){

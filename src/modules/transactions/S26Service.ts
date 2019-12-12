@@ -31,7 +31,7 @@ export async function fillAndDownloadS26(transactionSet: TransactionSet, setting
   const date = moment(start.date, DATE_FORMAT);
   const end = buildEndBalance(transactionSet);
 
-  const context = <S26Context>{
+  const context = {
     rowNum: 0,
     receiptsIn: 0,
     receiptsOut: 0,
@@ -47,7 +47,7 @@ export async function fillAndDownloadS26(transactionSet: TransactionSet, setting
       '900_5_Text_C': [date.year()],
       '900_6_Text_C': [settings.other_account_description],
     }
-  }
+  } as S26Context
 
   transactions.forEach((transaction) =>
     processTransaction(transaction, context)

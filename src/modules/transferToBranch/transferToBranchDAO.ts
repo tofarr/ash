@@ -30,22 +30,15 @@ export function list(){
   return table().toArray();
 }
 
-export function editAll(toCreate: TransactionBreakdown[], toUpdate: TransactionBreakdown[], toDestroy: number[]){
-  return new Promise<TransactionBreakdown[]>((resolve, reject) => {
-    const validations = toCreate.map(box => transactionBreakdownSchema().validate(box));
-    validations.push.apply(validations, toUpdate.map(breakdown => transactionBreakdownSchema().validate(breakdown)));
-    Promise.all(validations).then(() => {
-      const t = table();
-      db.transaction('rw', t, () => {
-        return new Promise((resolve, reject) => {
-          const promises = toCreate.map(breakdown => t.add(breakdown));
-          promises.push.apply(promises, toUpdate.map(breakdown => t.update(breakdown.id, breakdown)));
-          promises.push.apply(promises, toDestroy.map(id => t.delete(id)));
-          Promise.all(promises).then(resolve, reject);
-        });
-      }).then(() => {
-        list().then(resolve, reject)
+
+export function restore(breakdowns: TransactionBreakdown[]){
+  return new Promise((resolve, reject) => {
+    Promise.all(breakdowns.map(breakdown => transactionBreakdownSchema().validate(breakdown))).then(() => {
+      list().then((oldBreakdowns) => {
+        table().bulkDelete(oldBreakdowns.map(box => box.id as number)).then(()=> {
+          table().bulkAdd(breakdowns).then(resolve, reject);
+        }, reject);
       }, reject);
     }, reject);
-  })
+  });
 }

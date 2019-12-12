@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FC, ReactNode, useState } from 'react';
-import { Box, Button, Grid, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
 
 import CodeSelect from '../../utils/components/CodeSelect';
 import ListCollapse from '../../utils/components/ListCollapse';
@@ -41,7 +41,7 @@ const ContributionBoxList: FC<ContributionBoxListProps> = ({ boxes, onChange}) =
     onChange: (box: ContributionBox) => void,
     button: ReactNode){
     return (
-      <Box key={box.id} pb={3}>
+      <Box key={box.id} pb={2}>
         <Grid container spacing={1} alignItems="center" justify="flex-end">
           <Grid item xs={2} sm={2}>
             <CodeSelect
@@ -81,11 +81,20 @@ const ContributionBoxList: FC<ContributionBoxListProps> = ({ boxes, onChange}) =
   }
 
   function renderCreate(){
-    return renderItemLayout(newBox,
-      setNewBox,
-      <Button variant="contained" onClick={handleBoxCreate}>
-        Create
-      </Button>);
+    return (
+      <Box pb={2}>
+        <Paper>
+          <Box p={1}>
+            {renderItemLayout(newBox,
+              setNewBox,
+              <Button variant="contained" onClick={handleBoxCreate}>
+                Create
+              </Button>
+            )}
+          </Box>
+        </Paper>
+      </Box>
+    )
   }
 
   function handleBoxCreate(){

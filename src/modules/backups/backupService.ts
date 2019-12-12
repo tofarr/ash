@@ -3,11 +3,13 @@ import Backup from './Backup';
 import BackupSettings from './BackupSettings';
 import backupSchema from './backupSchema';
 import * as fileDAO from './FileDAO';
-import * as transactionService from '../transactions/transactionService';
+import * as transactionDAO from '../transactions/transactionDAO';
+import * as settingsDAO from '../settings/settingsDAO';
 import * as settingsService from '../settings/settingsService';
-import * as contributionBoxService from '../contributionBoxes/contributionBoxService';
-import * as transferToBranchService from '../transferToBranch/transferToBranchService';
+import * as contributionBoxDAO from '../contributionBoxes/contributionBoxDAO';
+import * as transferToBranchDAO from '../transferToBranch/transferToBranchDAO';
 import * as backupSettingsDAO from './backupSettingsDAO';
+import { addMsg } from '../utils/msgs/service';
 
 export function loadBackupSettings(){
   return new Promise<BackupSettings>((resolve, reject) => {
@@ -42,33 +44,23 @@ export function saveBackup(){
 }
 
 export function restoreFromBackup(backup: Backup){
-  return new Promise((resolve, reject) => {
+  return new Promise<BackupSettings>((resolve, reject) => {
     backupSchema().validate(backup).then(() => {
       clear().then(() => {
 
-        const promises = backup.transactions.map(transaction => transactionService.create(transaction))
-
-        promises.push(settingsService.storeSettings(backup.settings));
-
-        promises.push(contributionBoxService.editAll(backup.boxes.map((box) => {
-          return {
-            ...box,
-            id: undefined,
-          }
-        })));
-
-        promises.push(transferToBranchService.storeDefaultBreakdown(
-          backup.default_transaction_breakdowns.map(breakdown => {
-            return {
-              ...breakdown,
-              id: undefined,
-            }
-          })
-        ));
+        const promises = [] as Promise<any>[]
+        promises.push.apply(promises, backup.transactions.map(transaction => transactionDAO.create(transaction)));
+        promises.push(settingsDAO.store(backup.settings));
+        promises.push(contributionBoxDAO.restore(backup.boxes));
+        promises.push(transferToBranchDAO.restore(backup.default_transaction_breakdowns));
 
         Promise.all(promises).then(() => {
           loadBackupSettings().then(backupSettings => {
-            storeBackupSettings({ ...backupSettings, backed_up_at: new Date().getTime() }).then(resolve, reject);
+            backupSettings = { ...backupSettings, backed_up_at: new Date().getTime() };
+            storeBackupSettings(backupSettings).then(() => {
+              addMsg('Local State Restored from Backup');
+              resolve(backupSettings);
+            }, reject);
           }, reject);
         }, reject)
 
@@ -79,9 +71,9 @@ export function restoreFromBackup(backup: Backup){
 
 function clear(){
   return new Promise((resolve, reject) => {
-    transactionService.list().then((transactions) => {
+    transactionDAO.list().then((transactions) => {
       Promise.all(transactions.map(transaction =>
-         transactionService.destroy(transaction.id as number)))
+         transactionDAO.destroy(transaction.id as number)))
       .then(resolve, reject);
     });
   });
@@ -91,9 +83,9 @@ export function createBackup(){
   return new Promise<Backup>((resolve, reject) => {
     Promise.all([
       settingsService.loadSettings(),
-      transactionService.list(),
-      contributionBoxService.list(),
-      transferToBranchService.loadDefaultBreakdown()
+      transactionDAO.list(),
+      contributionBoxDAO.list(),
+      transferToBranchDAO.list()
     ]).then(([settings, transactions, boxes, default_transaction_breakdowns]) => {
       resolve({
         timestamp: new Date().getTime(),
@@ -111,7 +103,7 @@ export function storeBackup(backup: Backup, settings: BackupSettings){
 }
 
 export function getDAO(settings: BackupSettings){
-  const dao = getAvailableDAOs().find(dao => dao.code == settings.dao_code);
+  const dao = getAvailableDAOs().find(dao => dao.code === settings.dao_code);
   if(!dao){
     throw new Error('Unknown DAO: '+settings.dao_code);
   }

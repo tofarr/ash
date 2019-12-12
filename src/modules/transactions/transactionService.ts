@@ -1,6 +1,6 @@
 import DateBalance from './types/DateBalance';
 import Transaction from './types/Transaction';
-import TransactionCode, { isLocalCongregation } from './types/TransactionCode';
+import TransactionCode from './types/TransactionCode';
 import TransactionListProps from './types/TransactionListProps';
 import TransactionSet from './types/TransactionSet';
 

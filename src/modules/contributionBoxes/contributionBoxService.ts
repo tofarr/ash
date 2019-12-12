@@ -5,24 +5,13 @@ import * as dao from './contributionBoxDAO';
 
 import { addMsg } from '../utils/msgs/service';
 import addErr from '../utils/err';
+import TransactionCode, { describeTransactionCodeShort } from '../transactions/types/TransactionCode';
 
-export function editAll(boxes: ContributionBox[]){
-  return new Promise<ContributionBox[]>((resolve, reject) => {
-    dao.list().then((existing) => {
-      const toDestroy = existing
-        .map(box => box.id as number)
-        .filter(id => !!boxes.find(box => box.id === id));
-      const toCreate = boxes.filter(box => box.id == null);
-      const toUpdate = boxes.filter(box => box.id != null);
-      dao.editAll(toCreate, toUpdate, toDestroy).then((boxes) => {
-        addMsg('Contribution Boxes Updated');
-        resolve(boxes);
-      }, (err: any) => {
-        addErr(err);
-        reject(err);
-      })
-    });
-  });
+export function newInstance(): ContributionBox{
+  return {
+    code: TransactionCode.W,
+    title: describeTransactionCodeShort(TransactionCode.W),
+  }
 }
 
 export function create(contributionBox: ContributionBox){

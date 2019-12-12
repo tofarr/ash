@@ -25,7 +25,7 @@ export default interface Settings{
   province_or_state: string,
   accounts_servant_or_overseer: string,
   authorized_signer: string,
-  other_account_description?: string,
+  other_account_description: string,
 
   cash_box: boolean,
   meeting_days: MeetingDays,

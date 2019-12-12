@@ -49,25 +49,17 @@ export function destroy(id: number){
 }
 
 export function list(){
-  return table().orderBy('title').toArray();
+  return table().toArray();
 }
 
-export function editAll(toCreate: ContributionBox[], toUpdate: ContributionBox[], toDestroy: number[]){
-  return new Promise<ContributionBox[]>((resolve, reject) => {
-    const validations = toCreate.map(box => contributionBoxSchema().validate(box));
-    validations.push.apply(validations, toUpdate.map(box => contributionBoxSchema().validate(box)));
-    Promise.all(validations).then(() => {
-      const t = table();
-      db.transaction('rw', t, () => {
-        return new Promise((resolve, reject) => {
-          const promises = toCreate.map(box => t.add(box));
-          promises.push.apply(promises, toUpdate.map(box => t.update(box.id, box)));
-          promises.push.apply(promises, toDestroy.map(id => t.delete(id)));
-          Promise.all(promises).then(resolve, reject);
-        });
-      }).then(() => {
-        list().then(resolve, reject)
+export function restore(boxes: ContributionBox[]){
+  return new Promise((resolve, reject) => {
+    Promise.all(boxes.map(box => contributionBoxSchema().validate(box))).then(() => {
+      list().then((oldBoxes) => {
+        table().bulkDelete(oldBoxes.map(box => box.id as number)).then(()=> {
+          table().bulkAdd(boxes).then(resolve, reject);
+        }, reject);
       }, reject);
     }, reject);
-  })
+  });
 }

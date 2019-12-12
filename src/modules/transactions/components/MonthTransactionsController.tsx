@@ -10,6 +10,7 @@ import { useTheme } from '@material-ui/core/styles';
 
 import { DATE_FORMAT, MONTH_FORMAT, thisMonthStr } from '../../utils/date';
 import useSettings from '../../settings/useSettings';
+import { dateStr } from '../../settings/settingsService';
 
 import Loader from '../../utils/components/Loader';
 import Money from '../../utils/money/Money';
@@ -65,18 +66,20 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
       loadTransactionSet(min, max),
       listContributionBoxes()
     ]).then(([ loadedTransactionSet, boxes]) => {
-      setTransactionSet(loadedTransactionSet);
-      monthTransactionsSchema.validate({ transactionSet: loadedTransactionSet, settings, boxes }).then(() => {
-        if(mounted){
-          setWorking(false);
-          setWarnings([]);
-        }
-      }, (err) => {
-        if(mounted){
-          setWorking(false);
-          setWarnings(err.errors);
-        }
-      });
+      if(mounted){
+        setTransactionSet(loadedTransactionSet);
+        monthTransactionsSchema.validate({ transactionSet: loadedTransactionSet, settings, boxes }).then(() => {
+          if(mounted){
+            setWorking(false);
+            setWarnings([]);
+          }
+        }, (err) => {
+          if(mounted){
+            setWorking(false);
+            setWarnings(err.errors);
+          }
+        });
+      }
     }, (err) => {
       if(mounted){
         setWorking(false);
@@ -86,7 +89,7 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     return () => {
       mounted = false;
     }
-  }, [month, min, max]);
+  }, [month, min, max, settings]);
 
   function handleMonthChange(delta: number){
     const newMonth = moment(month, MONTH_FORMAT).add(delta, 'months').format(MONTH_FORMAT);
@@ -187,7 +190,7 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
             variant="contained"
             onClick={() => push(updateTransactionPath(transaction.id as number))}>
             <MonthTransactionsRow
-              description={transaction.description}
+              description={`(${dateStr(settings, transaction.date)}) ${transaction.description}`}
               receipts={<Money value={transaction.receipts_amt} />}
               primary={<Money value={transaction.primary_amt} />}
               other={<Money value={transaction.other_amt} />} />

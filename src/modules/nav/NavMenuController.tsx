@@ -1,5 +1,5 @@
 import React, { FC, Component } from 'react';
-import { Box, Button, Grid, Paper, Typography} from '@material-ui/core';
+import { Box, Button, Grid, Typography} from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
 import { CREATE_MEETING_PATH } from '../meetings/components/CreateMeetingController';
@@ -51,17 +51,15 @@ const NavMenuController: FC<NavMenuProps> = ({ onClick, setTitle }) => {
         {renderMenuItem('Current Month', monthTransactionsPath())}
         {renderMenuItem('Select Month', monthListPath())}
         <Grid item>
-          <Paper>
-            <Box p={1}>
-              <Typography variant="h6">Settings</Typography>
-              <Grid container direction="column" spacing={1}>
-                {renderMenuItem('General Settings', SETTINGS_PATH)}
-                {renderMenuItem('Contribution Boxes', CONTRIBUTION_BOXES_PATH)}
-                {renderMenuItem('Default Transfer Breakdown', DEFAULT_BREAKDOWN_PATH)}
-                {renderMenuItem('Backups', '/backups')}
-              </Grid>
-            </Box>
-          </Paper>
+          <Box p={1}>
+            <Typography variant="h6">Settings</Typography>
+            <Grid container direction="column" spacing={1}>
+              {renderMenuItem('General Settings', SETTINGS_PATH)}
+              {renderMenuItem('Contribution Boxes', CONTRIBUTION_BOXES_PATH)}
+              {renderMenuItem('Default Transfer Breakdown', DEFAULT_BREAKDOWN_PATH)}
+              {renderMenuItem('Backups', '/backups')}
+            </Grid>
+          </Box>
         </Grid>
       </Grid>
     </Box>

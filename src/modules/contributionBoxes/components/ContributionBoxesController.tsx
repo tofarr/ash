@@ -1,11 +1,13 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 import { Box, Button, Grid } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from 'react-router-dom';
 
 import Loader from '../../utils/components/Loader';
+import Alert from '../../utils/components/Alert';
 import ContributionBox from '../ContributionBox';
-import ContributionBoxList from './ContributionBoxList';
-import { editAll, list } from '../contributionBoxService';
+import { list } from '../contributionBoxService';
+import { updateContributionBoxPath } from './UpdateContributionBoxController';
+import { CREATE_CONTRIBUTION_BOX_PATH } from './CreateContributionBoxController';
 
 export const CONTRIBUTION_BOXES_PATH = '/contribution-boxes';
 
@@ -18,6 +20,7 @@ const ContributionBoxesController: FC<ContributionBoxesControllerProps> = ({ set
   setTitle('Contribution Boxes');
   const [working,setWorking] = useState(false);
   const [boxes, setBoxes] = useState<ContributionBox[]|undefined>(undefined);
+  const { push } = useHistory();
 
   useEffect(() => {
     let mounted = true;
@@ -37,30 +40,45 @@ const ContributionBoxesController: FC<ContributionBoxesControllerProps> = ({ set
     }
   }, []);
 
-  function renderForm(){
-    if(!boxes){
-      return null;
-    }
+
+  function renderBox(box: ContributionBox){
     return (
-      <form onSubmit={() => editAll(boxes)}>
-        <ContributionBoxList boxes={boxes} onChange={setBoxes} />
-        <Grid container justify="flex-end">
-          <Grid item xs sm="auto">
-            <Button fullWidth variant="contained" type="submit" color="primary">
-              <EditIcon />
-              Save Changes
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-    );
+      <Grid key={box.id} item xs>
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => push(updateContributionBoxPath(box.id as number))}>
+          {box.title}
+        </Button>
+      </Grid>
+    )
   }
 
-  return <Box p={1}>
-    {working && <Loader />}
-    {renderForm()}
-  </Box>
+  if(working){
+    return <Loader />
+  }
 
+  if(!boxes){
+    return <Alert msg="Error retrieving Boxes" />;
+  }
+
+  return (
+    <Fragment>
+      <Box p={1}>
+        <Grid container direction="column" spacing={1}>
+          {boxes.map(renderBox)}
+        </Grid>
+      </Box>
+      <Box p={1} pt={2}>
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => push(CREATE_CONTRIBUTION_BOX_PATH)}>
+          Create Contribution Box
+        </Button>
+      </Box>
+    </Fragment>
+  );
 }
 
 export default ContributionBoxesController;

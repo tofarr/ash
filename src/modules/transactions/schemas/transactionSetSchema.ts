@@ -1,4 +1,4 @@
-import { array, number, object } from 'yup';
+import { array, object } from 'yup';
 
 import dateBalanceSchema from './dateBalanceSchema';
 import transactionSchema from './transactionSchema';

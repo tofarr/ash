@@ -1,12 +1,11 @@
-import { array, number, object } from 'yup';
-import moment from 'moment';
+import { object } from 'yup';
 import { YupContext } from '../../utils/schemas';
 
 import MonthTransactions from '../types/MonthTransactions';
 import transactionSetSchema from './transactionSetSchema';
 import { dateStr, meetingDates } from '../../settings/settingsService';
 import TransactionCode from '../types/TransactionCode';
-import { DATE_FORMAT, dateToMonth } from '../../utils/date';
+import { dateToMonth } from '../../utils/date';
 import { buildEndBalance } from '../transactionService'
 
 const MonthTransactionsSchema = object().shape({
@@ -56,7 +55,7 @@ const MonthTransactionsSchema = object().shape({
   'Receipts should balance at 0',
   function(monthTransactions: MonthTransactions) {
     const endBalance = buildEndBalance(monthTransactions.transactionSet);
-    return endBalance.other == 0
+    return endBalance.other === 0
   })
 .test('no_unapplied_transactions',
   'There were unapplied transactions',

@@ -77,17 +77,17 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
     return boxes.map((box, index) => (
         <Grid item key={index}>
           {renderRow(box.box.title, box.cash,
-            (value?: number) => handleSpecialBox({...box, cash: value as number}, index),
+            (value?: number) => handleBox({...box, cash: value as number}, index),
             box.cheques,
-            (value?: number) => handleSpecialBox({...box, cheques: value as number}, index),
+            (value?: number) => handleBox({...box, cheques: value as number}, index),
           )}
         </Grid>
     ));
   }
 
-  function handleSpecialBox(special_box: ContributionBoxContributions, index: number){
-    const special_contribution_boxes = internalMeeting.boxes.slice();
-    special_contribution_boxes[index] = special_box;
+  function handleBox(box: ContributionBoxContributions, index: number){
+    const boxes = internalMeeting.boxes.slice();
+    boxes[index] = box;
     setInternalMeeting({...internalMeeting, boxes});
   }
 

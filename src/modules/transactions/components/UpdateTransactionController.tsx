@@ -1,6 +1,6 @@
 import React, { FC, Fragment, useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -8,6 +8,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import { dateToMonth } from '../../utils/date';
+import Alert from '../../utils/components/Alert';
 import Loader from '../../utils/components/Loader';
 import ConfirmButton from '../../utils/components/ConfirmButton';
 import TransactionForm from './TransactionForm'
@@ -91,15 +92,7 @@ const UpdateTransactionController: FC<UpdateTransactionControllerProps> = ({ set
   }
 
   if(!transaction){
-    return (
-      <Box p={2}>
-        <Grid container justify="center">
-          <Grid item>
-            <Typography variant="h6">No Transaction Found!</Typography>
-          </Grid>
-        </Grid>
-      </Box>
-    )
+    return <Alert msg="No Transaction Found" />
   }
 
   return (

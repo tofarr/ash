@@ -52,19 +52,19 @@ export function describeTransactionCode(code: TransactionCode){
 export function describeTransactionCodeShort(code: TransactionCode){
   switch(code){
     case TransactionCode.W:
-      return 'Contributions - WW';
+      return 'Contrib - WW';
     case TransactionCode.C:
-      return 'Contributions - Congregation';
+      return 'Contrib - Cong';
     case TransactionCode.D:
       return 'Deposit';
     case TransactionCode.CE:
-      return 'Contributions - Electronic';
+      return 'Contrib - Electronic';
     case TransactionCode.I:
-      return 'Interest on bank account';
+      return 'Interest';
     case TransactionCode.TTB:
       return 'Transfer to Branch';
     case TransactionCode.B:
-      return 'Contributions - Construction'
+      return 'Contrib - Construction'
     case TransactionCode.E:
     case TransactionCode.S:
     case TransactionCode.UC:

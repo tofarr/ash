@@ -1,4 +1,4 @@
-import { array, number, object, string } from 'yup';
+import { array, number, object } from 'yup';
 import contributionBoxSchema from '../contributionBoxes/contributionBoxSchema';
 import settingsSchema from '../settings/settingsSchema';
 import transactionBreakdownSchema from '../transactions/schemas/transactionBreakdownSchema';

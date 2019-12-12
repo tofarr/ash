@@ -1,10 +1,10 @@
 import React, { FC, FormEvent, useState } from 'react';
-import { Box, Grid } from '@material-ui/core';
-import { Button } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import Loader from '../../utils/components/Loader';
 import Deposit from '../Deposit'
+import { newDeposit } from '../DepositService';
 
 import MoneyInput from '../../utils/money/MoneyInput';
 import Money from '../../utils/money/Money';
@@ -27,6 +27,13 @@ const DepositForm: FC<DepositFormProps> = ({ deposit, onSubmit, working }) => {
     onSubmit(internalDeposit);
   }
 
+  function handleDateChange(date?: string){
+    setInternalDeposit({ ...internalDeposit, date: date as string })
+    newDeposit(date).then((deposit) => {
+      setInternalDeposit(deposit);
+    });
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <Box p={2}>
@@ -35,7 +42,7 @@ const DepositForm: FC<DepositFormProps> = ({ deposit, onSubmit, working }) => {
             <DateSelect
               required
               value={internalDeposit.date}
-              onChange={date => setInternalDeposit({ ...internalDeposit, date: date as string })}
+              onChange={handleDateChange}
               label="Date" />
           </Grid>
           <Grid item xs={6}>

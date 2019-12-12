@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { Box, Dialog, Grid, Typography } from '@material-ui/core';
 import WarningList from './WarningList';
 

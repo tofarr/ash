@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, FormEvent, useEffect, useState } from 'react';
 import { Box, Button, Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -37,12 +37,20 @@ const DefaultBreakdownController: FC<DefaultBreakdownControllerProps> = ({ setTi
     }
   }, []);
 
+  function handleSubmit(event: FormEvent){
+    if(!breakdown){
+      return;
+    }
+    event.preventDefault();
+    storeDefaultBreakdown(breakdown);
+  }
+
   function renderForm(){
     if(!breakdown){
       return null;
     }
     return (
-      <form onSubmit={() => storeDefaultBreakdown(breakdown)}>
+      <form onSubmit={handleSubmit}>
         <BreakdownList breakdowns={breakdown} onChange={setBreakdown} amtRequired={true} />
         <Grid container justify="flex-end">
           <Grid item xs sm="auto">

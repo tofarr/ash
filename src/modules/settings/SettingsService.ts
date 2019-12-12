@@ -2,7 +2,6 @@
 import AvailableLocale from './AvailableLocale';
 import moment from 'moment';
 import Settings, { MeetingDays } from './Settings';
-import TransactionBreakdownCode from '../transactions/types/TransactionBreakdownCode';
 import { DATE_FORMAT, MONTH_FORMAT } from '../utils/date';
 import { load, store } from './settingsDAO';
 import { addMsg } from '../utils/msgs/service';
@@ -15,11 +14,12 @@ function newSettings(): Settings{
       month_format: 'MMM YYYY',
     },
 
-    congregation_name: 'Congregation Name',
-    city: 'City',
-    province_or_state: 'Province or State',
-    accounts_servant_or_overseer: 'Accounts Servant or Overseer',
-    authorized_signer: 'Authorized Signer',
+    congregation_name: '',
+    city: '',
+    province_or_state: '',
+    accounts_servant_or_overseer: '',
+    authorized_signer: '',
+    other_account_description: '',
 
     cash_box: false,
     meeting_days: {
