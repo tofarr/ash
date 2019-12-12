@@ -5,6 +5,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
+import useQuery from '../../utils/useQuery';
 import { dateToMonth } from '../../utils/date';
 import Loader from '../../utils/components/Loader';
 import Money from '../../utils/money/Money';
@@ -20,8 +21,12 @@ import { monthTransactionsPath } from './MonthTransactionsController';
 
 export const DATE_BALANCE_PATH = "/date-balance/:date";
 
-export function dateBalancePath(date: string){
-  return DATE_BALANCE_PATH.replace(':date', date);
+export function dateBalancePath(date: string, month?: string){
+  let path = DATE_BALANCE_PATH.replace(':date', date);
+  if(month){
+    path += '?month=' + month;
+  }
+  return path;
 }
 
 export interface DateBalanceProps{
@@ -38,6 +43,7 @@ const DateBalanceController: FC<DateBalanceProps> = ({ setTitle }) => {
   const [dateBalance, setDateBalance] = useState<DateBalance|undefined>(undefined);
   const [pendingTransactions, setPendingTransactions] = useState<Transaction[]|undefined>(undefined);
   const date = useParams<MonthTransactionsParams>().date as string;
+  const query = useQuery();
   const settings = useSettings();
   setTitle(`${dateStr(settings, date)} Balance`);
   const { push } = useHistory();
@@ -78,7 +84,7 @@ const DateBalanceController: FC<DateBalanceProps> = ({ setTitle }) => {
     return (
       <Box pb={1}>
         <MonthTransactionsRow
-          description="Balance on Statement"
+          description="Account Balance"
           receipts={<Money value={dateBalance.receipts} fontWeight={500} />}
           primary={<Money value={dateBalance.primary} fontWeight={500} />}
           other={<Money value={dateBalance.other} fontWeight={500} />} />
@@ -115,7 +121,7 @@ const DateBalanceController: FC<DateBalanceProps> = ({ setTitle }) => {
     return (
       <Box pt={1}>
         <MonthTransactionsRow
-          description="Account Balance"
+          description="Balance on Statement"
           receipts={<Money value={dateBalance.applied_receipts} fontWeight={500} />}
           primary={<Money value={dateBalance.applied_primary} fontWeight={500} />}
           other={<Money value={dateBalance.applied_other} fontWeight={500} />} />
@@ -131,7 +137,7 @@ const DateBalanceController: FC<DateBalanceProps> = ({ setTitle }) => {
             <Button
               fullWidth={!smUp}
               variant="contained"
-              onClick={() => push(monthTransactionsPath(dateToMonth(date)))}>
+              onClick={() => push(monthTransactionsPath(query.get('month') || dateToMonth(date)))}>
               <NavigateBeforeIcon />
               Back to Month
             </Button>

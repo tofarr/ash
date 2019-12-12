@@ -40,7 +40,7 @@ const TransferToBranchForm: FC<TransferToBranchFormProps> = ({ transfer, onSubmi
           <Grid item xs={12} sm>
           <DateSelect
             required
-            value={internalTransfer.date}
+            value={internalTransfer.apply_on_date}
             onChange={apply_on_date => setInternalTransfer({ ...internalTransfer, apply_on_date: apply_on_date as string })}
             label="Apply on Date" />
           </Grid>

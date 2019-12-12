@@ -2,7 +2,7 @@ import React, { ChangeEvent, FC } from 'react';
 import { Collapse, Grid, TextField } from '@material-ui/core';
 
 import TransactionBreakdown from '../types/TransactionBreakdown';
-import TransactionBreakdownCode, { describeTransactionBreakdownCode } from '../types/TransactionBreakdownCode';
+import TransactionBreakdownCode, { describeTransactionBreakdownCode, describeTransactionBreakdownCodeShort } from '../types/TransactionBreakdownCode';
 
 import CodeSelect from '../../utils/components/CodeSelect';
 import MoneyInput from '../../utils/money/MoneyInput';
@@ -30,7 +30,7 @@ const TransactionBreakdownRow: FC<TransactionBreakdownRowProps> = ({ breakdown, 
           onChange={(code: TransactionBreakdownCode) =>
             onChange({ ...breakdown,
                code,
-               description: code === TransactionBreakdownCode.OTHER ? undefined : describeTransactionBreakdownCode(code) })} />
+               description: code === TransactionBreakdownCode.OTHER ? '' : describeTransactionBreakdownCodeShort(code) })} />
       </Grid>
       <Grid item xs sm={4}>
         <MoneyInput

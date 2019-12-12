@@ -10,7 +10,7 @@ interface MonthTransactionsRowProps {
 }
 
 const MonthTransactionsRow: FC<MonthTransactionsRowProps> = ({ description, receipts, primary, other }) => (
-  <Grid container spacing={1}>
+  <Grid container spacing={1} justify="flex-end">
     {!!description &&
       <Grid item xs={12} md={6}>
         <Box textAlign="left">

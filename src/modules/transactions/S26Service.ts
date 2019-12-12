@@ -4,10 +4,11 @@ import { currentDateStr } from '../settings/settingsService';
 import Settings from '../settings/Settings';
 import DateBalance from './types/DateBalance';
 import Transaction from './types/Transaction';
+import TransactionCode from './types/TransactionCode';
 import TransactionSet from './types/TransactionSet';
 import { toMoneyS } from '../utils/money/service';
 import { fillAndDownloadPdf } from '../utils/pdf';
-import { buildEndBalance, isPending } from './transactionService';
+import { isPending } from './transactionService';
 
 interface S26Context{
   rowNum: number;
@@ -26,10 +27,9 @@ interface S26Context{
   notYetAppliedOtherOut: number;
 }
 
-export async function fillAndDownloadS26(transactionSet: TransactionSet, settings: Settings){
+export async function fillAndDownloadS26(transactionSet: TransactionSet, end: DateBalance, settings: Settings){
   const { start, transactions } = transactionSet;
   const date = moment(start.date, DATE_FORMAT);
-  const end = buildEndBalance(transactionSet);
 
   const context = {
     rowNum: 0,
@@ -74,7 +74,7 @@ function buildPendingPrimaryCharges(transactionSet: TransactionSet){
   return transactionSet.transactions.reduce((sum, transaction) => {
     const applicable = isPending(transaction, transactionSet.date_max) && (transaction.primary_amt < 0);
     const diff = applicable ? transaction.primary_amt : 0;
-    return sum + diff;
+    return sum - diff;
   }, 0);
 }
 
@@ -91,7 +91,7 @@ function buildPendingOtherCharges(transactionSet: TransactionSet){
   return transactionSet.transactions.reduce((sum, transaction) => {
     const applicable = isPending(transaction, transactionSet.date_max) && (transaction.other_amt < 0);
     const diff = applicable ? transaction.other_amt : 0;
-    return sum + diff;
+    return sum - diff;
   }, 0);
 }
 
@@ -101,6 +101,13 @@ function processTransaction(transaction: Transaction, context: S26Context){
   updateContext(transaction, context);
 }
 
+function getCodeStr(code: TransactionCode){
+  if(code == TransactionCode.CCE){
+    return TransactionCode.E;
+  }
+  return (code.length < 3) ? code : '';
+}
+
 function fillFormFromTransaction(transaction: Transaction, context: S26Context){
 
   const { rowNum, fieldValues } = context;
@@ -108,10 +115,10 @@ function fillFormFromTransaction(transaction: Transaction, context: S26Context){
 
   fieldValues[`900_${7+rowNum}_Text_C`] = [moment(date, DATE_FORMAT).date()];
   fieldValues[`900_${59+rowNum}_Text`] = [description];
-  fieldValues[`900_${111+rowNum}_Text_C`] = [code];
+  fieldValues[`900_${111+rowNum}_Text_C`] = [getCodeStr(code)];
 
   if(receipts_amt > 0){
-    fieldValues[`901_${2+rowNum}_S26Value`] = [toMoneyS(receipts_amt)];
+    fieldValues[`901_${1+rowNum}_S26Value`] = [toMoneyS(receipts_amt)];
   }
   if(receipts_amt < 0){
     fieldValues[`901_${54+rowNum}_S26Value`] = [toMoneyS(-receipts_amt)];
@@ -130,16 +137,28 @@ function fillFormFromTransaction(transaction: Transaction, context: S26Context){
   }
 
   (breakdown || []).forEach((breakdown, index) => {
-      fieldValues[`900_${59+rowNum+index+1}_Text`] = [breakdown.description];
+      fieldValues[`900_${59+rowNum+index+1}_Text`] = [`${breakdown.description} ${breakdown.amt ? `[${toMoneyS(breakdown.amt)}]` : ''}`];
   })
 
 }
 
 function updateContext(transaction: Transaction, context: S26Context){
   const { breakdown, receipts_amt, primary_amt, other_amt} = transaction;
-  context[(receipts_amt > 0) ? 'receiptsIn' : 'receiptsOut'] += receipts_amt;
-  context[(primary_amt > 0) ? 'primaryIn' : 'primaryOut'] += primary_amt;
-  context[(other_amt > 0) ? 'otherIn' : 'otherOut'] += other_amt;
+  if(receipts_amt > 0)
+    context.receiptsIn += receipts_amt;
+  else{
+    context.receiptsOut -= receipts_amt;
+  }
+  if(primary_amt > 0)
+    context.primaryIn += primary_amt;
+  else{
+    context.primaryOut -= primary_amt;
+  }
+  if(other_amt > 0)
+    context.otherIn += other_amt;
+  else{
+    context.otherOut -= other_amt;
+  }
   context.rowNum++;
   if(breakdown){
     context.rowNum += breakdown.length;
@@ -153,8 +172,8 @@ function fillOtherReconcilliation(fieldValues: any, settings: Settings, transact
 
   fieldValues['904_43_Text_C'] = [currentDateStr(settings)];
   fieldValues['904_44_S26Amount'] = [toMoneyS(end.applied_other)];
-  fieldValues['904_45_S26Amount'] = [toMoneyS(pendingOtherCharges)];
-  fieldValues['904_46_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank charges not recorded on Accounts Sheet" - why would they not be recorded? Just record them...
+  fieldValues['904_45_S26Amount'] = [toMoneyS(pendingOtherDeposits)];
+  //fieldValues['904_46_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank charges not recorded on Accounts Sheet" - why would they not be recorded? Just record them...
   fieldValues['904_47_S26TotalAmount'] = [toMoneyS(end.applied_other + pendingOtherDeposits - pendingOtherCharges)];
   let offset = 0;
   transactionSet.transactions.forEach((transaction) => {
@@ -164,8 +183,8 @@ function fillOtherReconcilliation(fieldValues: any, settings: Settings, transact
       offset += 2;
     }
   });
-  fieldValues['904_54_S26TotalAmount'] = [toMoneyS(pendingOtherDeposits)];
-  fieldValues['904_55_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank interest not recorded on Accounts Sheet" - why would this not be recorded? Just record them...
+  fieldValues['904_54_S26TotalAmount'] = [toMoneyS(pendingOtherCharges)];
+  //fieldValues['904_55_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank interest not recorded on Accounts Sheet" - why would this not be recorded? Just record them...
   fieldValues['904_56_S26TotalAmount'] = [toMoneyS(end.other)];
 }
 
@@ -174,18 +193,18 @@ function fillSummary(fieldValues: any, settings: Settings, start: DateBalance, e
 
   fieldValues['904_29_S26Amount'] = [toMoneyS(start.receipts)];
   fieldValues['904_30_S26TotalAmount'] = [toMoneyS(context.receiptsIn)];
-  fieldValues['904_31_S26TotalAmount'] = [toMoneyS(-context.receiptsOut)];
+  fieldValues['904_31_S26TotalAmount'] = [toMoneyS(context.receiptsOut)];
   fieldValues['904_32_S26TotalAmount'] = [toMoneyS(end.receipts)];
 
   fieldValues['904_33_S26Amount'] = [toMoneyS(start.primary)];
   fieldValues['904_34_S26TotalAmount'] = [toMoneyS(context.primaryIn)];
-  fieldValues['904_35_S26TotalAmount'] = [toMoneyS(-context.primaryOut)];
+  fieldValues['904_35_S26TotalAmount'] = [toMoneyS(context.primaryOut)];
   fieldValues['904_36_S26TotalAmount'] = [toMoneyS(end.primary)];
 
   fieldValues['904_37_Text'] = [settings.other_account_description]
   fieldValues['904_38_S26Amount'] = [toMoneyS(start.other)];
   fieldValues['904_39_S26TotalAmount'] = [toMoneyS(context.otherIn)];
-  fieldValues['904_40_S26TotalAmount'] = [toMoneyS(-context.otherOut)];
+  fieldValues['904_40_S26TotalAmount'] = [toMoneyS(context.otherOut)];
   fieldValues['904_41_S26TotalAmount'] = [toMoneyS(end.other)];
 
   fieldValues['904_42_S26TotalAmount'] = [toMoneyS(end.receipts + end.primary + end.other)];
@@ -213,9 +232,9 @@ function fillBankAccount(fieldValues: any, transactionSet: TransactionSet, end: 
   const pendingPrimaryCharges = buildPendingPrimaryCharges(transactionSet);
   const pendingPrimaryDeposits = buildPendingPrimaryDeposits(transactionSet);
   fieldValues['904_2_S26Amount'] = [toMoneyS(end.applied_primary)];
-  fieldValues['904_3_S26Amount'] = [toMoneyS(pendingPrimaryCharges)];
-  fieldValues['904_4_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank charges not recorded on Accounts Sheet" - why would they not be recorded? Just record them...
-  fieldValues['904_5_S26Amount'] = [toMoneyS(end.primary)];
+  fieldValues['904_3_S26Amount'] = [toMoneyS(pendingPrimaryDeposits)];
+  //fieldValues['904_4_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank charges not recorded on Accounts Sheet" - why would they not be recorded? Just record them...
+  fieldValues['904_5_S26TotalAmount'] = [toMoneyS(pendingPrimaryDeposits)];
   let offset = 0;
   transactionSet.transactions.forEach((transaction) => {
     if(isPending(transaction, end.date) && transaction.primary_amt < 0){
@@ -224,9 +243,9 @@ function fillBankAccount(fieldValues: any, transactionSet: TransactionSet, end: 
       offset += 2;
     }
   });
-  fieldValues['904_20_S26TotalAmount'] = [toMoneyS(pendingPrimaryDeposits)];
-  fieldValues['904_21_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank interest not recorded on Accounts Sheet" - why would this not be recorded? Just record them...
-  fieldValues['904_22_S26Amount'] = [toMoneyS(0)];// All electronic contributions not recorded on Accounts Sheet:
+  fieldValues['904_20_S26TotalAmount'] = [toMoneyS(pendingPrimaryCharges)];
+  //fieldValues['904_21_S26Amount'] = [toMoneyS(0)]; //Not sure why this exists? "Any bank interest not recorded on Accounts Sheet" - why would this not be recorded? Just record them...
+  //fieldValues['904_22_S26Amount'] = [toMoneyS(0)];// All electronic contributions not recorded on Accounts Sheet:
   fieldValues['904_23_S26TotalAmount'] = [toMoneyS(end.primary)];
 }
 

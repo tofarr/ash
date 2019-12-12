@@ -58,7 +58,7 @@ const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) =
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   onChange({...settings, other_account_description: event.target.value})} />
             </Grid>
-            <Grid item xs={12}>
+            {/*<Grid item xs={12}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -67,7 +67,7 @@ const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) =
                     onChange={() => onChange({...settings, cash_box: !settings.cash_box})} />
                 }
                 label="Use Cash Box for Primary Account" />
-            </Grid>
+            </Grid>*/}
             <Grid item xs={6}>
               <IntInput
                 required

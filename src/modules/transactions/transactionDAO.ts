@@ -79,7 +79,7 @@ function aboveOrEqual(collection: ColXN, attr: IndexedAttrs, min: string){
     if(collection){
       return collection.filter((transaction) => {
         const val = transaction[attr];
-        return (!!val && val >= min);
+        return (!val || val >= min);
       });
     }
     return table().where(attr).aboveOrEqual(min);

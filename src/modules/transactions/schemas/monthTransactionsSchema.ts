@@ -6,7 +6,6 @@ import transactionSetSchema from './transactionSetSchema';
 import { dateStr, meetingDates } from '../../settings/settingsService';
 import TransactionCode from '../types/TransactionCode';
 import { dateToMonth } from '../../utils/date';
-import { buildEndBalance } from '../transactionService'
 
 const MonthTransactionsSchema = object().shape({
   settings: object().required(),
@@ -49,13 +48,14 @@ const MonthTransactionsSchema = object().shape({
       return true;
     }
     return this.createError({ message: `More than one contribution found on: ${duplicateTransactions.map(transaction =>
-      transaction.code+' '+dateStr(settings, transaction.date)).join(', ')}`})
+      dateStr(settings, transaction.date)+' ('+transaction.code+')').join(', ')}`})
   }
 ).test('receipts_balance',
   'Receipts should balance at 0',
   function(monthTransactions: MonthTransactions) {
-    const endBalance = buildEndBalance(monthTransactions.transactionSet);
-    return endBalance.other === 0
+    const receipts = monthTransactions.transactionSet.transactions.reduce(
+      (sum, transaction) => sum + transaction.receipts_amt, 0);
+    return receipts === 0
   }
 ).test('no_unapplied_transactions',
   'There were unapplied transactions',
@@ -66,7 +66,7 @@ const MonthTransactionsSchema = object().shape({
       return true;
     }
     return this.createError({ message: `Unapplied transactions found on: ${unappliedTransactions.map(transaction =>
-      transaction.code+' '+dateStr(monthTransactions.settings, transaction.date)).join(', ')}`})
+      dateStr(monthTransactions.settings, transaction.date)+' ('+transaction.code+')').join(', ')}`})
   }
 ).test('has_min_interest',
   'Expected additional interest payments',

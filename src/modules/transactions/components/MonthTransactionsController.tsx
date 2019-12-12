@@ -14,7 +14,8 @@ import useSettings from '../../settings/useSettings';
 import Loader from '../../utils/components/Loader';
 import Money from '../../utils/money/Money';
 import TransactionSet from '../types/TransactionSet';
-import { buildEndBalance, loadTransactionSet } from '../transactionService';
+import DateBalance from '../types/DateBalance';
+import { loadTransactionSet, loadDateBalance } from '../transactionService';
 import { list as listContributionBoxes } from '../../contributionBoxes/contributionBoxService';
 import { fillAndDownloadS26 } from '../S26Service'
 import { fillAndDownloadS30 } from '../S30Service'
@@ -43,6 +44,7 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
 
   const [working, setWorking] = useState(false);
   const [transactionSet, setTransactionSet] = useState<TransactionSet|undefined>(undefined);
+  const [endBalance, setEndBalance] = useState<DateBalance|undefined>(undefined);
   const [warnings, setWarnings] = useState<string[]|undefined>(undefined);
   const [warningsOpen, setWarningsOpen] = useState(false);
   const settings = useSettings();
@@ -63,10 +65,12 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     setWarnings(undefined);
     Promise.all([
       loadTransactionSet(min, max),
+      loadDateBalance(max),
       listContributionBoxes()
-    ]).then(([ loadedTransactionSet, boxes]) => {
+    ]).then(([ loadedTransactionSet, endBalance, boxes]) => {
       if(mounted){
         setTransactionSet(loadedTransactionSet);
+        setEndBalance(endBalance);
         monthTransactionsSchema.validate({
           transactionSet: loadedTransactionSet,
           settings,
@@ -120,11 +124,11 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
         <Grid item>
           <Box textAlign="center">
             <Button variant="contained" title="Generate S26"
-              onClick={() => fillAndDownloadS26(transactionSet as TransactionSet, settings)}>
+              onClick={() => fillAndDownloadS26(transactionSet as TransactionSet, endBalance as DateBalance, settings)}>
               S26
             </Button>
             <Button variant="contained" title="Generate S30"
-              onClick={() => fillAndDownloadS30(transactionSet as TransactionSet, settings)}>
+              onClick={() => fillAndDownloadS30(transactionSet as TransactionSet, endBalance as DateBalance, settings)}>
               S30
             </Button>
             <Button variant="contained" title="View Warnings"
@@ -172,7 +176,7 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
         <Button
           fullWidth
           variant="contained"
-          onClick={() => push(dateBalancePath(min))}>
+          onClick={() => push(dateBalancePath(min, month))}>
           <MonthTransactionsRow
             description="Opening Balance"
             receipts={<Money value={transactionSet.start.receipts} />}
@@ -207,16 +211,15 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
 
 
   function renderClosingBalanceRow(){
-    if(!transactionSet){
+    if(!endBalance){
       return null;
     }
-    const endBalance = buildEndBalance(transactionSet);
     return (
       <Box pb={1}>
         <Button
           fullWidth
           variant="contained"
-          onClick={() => push(dateBalancePath(max))}>
+          onClick={() => push(dateBalancePath(max, month))}>
           <MonthTransactionsRow
             description="Closing Balance"
             receipts={<Money value={endBalance.receipts} fontWeight={500} />}

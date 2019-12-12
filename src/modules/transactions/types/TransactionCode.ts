@@ -9,10 +9,11 @@ enum TransactionCode {
   S = 'S',
   B = 'B',
   // Custom codes
-  TTB = 'TTB',
-  UC = 'UC',
-  UW = 'UW',
-  UO = 'UO',
+  CBT = 'CBT',
+  CUC = 'CUC',
+  CUW = 'CUW',
+  CUO = 'CUO',
+  CCE = 'CCE',
 }
 
 export default TransactionCode;
@@ -30,18 +31,20 @@ export function describeTransactionCode(code: TransactionCode){
     case TransactionCode.I:
       return 'Interest from bank account';
     case TransactionCode.E:
-      return 'Congregation expenditure'
+      return 'Congregation expenditure';
+    case TransactionCode.CCE:
+      return 'Special Congregation expenditure'
     case TransactionCode.S:
       return 'Funds received (For the Branch) for a special purpose';
     case TransactionCode.B:
       return 'Contributions for worldwide construction work from boxes';
-    case TransactionCode.TTB:
+    case TransactionCode.CBT:
       return 'Transfer to Branch';
-    case TransactionCode.UC:
+    case TransactionCode.CUC:
       return 'Other - Congregation';
-    case TransactionCode.UW:
+    case TransactionCode.CUW:
       return 'Other - Worldwide Work'
-    case TransactionCode.UO:
+    case TransactionCode.CUO:
       return 'Other';
     default:
       throw new Error('UnknownCode:'+code);
@@ -61,15 +64,16 @@ export function describeTransactionCodeShort(code: TransactionCode){
       return 'Contrib - Electronic';
     case TransactionCode.I:
       return 'Interest';
-    case TransactionCode.TTB:
+    case TransactionCode.CBT:
       return 'Transfer to Branch';
     case TransactionCode.B:
       return 'Contrib - Construction'
     case TransactionCode.E:
+    case TransactionCode.CCE:
     case TransactionCode.S:
-    case TransactionCode.UC:
-    case TransactionCode.UW:
-    case TransactionCode.UO:
+    case TransactionCode.CUC:
+    case TransactionCode.CUW:
+    case TransactionCode.CUO:
       return '';
     default:
       throw new Error('UnknownCode:'+code);
@@ -80,18 +84,19 @@ export function isLocalCongregation(code: TransactionCode){
   switch(code){
     case TransactionCode.W:
     case TransactionCode.S:
-    case TransactionCode.UW:
+    case TransactionCode.CUW:
+    case TransactionCode.B:
       return false;
     case TransactionCode.C:
     case TransactionCode.CE:
     case TransactionCode.I:
     case TransactionCode.E:
-    case TransactionCode.UC:
-    case TransactionCode.B:
+    case TransactionCode.CCE:
+    case TransactionCode.CUC:
       return true;
     case TransactionCode.D:
-    case TransactionCode.UO:
-    case TransactionCode.TTB:
+    case TransactionCode.CUO:
+    case TransactionCode.CBT:
       return null;
     default:
       throw new Error('UnknownCode:'+code);

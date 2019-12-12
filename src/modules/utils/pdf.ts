@@ -24,10 +24,8 @@ function whenLibraryReady(){
 
 export async function transformPdf(url: string, fieldValues: any){
   await whenLibraryReady();
-  console.log('Loading PDF...')
   const response = await fetch(url);
   const arrayBuffer = await response.arrayBuffer();
-  console.log('Loading PDF Form...')
   var transformedBuffer = (window as any).pdfform().transform(arrayBuffer, fieldValues);
   return transformedBuffer;
 }

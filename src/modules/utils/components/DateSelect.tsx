@@ -21,6 +21,10 @@ export interface DatePickerProps{
 const DateSelect: FC<DatePickerProps> = ({ value, onChange, label, required, displayFormat }) => {
   const [open, setOpen] = useState(false);
   const [focus, setFocus] = useState(false);
+  if(!value && required){
+    value = moment().format(DATE_FORMAT);
+  }
+  const valueStr = value ? moment(value, DATE_FORMAT).format(displayFormat || DATE_FORMAT) : '';
 
   function handleDateChange(newDate: any){
     const newMoment = moment(newDate);
@@ -44,7 +48,7 @@ const DateSelect: FC<DatePickerProps> = ({ value, onChange, label, required, dis
         required={required}
         variant="outlined"
         label={label}
-        value={(value && displayFormat) ? moment(value, DATE_FORMAT).format(displayFormat) : value}
+        value={valueStr}
         onFocus={() => handleFocus(true)}
         onBlur={() => handleFocus(false)}
         onClick={() => setOpen(true)}

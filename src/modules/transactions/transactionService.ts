@@ -88,18 +88,6 @@ export function loadTransactionSet(date_min: string, date_max: string){
   });
 }
 
-export function buildEndBalance(transactionSet: TransactionSet){
-   const endBalance = buildBalance(transactionSet.transactions, transactionSet.date_max);
-   const {start } = transactionSet;
-   endBalance.receipts += start.receipts;
-   endBalance.primary += start.primary;
-   endBalance.other += start.other;
-   endBalance.applied_receipts += start.applied_receipts;
-   endBalance.applied_primary += start.applied_primary;
-   endBalance.applied_other += start.applied_other;
-   return endBalance;
-}
-
 function buildBalance(transactions: Transaction[], date: string): DateBalance{
   return transactions.reduce((dateBalance, transaction) => {
     dateBalance.receipts += transaction.receipts_amt;

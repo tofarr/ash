@@ -4,11 +4,12 @@ import { currentDateStr } from '../settings/settingsService';
 import Settings from '../settings/Settings';
 import DateBalance from './types/DateBalance';
 import Transaction from './types/Transaction';
+import TransactionBreakdownCode from './types/TransactionBreakdownCode';
 import TransactionCode, { isLocalCongregation } from './types/TransactionCode';
 import TransactionSet from './types/TransactionSet';
 import { toMoneyS } from '../utils/money/service';
 import { fillAndDownloadPdf } from '../utils/pdf';
-import { buildEndBalance, isPending } from './transactionService';
+import { isPending } from './transactionService';
 
 interface S26Context{
   rowNum: number;
@@ -27,13 +28,13 @@ interface S26Context{
   notYetAppliedOtherOut: number;
 }
 
-export async function fillAndDownloadS30(transactionSet: TransactionSet, settings: Settings){
+export async function fillAndDownloadS30(transactionSet: TransactionSet, end: DateBalance, settings: Settings){
   const fieldValues: any = {}
 
   fillInHeading(fieldValues, transactionSet, settings);
   const receipts = fillInReceipts(fieldValues, transactionSet);
   const disbursements = fillInDisbursements(fieldValues, transactionSet);
-  //fillInTotals(fieldValues, transactionSet, receipts, disbursements, settings);
+  fillInTotals(fieldValues, transactionSet, receipts, disbursements, settings);
   fillInSummary(fieldValues, transactionSet, settings);
 
   await fillAndDownloadPdf('/pdf/S-30-E.pdf', fieldValues);
@@ -96,9 +97,16 @@ function fillInReceipts(fieldValues: any, transactionSet: TransactionSet){
 
   //congregation - local receipts not marked C, or CE...
   let offset = 0;
+  const interest = transactions.reduce((sum, transaction) => sum + ((transaction.code === TransactionCode.I) ? transaction.primary_amt : 0), 0);
+  if(interest){
+    fieldValues[`900_${3+offset}_Text`] = ['Interest'];
+    fieldValues[`901_${4+offset}_S30CongRec`] = [toMoneyS(interest)];
+    offset++;
+  }
   transactions.forEach((transaction) => {
-    if(transaction.code == TransactionCode.C ||
-      transaction.code == TransactionCode.CE ||
+    if(transaction.code === TransactionCode.C ||
+      transaction.code === TransactionCode.CE ||
+      transaction.code === TransactionCode.I ||
       !isLocalCongregation(transaction.code)){
       return;
     }
@@ -115,10 +123,11 @@ function fillInReceipts(fieldValues: any, transactionSet: TransactionSet){
     if(amt){
       fieldValues[`900_${3+offset}_Text`] = [transaction.description];
       fieldValues[`901_${4+offset}_S30CongRec`] = [toMoneyS(amt)];
+      offset++;
     }
   });
-
-  fieldValues['901_6_S30TotalCongRec'] = [toMoneyS(buildTotalCongregationReceipts(transactionSet))];
+  const totalCongregationReceipts = buildTotalCongregationReceipts(transactionSet);
+  fieldValues['901_6_S30TotalCongRec'] = [toMoneyS(totalCongregationReceipts)];
 
 
   const worldwideBoxTotal = transactions.reduce((sum, transaction) => {
@@ -128,9 +137,16 @@ function fillInReceipts(fieldValues: any, transactionSet: TransactionSet){
 
   //other - worldwide receipts not marked W...
   offset = 0;
+  const construction = transactions.reduce((sum, transaction) => sum + ((transaction.code === TransactionCode.B) ? transaction.receipts_amt : 0), 0);
+  if(construction){
+    fieldValues[`900_${5+offset}_Text`] = ['Contrib - Construction'];
+    fieldValues[`901_${8+offset}_S30OtherRec`] = [toMoneyS(construction)];
+    offset++;
+  }
   transactions.forEach((transaction) => {
     if(transaction.code == TransactionCode.W ||
-      !isLocalCongregation(transaction.code)){
+      transaction.code == TransactionCode.B ||
+      isLocalCongregation(transaction.code) !== false){
       return;
     }
     let amt = 0
@@ -145,12 +161,13 @@ function fillInReceipts(fieldValues: any, transactionSet: TransactionSet){
     }
     if(amt){
       fieldValues[`900_${5+offset}_Text`] = [transaction.description];
-      fieldValues[`901_${8+offset}_S30CongRec`] = [toMoneyS(amt)];
+      fieldValues[`901_${8+offset}_S30OtherRec`] = [toMoneyS(amt)];
+      offset++;
     }
   });
 
   const totalOtherReceipts = transactions.reduce((sum, transaction) => {
-    if(isLocalCongregation(transaction.code) === false){
+    if(isLocalCongregation(transaction.code) !== false){
       return sum;
     }
     if(transaction.receipts_amt > 0){
@@ -166,34 +183,79 @@ function fillInReceipts(fieldValues: any, transactionSet: TransactionSet){
   }, 0);
   fieldValues['901_10_S30TotalOtherRec'] = [toMoneyS(totalOtherReceipts)];
 
-  //fieldValues['901_11_S30TotalRec'] = [toMoneyS(totalCongregationReceipts + totalOtherReceipts)];
+  const totalReceipts = totalCongregationReceipts + totalOtherReceipts;
+  fieldValues['901_11_S30TotalRec'] = [toMoneyS(totalReceipts)];
 
-  //return totalCongregationReceipts + totalOtherReceipts;
+  return totalReceipts;
+}
+
+function sumBreakdowns(transactionSet: TransactionSet, code: TransactionBreakdownCode){
+  return transactionSet.transactions.reduce((sum, transaction) => {
+    if(transaction.breakdown){
+      sum += transaction.breakdown.reduce((s, breakdown) => {
+        if(breakdown.amt && breakdown.code === code){
+          s += breakdown.amt;
+        }
+        return s;
+      }, sum);
+    }
+    return sum;
+  }, 0);
 }
 
 function fillInDisbursements(fieldValues: any, transactionSet: TransactionSet){
-  // sum of expenses
-  // sum of worldwide work breakdowns
-  //sum of khahc breakdowns
-  //sum of gaa breakdowns
-  //sum of coaa breakdowns
 
-  //other breakdowns
+  const khExpenses = transactionSet.transactions.reduce((sum, transaction) =>
+    sum - ((transaction.code == TransactionCode.E) ? transaction.primary_amt : 0),
+  0);
+  fieldValues['901_12_S30CongEx'] = [toMoneyS(khExpenses)];
 
+  const wwResolutionTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.WW_RESOLUTION);
+  const khahcTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.KHAHC);
+  const gaaTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.GAA);
+  const coaaTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.COAA);
+  fieldValues['901_13_S30CongEx'] = [toMoneyS(wwResolutionTotal)];
+  fieldValues['901_14_S30CongEx'] = [toMoneyS(khahcTotal)];
+  fieldValues['901_15_S30CongEx'] = [toMoneyS(gaaTotal)];
+  fieldValues['901_16_S30CongEx'] = [toMoneyS(coaaTotal)];
 
+  let offset = 0;
+  let otherTotal = 0;
+  transactionSet.transactions.forEach(transaction => {
+    if(transaction.code !== TransactionCode.CCE){
+      return;
+    }
+    fieldValues[`900_${7+offset}_Text`] = [transaction.description];
+    fieldValues[`901_${8+offset}_S30OtherRec`] = [toMoneyS(-transaction.primary_amt)];
+    otherTotal -= transaction.primary_amt;
+    offset++;
+  });
 
-  // sum of worldwide work boxes
-  // sum of specials (boxes)
-  // sum of other (boxes)
-  // sum of above 3
+  const totalCong = khExpenses + wwResolutionTotal + khahcTotal + gaaTotal + coaaTotal + otherTotal;
+  fieldValues['901_19_S30TotalCongEx'] = [toMoneyS(totalCong)];
 
-  //sum of all disbursements
+  const wwBoxes = transactionSet.transactions.reduce((sum, transaction) =>
+    sum + ((transaction.code == TransactionCode.W) ? transaction.receipts_amt : 0),
+  0);
+  fieldValues['901_20_S30OtherDis'] = [toMoneyS(wwBoxes)];
 
-  return 0;
+  const constBoxes = transactionSet.transactions.reduce((sum, transaction) =>
+    sum + ((transaction.code == TransactionCode.B) ? transaction.receipts_amt : 0),
+  0);
+  fieldValues['901_21_S30OtherDis'] = [toMoneyS(constBoxes)];
+
+  const totalOther = wwBoxes + constBoxes;
+  fieldValues['901_23_S30TotalOtherDis'] = [toMoneyS(totalOther)];
+
+  const totalDisbursements = totalCong + totalOther;
+  fieldValues['901_24_S30TotalDisburse'] = [toMoneyS(totalDisbursements)];
+
+  return totalDisbursements;
 }
 
 function fillInTotals(fieldValues: any, transactionSet: TransactionSet, receipts: number, disbursements: number, settings: Settings){
   const { start } = transactionSet;
+  debugger;
   fieldValues['901_25_S30SurDef'] = [toMoneyS(receipts - disbursements)];
   const total = start.receipts + start.primary + start.other + receipts - disbursements
   fieldValues['901_26_S30TotalEOM'] = [toMoneyS(total)];
@@ -212,11 +274,11 @@ function fillInSummary(fieldValues: any, transactionSet: TransactionSet, setting
   fieldValues['901_33_S30MonthEnd'] = [toMoneyS(openingBalance + totalCongregationReceipts - totalCongregationDisbursements)];
 
   const transferredToBranch = transactionSet.transactions.reduce((sum, transaction) => {
-    if(transaction.code === TransactionCode.TTB){
+    if(transaction.code === TransactionCode.CBT){
       return sum - (transaction.receipts_amt + transaction.primary_amt + transaction.other_amt);
     }
     return sum;
   }, 0);
-  fieldValues['901_33_S30MonthEnd'] = [toMoneyS(transferredToBranch)];
+  fieldValues['901_34_S30ToWWW'] = [toMoneyS(transferredToBranch)];
 
 }

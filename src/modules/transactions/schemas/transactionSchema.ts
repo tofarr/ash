@@ -71,9 +71,9 @@ export default function transactionSchema(){
         return sum + item.amt;
       }, 0);
       return total == null ||
-        total === transaction.receipts_amt ||
-        total === transaction.primary_amt ||
-        total === transaction.other_amt;
+        total === Math.abs(transaction.receipts_amt) ||
+        total === Math.abs(transaction.primary_amt) ||
+        total === Math.abs(transaction.other_amt);
     }
   );
 }
