@@ -26,7 +26,7 @@ export function newDeposit(date = todayStr()) {
         .reduce((sum: number, transaction) => delta(sum, transaction.receipts_amt, transaction.cash), 0);
       const cheques = transactionSet.transactions
         .reduce((sum: number, transaction) => delta(sum, transaction.receipts_amt, transaction.cheques), 0);
-      resolve({ date, cash, cheques });
+      resolve({ date, apply_on_date: date, cash, cheques });
     }, reject);
   });
 }

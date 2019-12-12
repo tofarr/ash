@@ -48,7 +48,7 @@ const MonthTransactionsSchema = object().shape({
     if(!duplicateTransactions.length){
       return true;
     }
-    return this.createError({ message: `More than one contributions found on: ${duplicateTransactions.map(transaction =>
+    return this.createError({ message: `More than one contribution found on: ${duplicateTransactions.map(transaction =>
       transaction.code+' '+dateStr(settings, transaction.date)).join(', ')}`})
   }
 ).test('receipts_balance',
@@ -56,8 +56,8 @@ const MonthTransactionsSchema = object().shape({
   function(monthTransactions: MonthTransactions) {
     const endBalance = buildEndBalance(monthTransactions.transactionSet);
     return endBalance.other === 0
-  })
-.test('no_unapplied_transactions',
+  }
+).test('no_unapplied_transactions',
   'There were unapplied transactions',
   function(this: YupContext, monthTransactions: MonthTransactions) {
     const unappliedTransactions = monthTransactions.transactionSet.transactions.filter(
@@ -67,6 +67,25 @@ const MonthTransactionsSchema = object().shape({
     }
     return this.createError({ message: `Unapplied transactions found on: ${unappliedTransactions.map(transaction =>
       transaction.code+' '+dateStr(monthTransactions.settings, transaction.date)).join(', ')}`})
-  });
+  }
+).test('has_min_interest',
+  'Expected additional interest payments',
+  function(this: YupContext, monthTransactions: MonthTransactions) {
+    const { transactionSet, settings } = monthTransactions;
+    const count = transactionSet.transactions.reduce((sum, transaction) => {
+      return sum + ((transaction.code === TransactionCode.I) ? 1 : 0);
+    }, 0);
+    return (count >= settings.min_num_interest);
+  }
+).test('has_min_expenditures',
+  'Expected additional expenditures',
+  function(this: YupContext, monthTransactions: MonthTransactions) {
+    const { transactionSet, settings } = monthTransactions;
+    const count = transactionSet.transactions.reduce((sum, transaction) => {
+      return sum + ((transaction.code === TransactionCode.E) ? 1 : 0);
+    }, 0);
+    return (count >= settings.min_num_expenditure);
+  }
+);
 
 export default MonthTransactionsSchema;

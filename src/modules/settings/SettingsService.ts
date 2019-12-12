@@ -1,5 +1,5 @@
 
-import AvailableLocale from './AvailableLocale';
+// import AvailableLocale from './AvailableLocale';
 import moment from 'moment';
 import Settings, { MeetingDays } from './Settings';
 import { DATE_FORMAT, MONTH_FORMAT } from '../utils/date';
@@ -8,7 +8,7 @@ import { addMsg } from '../utils/msgs/service';
 
 function newSettings(): Settings{
   return {
-    locale: AvailableLocale.en,
+    // locale: AvailableLocale.en,
     formatting: {
       date_format: 'MMM D YYYY',
       month_format: 'MMM YYYY',
@@ -22,6 +22,9 @@ function newSettings(): Settings{
     other_account_description: '',
 
     cash_box: false,
+    min_num_interest: 1,
+    min_num_expenditure: 1,
+
     meeting_days: {
       sun: true,
       mon: false,
@@ -45,7 +48,7 @@ export function loadSettings(){
 export function storeSettings(settings: Settings){
   return new Promise<Settings>((resolve, reject) => {
     store(settings).then(() => {
-      addMsg('Transaction Created');
+      addMsg('Settings Updated');
       resolve(settings);
     }, reject);
   });

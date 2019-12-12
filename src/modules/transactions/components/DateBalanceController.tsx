@@ -39,7 +39,7 @@ const DateBalanceController: FC<DateBalanceProps> = ({ setTitle }) => {
   const [pendingTransactions, setPendingTransactions] = useState<Transaction[]|undefined>(undefined);
   const date = useParams<MonthTransactionsParams>().date as string;
   const settings = useSettings();
-  setTitle(`Balance as of ${dateStr(settings, date)}`);
+  setTitle(`${dateStr(settings, date)} Balance`);
   const { push } = useHistory();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
@@ -138,12 +138,12 @@ const DateBalanceController: FC<DateBalanceProps> = ({ setTitle }) => {
           </Box>
         </Grid>
       </Grid>
-      {renderBalanceRow()}
+      {renderAppliedBalanceRow()}
       <Divider />
       <Typography variant="h6">Pending Transactions</Typography>
       {renderTransactionRows()}
       <Divider />
-      {renderAppliedBalanceRow()}
+      {renderBalanceRow()}
     </Box>
   )
 }

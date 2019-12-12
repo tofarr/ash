@@ -43,12 +43,7 @@ export default function transactionSchema(){
           }
         }
       ),
-    other_amt: number().integer().required()
-      .when('code',
-        (code: TransactionCode|undefined, schema: NumberSchema) => {
-          return code ? schema.oneOf([0], 'Amounts for other are not supported when a code is specified') : schema;
-        }
-      ),
+    other_amt: number().integer().required(),
     code: string().oneOf(Object.keys(TransactionCode)),
     description: string().required(),
     apply_on_date: dateStr.when(['date'],

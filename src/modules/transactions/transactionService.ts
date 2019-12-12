@@ -105,7 +105,7 @@ function buildBalance(transactions: Transaction[], date: string): DateBalance{
     dateBalance.receipts += transaction.receipts_amt;
     dateBalance.primary += transaction.primary_amt;
     dateBalance.other += transaction.other_amt;
-    if(transaction.apply_on_date && date < transaction.apply_on_date){
+    if(transaction.apply_on_date && date > transaction.apply_on_date){
       dateBalance.applied_receipts += transaction.receipts_amt;
       dateBalance.applied_primary += transaction.primary_amt;
       dateBalance.applied_other += transaction.other_amt;

@@ -10,7 +10,6 @@ import { useTheme } from '@material-ui/core/styles';
 
 import { DATE_FORMAT, MONTH_FORMAT, thisMonthStr } from '../../utils/date';
 import useSettings from '../../settings/useSettings';
-import { dateStr } from '../../settings/settingsService';
 
 import Loader from '../../utils/components/Loader';
 import Money from '../../utils/money/Money';
@@ -68,7 +67,13 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     ]).then(([ loadedTransactionSet, boxes]) => {
       if(mounted){
         setTransactionSet(loadedTransactionSet);
-        monthTransactionsSchema.validate({ transactionSet: loadedTransactionSet, settings, boxes }).then(() => {
+        monthTransactionsSchema.validate({
+          transactionSet: loadedTransactionSet,
+          settings,
+          boxes
+        }, {
+          abortEarly: false
+        }).then(() => {
           if(mounted){
             setWorking(false);
             setWarnings([]);
@@ -190,7 +195,7 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
             variant="contained"
             onClick={() => push(updateTransactionPath(transaction.id as number))}>
             <MonthTransactionsRow
-              description={`(${dateStr(settings, transaction.date)}) ${transaction.description}`}
+              description={`${moment(transaction.date, DATE_FORMAT).date()}: ${transaction.description}`}
               receipts={<Money value={transaction.receipts_amt} />}
               primary={<Money value={transaction.primary_amt} />}
               other={<Money value={transaction.other_amt} />} />

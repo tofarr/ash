@@ -52,7 +52,13 @@ const MonthWarningsController: FC<MonthWarningsProps> = ({ setTitle }) => {
       listContributionBoxes()
     ]).then(([ loadedTransactionSet, boxes]) => {
       if(mounted){
-        monthTransactionsSchema.validate({transactionSet: loadedTransactionSet, settings, boxes}).then(() => {
+        monthTransactionsSchema.validate({
+          transactionSet: loadedTransactionSet,
+          settings,
+          boxes
+        }, {
+          abortEarly: false
+        }).then(() => {
           if(mounted){
             setWarnings([]);
             setWorking(false);

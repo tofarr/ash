@@ -2,7 +2,9 @@ import React, { ChangeEvent, FC, FormEvent } from 'react';
 import { Box, Button, Checkbox, Divider, FormControlLabel, Grid, TextField, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment';
+
 import Settings from '../Settings';
+import IntInput from '../../utils/components/IntInput';
 
 export interface SettingsFormProps{
   settings: Settings;
@@ -65,6 +67,22 @@ const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) =
                     onChange={() => onChange({...settings, cash_box: !settings.cash_box})} />
                 }
                 label="Use Cash Box for Primary Account" />
+            </Grid>
+            <Grid item xs={6}>
+              <IntInput
+                required
+                label="Min Num Interest"
+                value={settings.min_num_interest}
+                onChange={min_num_interest =>
+                  onChange({...settings, min_num_interest: min_num_interest as number })} />
+            </Grid>
+            <Grid item xs={6}>
+              <IntInput
+                required
+                label="Min Num Expenditures"
+                value={settings.min_num_expenditure}
+                onChange={min_num_expenditure =>
+                  onChange({...settings, min_num_expenditure: min_num_expenditure as number })} />
             </Grid>
           </Grid>
         </Box>

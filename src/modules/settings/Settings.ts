@@ -1,5 +1,5 @@
 
-import AvailableLocale from './AvailableLocale';
+// import AvailableLocale from './AvailableLocale';
 
 export interface MeetingDays{
   sun: boolean,
@@ -17,7 +17,7 @@ export interface Formatting{
 }
 
 export default interface Settings{
-  locale: AvailableLocale,
+  // locale: AvailableLocale,
   formatting: Formatting,
 
   congregation_name: string,
@@ -28,5 +28,9 @@ export default interface Settings{
   other_account_description: string,
 
   cash_box: boolean,
+
+  min_num_interest: number,
+  min_num_expenditure: number,
+
   meeting_days: MeetingDays,
 }

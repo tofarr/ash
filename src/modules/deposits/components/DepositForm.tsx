@@ -38,12 +38,21 @@ const DepositForm: FC<DepositFormProps> = ({ deposit, onSubmit, working }) => {
     <form onSubmit={handleSubmit}>
       <Box p={2}>
         <Grid container spacing={1}>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <DateSelect
               required
               value={internalDeposit.date}
               onChange={handleDateChange}
               label="Date" />
+          </Grid>
+          <Grid item xs={6}>
+            <DateSelect
+              required
+              value={internalDeposit.apply_on_date as string}
+              onChange={(apply_on_date?: string) => {
+                setInternalDeposit({ ...internalDeposit, apply_on_date: (apply_on_date as string) });
+              }}
+              label="Applicable Date" />
           </Grid>
           <Grid item xs={6}>
             <MoneyInput
