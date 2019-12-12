@@ -42,3 +42,10 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+sudo npm install -g static-http2-server
+http2-server --generate-cert
+https://tosbourn.com/getting-os-x-to-trust-self-signed-ssl-certificates/
+Drag the generated /certs/
+npm build
+npm run start-sw

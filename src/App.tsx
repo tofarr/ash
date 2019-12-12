@@ -1,5 +1,6 @@
 import React from 'react';
-import { Redirect, Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch } from "react-router-dom";
+import { Box, Container } from '@material-ui/core';
 
 import Settings from './modules/settings/Settings';
 import SettingsLoader from './modules/settings/components/SettingsLoader';
@@ -35,29 +36,31 @@ const App: React.FC = () => {
         <CustomTheme>
           <Router>
             <NavBarController>
-              {(setTitle) => {
-                return (
-                  <Switch>
-                    <Route path={NAV_MENU_PATH} component={() => <NavMenuController setTitle={setTitle} />} />
-                    <Route path={CREATE_MEETING_PATH} component={() => <CreateMeetingController setTitle={setTitle} />} />
-                    <Route path={CREATE_DEPOSIT_PATH} component={() => <CreateDepositController setTitle={setTitle} />} />
-                    <Route path={CREATE_TRANSFER_PATH} component={() => <CreateTransferToBranchController setTitle={setTitle} />} />
-                    <Route path={CREATE_TRANSACTION_PATH} component={() => <CreateTransactionController setTitle={setTitle} />} />
-                    <Route path={UPDATE_TRANSACTION_PATH} component={() => <UpdateTransactionController setTitle={setTitle} />} />
-                    <Route path={MONTH_TRANSACTIONS_PATH} component={() => <MonthTransactionsController setTitle={setTitle} />} />
-                    <Route path={MONTH_WARNINGS_PATH} component={() => <MonthWarningsController setTitle={setTitle} />} />
-                    <Route path={DATE_BALANCE_PATH} component={() => <DateBalanceController setTitle={setTitle} />} />
-                    <Route path={MONTH_LIST_PATH} component={() => <MonthListController setTitle={setTitle} />} />
-                    <Route path={SETTINGS_PATH} component={() => <SettingsController setTitle={setTitle} />} />
-                    <Route path={CONTRIBUTION_BOXES_PATH} component={() => <ContributionBoxesController setTitle={setTitle} />} />
-                    <Route path={CREATE_CONTRIBUTION_BOX_PATH} component={() => <CreateContributionBoxController setTitle={setTitle} />} />
-                    <Route path={UPDATE_CONTRIBUTION_BOX_PATH} component={() => <UpdateContributionBoxController setTitle={setTitle} />} />
-                    <Route path={DEFAULT_BREAKDOWN_PATH} component={() => <DefaultBreakdownController setTitle={setTitle} />} />
-                    <Route path={BACKUPS_PATH} component={() => <BackupsController setTitle={setTitle} />} />
-                    <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
-                  </Switch>
-                )
-              }}
+              {(setTitle) => (
+                <Container>
+                  <Box pt={2} pb={2}>
+                    <Switch>
+                      <Route path={NAV_MENU_PATH} component={() => <NavMenuController setTitle={setTitle} />} />
+                      <Route path={CREATE_MEETING_PATH} component={() => <CreateMeetingController setTitle={setTitle} />} />
+                      <Route path={CREATE_DEPOSIT_PATH} component={() => <CreateDepositController setTitle={setTitle} />} />
+                      <Route path={CREATE_TRANSFER_PATH} component={() => <CreateTransferToBranchController setTitle={setTitle} />} />
+                      <Route path={CREATE_TRANSACTION_PATH} component={() => <CreateTransactionController setTitle={setTitle} />} />
+                      <Route path={UPDATE_TRANSACTION_PATH} component={() => <UpdateTransactionController setTitle={setTitle} />} />
+                      <Route path={MONTH_TRANSACTIONS_PATH} component={() => <MonthTransactionsController setTitle={setTitle} />} />
+                      <Route path={MONTH_WARNINGS_PATH} component={() => <MonthWarningsController setTitle={setTitle} />} />
+                      <Route path={DATE_BALANCE_PATH} component={() => <DateBalanceController setTitle={setTitle} />} />
+                      <Route path={MONTH_LIST_PATH} component={() => <MonthListController setTitle={setTitle} />} />
+                      <Route path={SETTINGS_PATH} component={() => <SettingsController setTitle={setTitle} />} />
+                      <Route path={CONTRIBUTION_BOXES_PATH} component={() => <ContributionBoxesController setTitle={setTitle} />} />
+                      <Route path={CREATE_CONTRIBUTION_BOX_PATH} component={() => <CreateContributionBoxController setTitle={setTitle} />} />
+                      <Route path={UPDATE_CONTRIBUTION_BOX_PATH} component={() => <UpdateContributionBoxController setTitle={setTitle} />} />
+                      <Route path={DEFAULT_BREAKDOWN_PATH} component={() => <DefaultBreakdownController setTitle={setTitle} />} />
+                      <Route path={BACKUPS_PATH} component={() => <BackupsController setTitle={setTitle} />} />
+                      <Redirect from="/" exact={true} to={NAV_MENU_PATH} />
+                    </Switch>
+                  </Box>
+                </Container>
+              )}
             </NavBarController>
             <CurrentMsgContainer>
               {(msg) => <CurrentMsgBar msg={msg} />}

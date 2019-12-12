@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, FormEvent } from 'react';
+import React, { ChangeEvent, FC, FormEvent, Fragment } from 'react';
 import { Box, Button, Checkbox, Divider, FormControlLabel, Grid, TextField, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import moment from 'moment';
@@ -23,7 +23,7 @@ const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) =
 
   function renderGeneralInfo(){
     return (
-      <Box p={1}>
+      <Fragment>
         <Typography variant="h6">General Information</Typography>
         <Divider />
         <Box pt={2} pb={2}>
@@ -86,7 +86,7 @@ const SettingsForm: FC<SettingsFormProps> = ({ settings, onChange, onSubmit }) =
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </Fragment>
     )
   }
 

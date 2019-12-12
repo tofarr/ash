@@ -64,12 +64,10 @@ const ContributionBoxesController: FC<ContributionBoxesControllerProps> = ({ set
 
   return (
     <Fragment>
-      <Box p={1}>
-        <Grid container direction="column" spacing={1}>
-          {boxes.map(renderBox)}
-        </Grid>
-      </Box>
-      <Box p={1} pt={2}>
+      <Grid container direction="column" spacing={1}>
+        {boxes.map(renderBox)}
+      </Grid>
+      <Box pt={2}>
         <Button
           fullWidth
           variant="contained"

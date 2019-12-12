@@ -42,27 +42,25 @@ const NavMenuController: FC<NavMenuProps> = ({ onClick, setTitle }) => {
   }
 
   return (
-    <Box p={1}>
-      <Grid container direction="column" spacing={1}>
-        {renderMenuItem('Add Meeting', CREATE_MEETING_PATH)}
-        {renderMenuItem('Add Deposit', CREATE_DEPOSIT_PATH)}
-        {renderMenuItem('Add Transfer To Branch', CREATE_TRANSFER_PATH)}
-        {renderMenuItem('Add Transaction', CREATE_TRANSACTION_PATH)}
-        {renderMenuItem('Current Month', monthTransactionsPath())}
-        {renderMenuItem('Select Month', monthListPath())}
-        <Grid item>
-          <Box p={1}>
-            <Typography variant="h6">Settings</Typography>
-            <Grid container direction="column" spacing={1}>
-              {renderMenuItem('General Settings', SETTINGS_PATH)}
-              {renderMenuItem('Contribution Boxes', CONTRIBUTION_BOXES_PATH)}
-              {renderMenuItem('Default Transfer Breakdown', DEFAULT_BREAKDOWN_PATH)}
-              {renderMenuItem('Backups', '/backups')}
-            </Grid>
-          </Box>
-        </Grid>
+    <Grid container direction="column" spacing={1}>
+      {renderMenuItem('Add Meeting', CREATE_MEETING_PATH)}
+      {renderMenuItem('Add Deposit', CREATE_DEPOSIT_PATH)}
+      {renderMenuItem('Add Transfer To Branch', CREATE_TRANSFER_PATH)}
+      {renderMenuItem('Add Transaction', CREATE_TRANSACTION_PATH)}
+      {renderMenuItem('Current Month', monthTransactionsPath())}
+      {renderMenuItem('Select Month', monthListPath())}
+      <Grid item>
+        <Box p={1}>
+          <Typography variant="h6">Settings</Typography>
+          <Grid container direction="column" spacing={1}>
+            {renderMenuItem('General Settings', SETTINGS_PATH)}
+            {renderMenuItem('Contribution Boxes', CONTRIBUTION_BOXES_PATH)}
+            {renderMenuItem('Default Transfer Breakdown', DEFAULT_BREAKDOWN_PATH)}
+            {renderMenuItem('Backups', '/backups')}
+          </Grid>
+        </Box>
       </Grid>
-    </Box>
+    </Grid>
   );
 }
 

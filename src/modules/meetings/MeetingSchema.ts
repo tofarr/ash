@@ -1,4 +1,4 @@
-import { array, number, object } from 'yup';
+import { array, object } from 'yup';
 import { dateStr } from '../utils/schemas';
 import contributionBoxContributionsSchema from './contributionBoxContributionsSchema';
 

@@ -102,7 +102,7 @@ function processTransaction(transaction: Transaction, context: S26Context){
 }
 
 function getCodeStr(code: TransactionCode){
-  if(code == TransactionCode.CCE){
+  if(code === TransactionCode.CCE){
     return TransactionCode.E;
   }
   return (code.length < 3) ? code : '';

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState} from 'react';
-import { Box, Button, Grid, TextField } from '@material-ui/core';
+import { Button, Grid, TextField } from '@material-ui/core';
 import moment from 'moment';
 import Loader from '../../utils/components/Loader';
 import BackupSettings from '../BackupSettings';
@@ -87,7 +87,7 @@ const BackupsController: FC<BackupsControllerProps> = ({ setTitle }) => {
     return null;
   }
 
-  return <Box p={1} pt={2} pb={2}>
+  return (
     <Grid container spacing={1} justify="flex-end">
       <Grid item xs={12}>
         <TextField
@@ -121,7 +121,7 @@ const BackupsController: FC<BackupsControllerProps> = ({ setTitle }) => {
         </Button>
       </Grid>
     </Grid>
-  </Box>
+  );
 }
 
 export default BackupsController;

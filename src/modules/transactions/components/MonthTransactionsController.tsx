@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 import moment from 'moment';
 import { useParams, useHistory } from 'react-router-dom';
 import { Box, Button, Grid } from '@material-ui/core';
@@ -117,21 +117,22 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
     return (
       <Grid container spacing={1} justify="space-between">
         <Grid item>
-          <Button variant="contained" title="Previous Month" onClick={() => handleMonthChange(-1)}>
+          <Button variant="contained" title="Previous Month" style={{minWidth: 40}}
+            onClick={() => handleMonthChange(-1)}>
             <ArrowLeftIcon />
           </Button>
         </Grid>
         <Grid item>
           <Box textAlign="center">
-            <Button variant="contained" title="Generate S26"
+            <Button variant="contained" title="Generate S26" style={{minWidth: 40}}
               onClick={() => fillAndDownloadS26(transactionSet as TransactionSet, endBalance as DateBalance, settings)}>
               S26
             </Button>
-            <Button variant="contained" title="Generate S30"
-              onClick={() => fillAndDownloadS30(transactionSet as TransactionSet, endBalance as DateBalance, settings)}>
+            <Button variant="contained" title="Generate S30" style={{minWidth: 40}}
+              onClick={() => fillAndDownloadS30(transactionSet as TransactionSet, settings)}>
               S30
             </Button>
-            <Button variant="contained" title="View Warnings"
+            <Button variant="contained" title="View Warnings" style={{minWidth: 40}}
               disabled={!(warnings && warnings.length)}
               onClick={handleWarnings}>
               <ErrorIcon />
@@ -140,7 +141,8 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
           </Box>
         </Grid>
         <Grid item>
-          <Button variant="contained" title="Next Month" onClick={() => handleMonthChange(1)}>
+          <Button variant="contained" title="Next Month" style={{minWidth: 40}}
+            onClick={() => handleMonthChange(1)}>
             <ArrowRightIcon />
           </Button>
         </Grid>
@@ -246,14 +248,14 @@ const MonthTransactionsController: FC<MonthTransactionsProps> = ({ setTitle }) =
   }
 
   return (
-    <Box p={1}>
+    <Fragment>
       {renderControls()}
       {renderHeaderRow()}
       {renderOpeningBalanceRow()}
       {renderTransactionRows()}
       {renderClosingBalanceRow()}
       {renderWarningDialog()}
-    </Box>
+    </Fragment>
   );
 }
 

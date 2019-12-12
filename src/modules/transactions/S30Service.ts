@@ -1,34 +1,13 @@
 import moment from 'moment';
 import { DATE_FORMAT } from '../utils/date';
-import { currentDateStr } from '../settings/settingsService';
 import Settings from '../settings/Settings';
-import DateBalance from './types/DateBalance';
-import Transaction from './types/Transaction';
 import TransactionBreakdownCode from './types/TransactionBreakdownCode';
 import TransactionCode, { isLocalCongregation } from './types/TransactionCode';
 import TransactionSet from './types/TransactionSet';
 import { toMoneyS } from '../utils/money/service';
 import { fillAndDownloadPdf } from '../utils/pdf';
-import { isPending } from './transactionService';
 
-interface S26Context{
-  rowNum: number;
-  receiptsIn: number;
-  receiptsOut: number;
-  primaryIn: number;
-  primaryOut: number;
-  otherIn: number;
-  otherOut: number;
-  fieldValues: any;
-  notYetAppliedReceiptsIn: number;
-  notYetAppliedReceiptsOut: number;
-  notYetAppliedPrimaryIn: number;
-  notYetAppliedPrimaryOut: number;
-  notYetAppliedOtherIn: number;
-  notYetAppliedOtherOut: number;
-}
-
-export async function fillAndDownloadS30(transactionSet: TransactionSet, end: DateBalance, settings: Settings){
+export async function fillAndDownloadS30(transactionSet: TransactionSet, settings: Settings){
   const fieldValues: any = {}
 
   fillInHeading(fieldValues, transactionSet, settings);
@@ -144,8 +123,8 @@ function fillInReceipts(fieldValues: any, transactionSet: TransactionSet){
     offset++;
   }
   transactions.forEach((transaction) => {
-    if(transaction.code == TransactionCode.W ||
-      transaction.code == TransactionCode.B ||
+    if(transaction.code === TransactionCode.W ||
+      transaction.code === TransactionCode.B ||
       isLocalCongregation(transaction.code) !== false){
       return;
     }
@@ -206,7 +185,7 @@ function sumBreakdowns(transactionSet: TransactionSet, code: TransactionBreakdow
 function fillInDisbursements(fieldValues: any, transactionSet: TransactionSet){
 
   const khExpenses = transactionSet.transactions.reduce((sum, transaction) =>
-    sum - ((transaction.code == TransactionCode.E) ? transaction.primary_amt : 0),
+    sum - ((transaction.code === TransactionCode.E) ? transaction.primary_amt : 0),
   0);
   fieldValues['901_12_S30CongEx'] = [toMoneyS(khExpenses)];
 
@@ -235,12 +214,12 @@ function fillInDisbursements(fieldValues: any, transactionSet: TransactionSet){
   fieldValues['901_19_S30TotalCongEx'] = [toMoneyS(totalCong)];
 
   const wwBoxes = transactionSet.transactions.reduce((sum, transaction) =>
-    sum + ((transaction.code == TransactionCode.W) ? transaction.receipts_amt : 0),
+    sum + ((transaction.code === TransactionCode.W) ? transaction.receipts_amt : 0),
   0);
   fieldValues['901_20_S30OtherDis'] = [toMoneyS(wwBoxes)];
 
   const constBoxes = transactionSet.transactions.reduce((sum, transaction) =>
-    sum + ((transaction.code == TransactionCode.B) ? transaction.receipts_amt : 0),
+    sum + ((transaction.code === TransactionCode.B) ? transaction.receipts_amt : 0),
   0);
   fieldValues['901_21_S30OtherDis'] = [toMoneyS(constBoxes)];
 
@@ -255,7 +234,6 @@ function fillInDisbursements(fieldValues: any, transactionSet: TransactionSet){
 
 function fillInTotals(fieldValues: any, transactionSet: TransactionSet, receipts: number, disbursements: number, settings: Settings){
   const { start } = transactionSet;
-  debugger;
   fieldValues['901_25_S30SurDef'] = [toMoneyS(receipts - disbursements)];
   const total = start.receipts + start.primary + start.other + receipts - disbursements
   fieldValues['901_26_S30TotalEOM'] = [toMoneyS(total)];

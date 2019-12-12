@@ -5,7 +5,7 @@ import TransactionCode from '../transactions/types/TransactionCode';
 import addErr from '../utils/err';
 import DepositSchema from './DepositSchema';
 
-import { DATE_FORMAT, MONTH_FORMAT, todayStr } from '../utils/date';
+import { DATE_FORMAT, todayStr } from '../utils/date';
 
 function delta(sum: number, receipts: number, amt?: number){
   if(amt){

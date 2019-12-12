@@ -49,11 +49,9 @@ const MonthListController: FC<MonthListProps> = ({ setTitle }) => {
     const monthStr = m.format(MONTH_FORMAT);
     return (
       <Grid item key={monthStr}>
-        <Box pl={1} pr={1}>
-          <Button fullWidth variant="contained" onClick={() => handleMonth(monthStr)}>
-            {m.format(settings.formatting.month_format)}
-          </Button>
-        </Box>
+        <Button fullWidth variant="contained" onClick={() => handleMonth(monthStr)}>
+          {m.format(settings.formatting.month_format)}
+        </Button>
       </Grid>
     )
   }
@@ -61,13 +59,11 @@ const MonthListController: FC<MonthListProps> = ({ setTitle }) => {
   return (
     <Grid container direction="column" spacing={1}>
       <Grid item>
-        <Box p={1}>
-          <SerialNavigation onPrev={() => handleYear(year - 1)} onNext={() => handleYear(year + 1)} >
-            <Box textAlign="center">
-              {year}
-            </Box>
-          </SerialNavigation>
-        </Box>
+        <SerialNavigation onPrev={() => handleYear(year - 1)} onNext={() => handleYear(year + 1)} >
+          <Box textAlign="center">
+            {year}
+          </Box>
+        </SerialNavigation>
       </Grid>
       {renderMonths()}
     </Grid>

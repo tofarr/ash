@@ -1,5 +1,5 @@
 import React, { FC, FormEvent, useEffect, useState } from 'react';
-import { Box, Button, Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
 import Loader from '../../utils/components/Loader';
@@ -64,10 +64,11 @@ const DefaultBreakdownController: FC<DefaultBreakdownControllerProps> = ({ setTi
     );
   }
 
-  return <Box p={1}>
-    {working && <Loader />}
-    {renderForm()}
-  </Box>
+  if(working){
+    return <Loader />
+  }
+
+  return renderForm();
 
 }
 

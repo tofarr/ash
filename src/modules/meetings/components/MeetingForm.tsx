@@ -100,13 +100,11 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
     <form onSubmit={handleSubmit}>
       <Grid container direction="column" spacing={1}>
         <Grid item>
-          <Box p={2}>
-            <DateSelect
-              required
-              value={internalMeeting.date}
-              onChange={date => setInternalMeeting({ ...internalMeeting, date: date as string })}
-              label="Date" />
-            </Box>
+          <DateSelect
+            required
+            value={internalMeeting.date}
+            onChange={date => setInternalMeeting({ ...internalMeeting, date: date as string })}
+            label="Date" />
         </Grid>
         <Grid item>
           {renderHeader()}
@@ -119,24 +117,22 @@ const MeetingForm: FC<MeetingFormProps> = ({ meeting, onSubmit, working }) => {
             <Money value={totalCash + totalCheques} />)}
         </Grid>
         <Grid item>
-          <Box p={2}>
-            {working ?
-              <Loader />
-              :
-              <Grid container justify="flex-end">
-                <Grid item xs sm="auto">
-                  <Button
-                    fullWidth
-                    type="submit"
-                    variant="contained"
-                    color="primary">
-                    <AddIcon />
-                    Add Meeting
-                  </Button>
-                </Grid>
+          {working ?
+            <Loader />
+            :
+            <Grid container justify="flex-end">
+              <Grid item xs sm="auto">
+                <Button
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  color="primary">
+                  <AddIcon />
+                  Add Meeting
+                </Button>
               </Grid>
-            }
-          </Box>
+            </Grid>
+          }
         </Grid>
       </Grid>
     </form>
