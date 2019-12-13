@@ -15,8 +15,7 @@ export async function fillAndDownloadS30(transactionSet: TransactionSet, setting
   const disbursements = fillInDisbursements(fieldValues, transactionSet);
   fillInTotals(fieldValues, transactionSet, receipts, disbursements, settings);
   fillInSummary(fieldValues, transactionSet, settings);
-
-  await fillAndDownloadPdf('/pdf/S-30-E.pdf', fieldValues);
+  await fillAndDownloadPdf(process.env.PUBLIC_URL+'/pdf/S-30-E.pdf', fieldValues);
 }
 
 
@@ -39,21 +38,28 @@ function buildTotalCongregationReceipts(transactionSet: TransactionSet){
 }
 
 function buildTotalCongregationDisbursements(transactionSet: TransactionSet){
-  return transactionSet.transactions.reduce((sum, transaction) => {
-    if(isLocalCongregation(transaction.code) !== false){
-      return sum;
+
+  const khExpenses = transactionSet.transactions.reduce((sum, transaction) =>
+    sum - ((transaction.code === TransactionCode.E) ? transaction.primary_amt : 0),
+  0);
+
+  const wwResolutionTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.WW_RESOLUTION);
+  const khahcTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.KHAHC);
+  const gaaTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.GAA);
+  const coaaTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.COAA);
+
+  let offset = 0;
+  let otherTotal = 0;
+  transactionSet.transactions.forEach(transaction => {
+    if(transaction.code !== TransactionCode.CCE){
+      return;
     }
-    if(transaction.receipts_amt > 0){
-      sum += transaction.receipts_amt;
-    }
-    if(transaction.primary_amt > 0){
-      sum += transaction.primary_amt;
-    }
-    if(transaction.other_amt > 0){
-      sum += transaction.other_amt;
-    }
-    return sum;
-  }, 0);
+    otherTotal -= transaction.primary_amt;
+    offset++;
+  });
+
+  const totalCong = khExpenses + wwResolutionTotal + khahcTotal + gaaTotal + coaaTotal + otherTotal;
+  return totalCong;
 }
 
 function fillInHeading(fieldValues: any, transactionSet: TransactionSet, settings: Settings){
@@ -252,8 +258,9 @@ function fillInSummary(fieldValues: any, transactionSet: TransactionSet, setting
   fieldValues['901_33_S30MonthEnd'] = [toMoneyS(openingBalance + totalCongregationReceipts - totalCongregationDisbursements)];
 
   const transferredToBranch = transactionSet.transactions.reduce((sum, transaction) => {
-    if(transaction.code === TransactionCode.CBT){
-      return sum - (transaction.receipts_amt + transaction.primary_amt + transaction.other_amt);
+    if(transaction.code === TransactionCode.W ||
+      transaction.code === TransactionCode.B){
+      return sum + transaction.receipts_amt;
     }
     return sum;
   }, 0);

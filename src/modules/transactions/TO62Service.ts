@@ -27,7 +27,7 @@ export async function fillAndDownloadTO62(transaction: Transaction){
 
   const total = breakdown ? breakdown.reduce((sum, b) => sum + (b.amt || 0), 0): 0;
 
-  await fillAndDownloadPdf('/pdf/TO-62-E.pdf', {
+  await fillAndDownloadPdf(process.env.PUBLIC_URL+'/pdf/TO-62-E.pdf', {
     '900_1_CheckBox': [true], // Type congregation
     '900_5_CheckBox': [!!transaction.confirmation_code], // Type Automatic Transfer
     '900_4_Text': [settings.congregation_name], // congregation name (from settings)

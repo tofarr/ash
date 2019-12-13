@@ -59,7 +59,7 @@ export async function fillAndDownloadS26(transactionSet: TransactionSet, end: Da
   fillSummary(fieldValues, settings, transactionSet.start, end, context);
   fillOtherReconcilliation(fieldValues, settings, transactionSet, end);
 
-  await fillAndDownloadPdf('/pdf/S-26-E.pdf', fieldValues);
+  await fillAndDownloadPdf(process.env.PUBLIC_URL+'/pdf/S-26-E.pdf', fieldValues);
 }
 
 function buildPendingPrimaryDeposits(transactionSet: TransactionSet){
