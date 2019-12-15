@@ -1,51 +1,40 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
+
+This project is intended to help beleaguered Accounts Servants to record and report on accounts. Have you ever spent way too much time trying to figure out where you made a mistake in recording or basic arithmetic? (I know I have!)
+
+This app does not record any data externally: everything is stored on your device (In my case an Android phone). It is recommended that you use the backup functionality to store a backup of the data to an external source, though I will leave it up to you as to where (e.g.: Dropbox, Google Drive, iCloud)
+
+Get started today at https://tofarr.github.io/ash
+
+The standard use case for me is to use this app on my phone to record the contents of boxes at meetings (where it calculates totals for me), deposits to the bank (which it calculates default values for based upon what was previously collected), and then generate the required S26, S30, and TO62 forms. It will also warn of oddities such as missing meetings, potential duplicate transactions, and more.
+
+## Known Issues
+
+* The PDF library used seems to not work with Adobe Reader. The built in reader in chrome seems to work, but has some issues (Total Values disappear if the document is manually edited)
+
+## Development
+
+This is currently hosted on github, with a version of the actual files hosted on on github pages - I figure that's as good a place as any considering that it only uses static files, and does not have any external dependencies.
+
+It is set up as a Progressive Web App - hopefully this platform has matured enough at this point that there will not be issues between iPhone / android, but I cannot yet guarantee this. (You can help here!)
+
+## Technologies Used
+
+* ReactJS (https://reactjs.org/)
+* MaterialUI (https://material-ui.com/)
+* Dexie (https://dexie.org/)
+* pdfform (https://github.com/phihag/pdfform.js/blob/master/README.md)
+
 
 ## Available Scripts
 
-In the project directory, you can run:
+The standard react scripts are available. In the project directory, you can run:
 
 ### `npm start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Aside from this, there is a custom distribution script which runs a build then copies the content to /docs, which can be pushed to github pages.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-sudo npm install -g static-http2-server
-http2-server --generate-cert
-https://tosbourn.com/getting-os-x-to-trust-self-signed-ssl-certificates/
-Drag the generated /certs/
-npm build
-npm run start-sw
+### `npm dist`

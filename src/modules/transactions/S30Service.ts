@@ -48,14 +48,12 @@ function buildTotalCongregationDisbursements(transactionSet: TransactionSet){
   const gaaTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.GAA);
   const coaaTotal = sumBreakdowns(transactionSet, TransactionBreakdownCode.COAA);
 
-  let offset = 0;
   let otherTotal = 0;
   transactionSet.transactions.forEach(transaction => {
     if(transaction.code !== TransactionCode.CCE){
       return;
     }
     otherTotal -= transaction.primary_amt;
-    offset++;
   });
 
   const totalCong = khExpenses + wwResolutionTotal + khahcTotal + gaaTotal + coaaTotal + otherTotal;
