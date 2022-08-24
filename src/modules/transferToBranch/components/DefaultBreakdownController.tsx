@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import Loader from '../../utils/components/Loader';
 import TransactionBreakdown from '../../transactions/types/TransactionBreakdown';
 import BreakdownList from '../../transactions/components/BreakdownList';
-import { loadDefaultBreakdown, storeDefaultBreakdown } from '../transferToBranchService';
+import { loadDefaultBreakdown, storeDefaultBreakdown } from '../TransferToBranchService';
 
 export const DEFAULT_BREAKDOWN_PATH = '/default-breakdown';
 

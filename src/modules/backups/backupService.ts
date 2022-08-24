@@ -4,8 +4,8 @@ import BackupSettings from './BackupSettings';
 import backupSchema from './backupSchema';
 import * as fileDAO from './FileDAO';
 import * as transactionDAO from '../transactions/transactionDAO';
-import * as settingsDAO from '../settings/settingsDAO';
-import * as settingsService from '../settings/settingsService';
+import * as SettingsDAO from '../settings/SettingsDAO';
+import * as SettingsService from '../settings/SettingsService';
 import * as contributionBoxDAO from '../contributionBoxes/contributionBoxDAO';
 import * as transferToBranchDAO from '../transferToBranch/transferToBranchDAO';
 import * as backupSettingsDAO from './backupSettingsDAO';
@@ -50,7 +50,7 @@ export function restoreFromBackup(backup: Backup){
 
         const promises = [] as Promise<any>[]
         promises.push.apply(promises, backup.transactions.map(transaction => transactionDAO.create(transaction)));
-        promises.push(settingsDAO.store(backup.settings));
+        promises.push(SettingsDAO.store(backup.settings));
         promises.push(contributionBoxDAO.restore(backup.boxes));
         promises.push(transferToBranchDAO.restore(backup.default_transaction_breakdowns));
 
@@ -82,7 +82,7 @@ function clear(){
 export function createBackup(){
   return new Promise<Backup>((resolve, reject) => {
     Promise.all([
-      settingsService.loadSettings(),
+      SettingsService.loadSettings(),
       transactionDAO.list(),
       contributionBoxDAO.list(),
       transferToBranchDAO.list()

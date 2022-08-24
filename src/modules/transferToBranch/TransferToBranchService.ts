@@ -7,9 +7,9 @@ import TransactionBreakdown from '../transactions/types/TransactionBreakdown';
 import TransactionBreakdownCode from '../transactions/types/TransactionBreakdownCode';
 import * as transferToBranchDAO from './transferToBranchDAO';
 import TransactionCode, { isLocalCongregation } from '../transactions/types/TransactionCode';
-import addErr from '../utils/err';
+import addErr from '../utils/Err';
 import { addMsg } from '../utils/msgs/service';
-import transferToBranchSchema from './transferToBranchSchema';
+import TransferToBranchSchema from './TransferToBranchSchema';
 import { fillAndDownloadTO62 } from '../transactions/TO62Service';
 
 export function newTransferToBranch(apply_on_date = todayStr()) {
@@ -68,7 +68,7 @@ export function storeDefaultBreakdown(breakdowns: TransactionBreakdown[]){
 
 export function toTransaction(transferToBranch: TransferToBranch){
   return new Promise<Transaction>((resolve, reject) => {
-    transferToBranchSchema().validate(transferToBranch).then(() => {
+    TransferToBranchSchema().validate(transferToBranch).then(() => {
       const { date, apply_on_date, breakdown, confirmation_code } = transferToBranch;
       const description = `To Branch - ${confirmation_code} (${apply_on_date})`;
       const amt = breakdown.reduce(((sum: number, item: TransactionBreakdown) => (item.amt as number) + sum), 0);

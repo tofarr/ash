@@ -2,7 +2,7 @@ import moment from 'moment';
 import Deposit from './Deposit';
 import { create, loadTransactionSet } from '../transactions/transactionService';
 import TransactionCode from '../transactions/types/TransactionCode';
-import addErr from '../utils/err';
+import addErr from '../utils/Err';
 import DepositSchema from './DepositSchema';
 
 import { DATE_FORMAT, todayStr } from '../utils/date';

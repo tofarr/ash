@@ -4,7 +4,7 @@ import ContributionBox from './ContributionBox';
 import * as dao from './contributionBoxDAO';
 
 import { addMsg } from '../utils/msgs/service';
-import addErr from '../utils/err';
+import addErr from '../utils/Err';
 import TransactionCode, { describeTransactionCodeShort } from '../transactions/types/TransactionCode';
 
 export function newInstance(): ContributionBox{

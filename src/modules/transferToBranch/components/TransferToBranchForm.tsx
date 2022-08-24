@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 import Loader from '../../utils/components/Loader';
 import TransferToBranch from '../TransferToBranch'
-import { fillAndDownloadTO62ForTransfer } from '../transferToBranchService';
+import { fillAndDownloadTO62ForTransfer } from '../TransferToBranchService';
 
 import BreakdownList from '../../transactions/components/BreakdownList';
 

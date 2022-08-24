@@ -2,9 +2,9 @@ import { todayStr } from '../utils/date';
 import Meeting from './Meeting';
 import { create, newInstance } from '../transactions/transactionService';
 import TransactionCode from '../transactions/types/TransactionCode';
-import addErr from '../utils/err';
+import addErr from '../utils/Err';
 import meetingSchema from './MeetingSchema';
-import { loadSettings } from '../settings/settingsService';
+import { loadSettings } from '../settings/SettingsService';
 import { list as listContributionBoxes } from '../contributionBoxes/contributionBoxService';
 
 export function newMeeting(date = todayStr()) {

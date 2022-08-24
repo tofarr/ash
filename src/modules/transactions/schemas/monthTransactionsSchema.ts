@@ -3,7 +3,7 @@ import { YupContext } from '../../utils/schemas';
 
 import MonthTransactions from '../types/MonthTransactions';
 import transactionSetSchema from './transactionSetSchema';
-import { dateStr, meetingDates } from '../../settings/settingsService';
+import { dateStr, meetingDates } from '../../settings/SettingsService';
 import TransactionCode from '../types/TransactionCode';
 import { dateToMonth } from '../../utils/date';
 

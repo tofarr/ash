@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react';
 import Settings from '../../settings/Settings';
-import { loadSettings } from '../settingsService';
+import { loadSettings } from '../SettingsService';
 import { setSettings } from '../useSettings';
 import Loader from '../../utils/components/Loader';
 

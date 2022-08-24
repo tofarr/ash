@@ -8,7 +8,7 @@ import * as dao from './transactionDAO';
 
 import { todayStr } from '../utils/date';
 import { addMsg } from '../utils/msgs/service';
-import addErr from '../utils/err';
+import addErr from '../utils/Err';
 
 export function create(transaction: Transaction){
   return new Promise((resolve, reject) => {
