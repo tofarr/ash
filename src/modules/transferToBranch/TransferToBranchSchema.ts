@@ -1,7 +1,7 @@
 import { array, number, object, string, StringSchema } from 'yup';
 import { dateStr } from '../utils/schemas';
 
-export default function transferToBranchSchema(){
+export default function TransferToBranchSchema(){
   return object().shape({
     date: dateStr.required(),
     apply_on_date: dateStr.required().when(['date'],

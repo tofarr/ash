@@ -1,7 +1,7 @@
 import React, { FC, useState} from 'react';
 
 import SettingsForm from './SettingsForm';
-import { storeSettings } from '../settingsService';
+import { storeSettings } from '../SettingsService';
 import useSettings, { setSettings } from '../useSettings';
 
 export const SETTINGS_PATH = '/settings';

@@ -10,7 +10,7 @@ import { dateToMonth } from '../../utils/date';
 import Loader from '../../utils/components/Loader';
 import Money from '../../utils/money/Money';
 import useSettings from '../../settings/useSettings';
-import { dateStr } from '../../settings/settingsService';
+import { dateStr } from '../../settings/SettingsService';
 
 import DateBalance from '../types/DateBalance';
 import Transaction from '../types/Transaction';

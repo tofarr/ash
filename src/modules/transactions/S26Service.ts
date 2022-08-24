@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { DATE_FORMAT } from '../utils/date';
-import { currentDateStr } from '../settings/settingsService';
+import { currentDateStr } from '../settings/SettingsService';
 import Settings from '../settings/Settings';
 import DateBalance from './types/DateBalance';
 import Transaction from './types/Transaction';

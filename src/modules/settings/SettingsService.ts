@@ -3,7 +3,7 @@
 import moment from 'moment';
 import Settings, { MeetingDays } from './Settings';
 import { DATE_FORMAT, MONTH_FORMAT } from '../utils/date';
-import { load, store } from './settingsDAO';
+import { load, store } from './SettingsDAO';
 import { addMsg } from '../utils/msgs/service';
 
 function newSettings(): Settings{

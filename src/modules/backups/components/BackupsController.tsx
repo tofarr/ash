@@ -5,8 +5,8 @@ import Loader from '../../utils/components/Loader';
 import BackupSettings from '../BackupSettings';
 import { loadBackupSettings, saveBackup, restoreFromBackup } from '../backupService';
 import useSettings, { setSettings as setGlobalSettings } from '../../settings/useSettings';
-import * as settingsService from '../../settings/settingsService';
-import addErr from '../../utils/err';
+import * as SettingsService from '../../settings/SettingsService';
+import addErr from '../../utils/Err';
 import { addMsg } from '../../utils/msgs/service';
 
 
@@ -64,7 +64,7 @@ const BackupsController: FC<BackupsControllerProps> = ({ setTitle }) => {
       const backup = JSON.parse(jsonStr);
       restoreFromBackup(backup).then((backupSettings) => {
         setBackupSettings(backupSettings);
-        settingsService.loadSettings().then(setGlobalSettings)
+        SettingsService.loadSettings().then(setGlobalSettings)
       });
     }
     reader.readAsText(file);
